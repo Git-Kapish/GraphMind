@@ -80,7 +80,31 @@ def _match_relation_type(val: Any) -> RelationType | None:
     clean = val.strip().upper().replace(" ", "_").replace("-", "_")
     if clean in RelationType.__members__:
         return RelationType[clean]
-    return None
+    synonyms = {
+        "ACQUIRES": RelationType.ACQUIRED,
+        "ACQUISITION": RelationType.ACQUIRED,
+        "ACQUIRE": RelationType.ACQUIRED,
+        "PURCHASED": RelationType.ACQUIRED,
+        "INVEST": RelationType.INVESTS_IN,
+        "INVESTED_IN": RelationType.INVESTS_IN,
+        "INVESTMENT_IN": RelationType.INVESTS_IN,
+        "PARTNER": RelationType.PARTNERS_WITH,
+        "PARTNERSHIP": RelationType.PARTNERS_WITH,
+        "PARTNERED_WITH": RelationType.PARTNERS_WITH,
+        "SUPPLIER": RelationType.SUPPLIES_TO,
+        "SUPPLY": RelationType.SUPPLIES_TO,
+        "SUPPLIES": RelationType.SUPPLIES_TO,
+        "MANUFACTURE": RelationType.MANUFACTURED_BY,
+        "MANUFACTURED": RelationType.MANUFACTURED_BY,
+        "COMPETES": RelationType.COMPETES_WITH,
+        "COMPETITOR": RelationType.COMPETES_WITH,
+        "COMPETITOR_OF": RelationType.COMPETES_WITH,
+        "OPERATES": RelationType.OPERATES_IN,
+        "OFFER": RelationType.OFFERS,
+        "PROVIDES": RelationType.OFFERS,
+    }
+    return synonyms.get(clean)
+
 
 
 class ExtractedRelation(BaseModel):

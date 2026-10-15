@@ -48,5 +48,10 @@ gazetteer:
       aliases: ["Alphabet", "Google", "GOOGL", "GOOG"]
     - name: "Taiwan Semiconductor Manufacturing Company Limited"
       aliases: ["TSMC", "Taiwan Semiconductor"]
+    - name: "Apple Inc."
+      aliases: ["Apple", "AAPL"]
+    - name: "Amazon.com, Inc."
+      aliases: ["Amazon", "AMZN", "AWS"]
     - name: "Arm Holdings plc"
       aliases: ["Arm", "ARM"]
+

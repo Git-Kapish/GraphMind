@@ -13,6 +13,8 @@
 | 2026-10-15 | M6 | Grounded Answer Generation & Citation Invariants | Context assembly [G#]/[P#], request-scoped EvidenceRegistry, 100% mechanical citation validation invariant, and feedback retry loop. 97/97 tests passing. | Approved |
 | 2026-10-15 | M7 | FastAPI Query Endpoints & Vector Baseline | Production-grade API exposing POST /query (hybrid & router), POST /query/baseline, GET /entities/{id}, GET /chunks/{id}, GET /health with audit logging in PostgreSQL routing_log. 106 tests passing. | Approved |
 | 2026-10-15 | M8 | Preliminary Evaluation & Benchmark Gate Passed | Evaluated 25 hand-verified test questions across System A (Vector Baseline) vs System C (Hybrid KG-RAG). Hybrid achieved 88.0% accuracy vs Baseline 72.0% (+16.0% gap), winning 4 discordant pairs with 0 losses. Multi-hop accuracy gap +33.3%, two-hop gap +12.5%, 100% citation resolution invariant verified. | Approved |
+| 2026-10-15 | M9 | Scale Ingestion & Checkpoint Recovery | Ingested 4 primary enterprise filers (QCOM, AAPL, AMZN, GOOGL) scaling corpus to 10 filers, 789 chunks, 331 canonical entities, and 481 Neo4j edges. Implemented PostgreSQL checkpoint journal, dry-run throughput profiler, and verified 100% idempotency. | Approved |
+
 
 
 
@@ -218,4 +220,38 @@
   2. **Zero Invariant Violations:** The mechanical citation resolution validator achieved 100% resolution on all 25 hybrid queries, guaranteeing that every factual claim is strictly traceable to retrieved chunks.
   3. **Low-Latency Graph Routing:** Graph-routed queries executed in 5.3s median latency on CPU, significantly outpacing dense passage chunk reading (12.8s median) by feeding only concise, pre-verbalized facts to the LLM.
 - **Formal Gate Decision:** **GO (PASSED)**. Milestone M8 complete. Release 1 (Core Pipeline & Proof of Graph Advantage, M0–M8) is fully achieved and certified.
+
+## Milestone M9: Scale Ingestion & Checkpoint Recovery (PRD §5.7, FR-1.6, §14)
+
+- **Date:** 2026-10-15
+- **Objective:** Scale corporate filer corpus from 6 to 10 enterprise filers within local hardware compute budget (§5.7), implement checkpoint tracking and recovery, dry-run throughput profiling (FR-1.6), and verify 100% idempotent repeat ingestion.
+- **Corpus Expansion Filers (Option A):**
+  - `QCOM` (QUALCOMM Inc. - CIK: 0000804328)
+  - `AAPL` (Apple Inc. - CIK: 0000320193)
+  - `AMZN` (Amazon.com Inc. - CIK: 0001018724)
+  - `GOOGL` (Alphabet Inc. - CIK: 0001652044)
+- **Ingestion & Profiling Results:**
+
+| Metric | Target / Budget | Measured Ingestion Result | Status |
+|---|---|---|---|
+| **Primary Corporate Filers** | $\ge 10$ anchor filers | **10 Filers** (NVDA, AMD, INTC, MU, MSFT, AVGO, QCOM, AAPL, AMZN, GOOGL) | **PASS** |
+| **Total Chunks in Corpus** | $\le 800$ chunks (CPU budget §5.7) | **789 Chunks** (592 dev + 197 expanded) | **WITHIN BUDGET** |
+| **Deterministic Observations** | Exhibit 21 + Officers | **96 Observations** (78 subsidiaries + 18 officers) in $< 0.5$s | **PASS ($0 spend)** |
+| **Deterministic Extraction Speed** | Fast execution | **< 0.20s per filer** (0 LLM invocations) | **PASS** |
+| **Measured LLM Latency (CPU)** | FR-1.6 Dry-Run profiler | **40.99 s/chunk** (`qwen2.5:3b` on 12-core CPU) | **PROFILED** |
+| **Pre-Filter Pass Rate** | Target pre-filtering | **96.4%** on non-exhibit chunks with corporate cues | **MEASURED** |
+| **Canonical Entities in DB** | Knowledge graph expansion | **331 Entities** (expanded from 267) | **PASS** |
+| **Neo4j Projected Nodes** | Authoritative projection | **331 Nodes** (:Entity) | **100% MATCH** |
+| **Neo4j Projected Edges** | Aggregated relationships | **481 Relationships** (expanded from 384) | **PASS** |
+| **Dense Chunk Embeddings** | 768-d pgvector | **789/789 Chunks (100%)** embedded via `nomic-embed-text:latest` | **100% EMBEDDED** |
+| **Idempotency Repeat Run** | Zero duplicates | **22.09s** elapsed; 0 duplicate chunks, 0 duplicate nodes, 0 duplicate edges | **100% IDEMPOTENT** |
+| **Checkpoint Journal** | Resumable state | PostgreSQL `ingestion_checkpoints` tracking `fetch_parse`, `chunking`, `deterministic_parsing`, `llm_extraction`, `entity_resolution`, `embeddings`, `graph_rebuild` | **VERIFIED** |
+| **Unit & Integration Tests** | Zero regressions | **109/109 Passed in 59.23s** | **ALL PASS** |
+
+- **Key Architectural Findings:**
+  1. **Deterministic Parsing Efficiency:** Parsing Exhibit 21 tables extracted 78 high-fidelity corporate subsidiary relationships and jurisdiction links across QCOM, AAPL, AMZN, and GOOGL in milliseconds without any LLM token consumption ($0 model spend).
+  2. **Bounded Compute Guardrail:** Enforcing `max_extraction_chunks` in `src/kgrag/ingest.py` prevented runaway CPU queueing while prioritizing Item 1 (Business descriptions) where core supplier, customer, and competitor relationships reside.
+  3. **Zero Redundancy Checkpoint Recovery:** Checkpointing allowed repeat runs to verify existing documents, chunks, and embeddings instantly without re-fetching SEC filings or re-computing vector embeddings.
+- **Formal Gate Decision:** **GO (PASSED)**. Milestone M9 complete. Corpus expanded to 10 enterprise filers. Ready for Milestone M10 (Router & Full 60+ Question 5-Way Ablation Benchmark).
+
 

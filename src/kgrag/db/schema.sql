@@ -108,3 +108,18 @@ CREATE TABLE IF NOT EXISTS routing_log (
     latency_ms INT,
     request_id VARCHAR(64) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS ingestion_checkpoints (
+    id SERIAL PRIMARY KEY,
+    run_id VARCHAR(64) NOT NULL,
+    ticker VARCHAR(16) NOT NULL,
+    stage VARCHAR(32) NOT NULL,
+    status VARCHAR(32) NOT NULL,
+    records_processed INT DEFAULT 0,
+    elapsed_seconds FLOAT DEFAULT 0.0,
+    metadata JSONB DEFAULT '{}',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_ingestion_checkpoint_ticker_stage ON ingestion_checkpoints(ticker, stage);
+CREATE INDEX IF NOT EXISTS idx_ingestion_checkpoint_run_id ON ingestion_checkpoints(run_id);
+
