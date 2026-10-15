@@ -1,0 +1,817 @@
+{
+  "total_questions": 40,
+  "recall_at_3": 0.55,
+  "recall_at_5": 0.65,
+  "recall_at_10": 0.75,
+  "mrr": 0.5346,
+  "avg_latency_ms": 87.0,
+  "hits_at_3": 22,
+  "hits_at_5": 26,
+  "hits_at_10": 30,
+  "ticker_breakdown": {
+    "AMD": {
+      "total": 7,
+      "hit_3": 4,
+      "hit_5": 6,
+      "hit_10": 6
+    },
+    "NVDA": {
+      "total": 7,
+      "hit_3": 6,
+      "hit_5": 6,
+      "hit_10": 6
+    },
+    "AVGO": {
+      "total": 7,
+      "hit_3": 2,
+      "hit_5": 2,
+      "hit_10": 2
+    },
+    "INTC": {
+      "total": 7,
+      "hit_3": 5,
+      "hit_5": 6,
+      "hit_10": 6
+    },
+    "MU": {
+      "total": 6,
+      "hit_3": 2,
+      "hit_5": 2,
+      "hit_10": 4
+    },
+    "MSFT": {
+      "total": 6,
+      "hit_3": 3,
+      "hit_5": 4,
+      "hit_10": 6
+    }
+  },
+  "per_query_results": [
+    {
+      "id": "RET_01",
+      "ticker": "AMD",
+      "question": "Who are AMD's primary competitors in the FPGA and adaptive SoC markets?",
+      "category": "competition",
+      "gold_chunk_ids": [
+        "0000002488-26-000018:item1:0011"
+      ],
+      "retrieved_top3": [
+        "0000002488-26-000018:item1:0011",
+        "0001045810-26-000021:item1:0008",
+        "wiki:14617:wiki_major_competitors:0025"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 106.4
+    },
+    {
+      "id": "RET_02",
+      "ticker": "AMD",
+      "question": "How does AMD manage wafer sorting and assembly, test, mark and packaging (ATMP) with foundries?",
+      "category": "supply_chain",
+      "gold_chunk_ids": [
+        "0000002488-26-000018:item1:0012"
+      ],
+      "retrieved_top3": [
+        "wiki:72536161:wiki_fabrication:0012",
+        "wiki:39120:wiki_fabrication:0020",
+        "0000723125-26-000023:item1:0007"
+      ],
+      "first_gold_rank": 4,
+      "hit_3": false,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 102.4
+    },
+    {
+      "id": "RET_03",
+      "ticker": "AMD",
+      "question": "What enterprise security and manageability features are offered by AMD Ryzen PRO commercial processors?",
+      "category": "products",
+      "gold_chunk_ids": [
+        "0000002488-26-000018:item1:0005"
+      ],
+      "retrieved_top3": [
+        "0000002488-26-000018:item1:0005",
+        "0000002488-26-000018:item1:0004",
+        "wiki:72536161:wiki_cpu_hardware:0009"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 91.0
+    },
+    {
+      "id": "RET_04",
+      "ticker": "AMD",
+      "question": "What workstation use cases and integrations are supported by AMD Radeon PRO professional graphics?",
+      "category": "products",
+      "gold_chunk_ids": [
+        "0000002488-26-000018:item1:0006"
+      ],
+      "retrieved_top3": [
+        "0000002488-26-000018:item1:0006",
+        "0000002488-26-000018:item1:0005",
+        "wiki:72536161:wiki_graphics_hardware:0010"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 96.2
+    },
+    {
+      "id": "RET_05",
+      "ticker": "AMD",
+      "question": "How did AMD combine its Client and Gaming segments for financial reporting?",
+      "category": "segments",
+      "gold_chunk_ids": [
+        "0000002488-26-000018:item1:0003"
+      ],
+      "retrieved_top3": [
+        "0000002488-26-000018:item1:0001",
+        "wiki:72536161:wiki_partnerships:0015",
+        "wiki:72536161:wiki_semi-custom_and_game_console_products:0008"
+      ],
+      "first_gold_rank": 4,
+      "hit_3": false,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 85.2
+    },
+    {
+      "id": "RET_06",
+      "ticker": "AMD",
+      "question": "Which corporate entities operate as subsidiaries of Advanced Micro Devices in California and internationally?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0000002488-26-000018:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0000002488-26-000018:exhibit21:0000",
+        "wiki:487445:wiki_subsidiaries:0006",
+        "0000723125-26-000023:exhibit21:0000"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 102.0
+    },
+    {
+      "id": "RET_07",
+      "ticker": "AMD",
+      "question": "What export regulations, tariffs and trade protection risks does AMD face?",
+      "category": "risk_factors",
+      "gold_chunk_ids": [
+        "0000002488-26-000018:item1a:0001"
+      ],
+      "retrieved_top3": [
+        "0000723125-26-000023:item1a:0031",
+        "0000002488-26-000018:item1a:0028",
+        "0000002488-26-000018:item1a:0031"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 84.5
+    },
+    {
+      "id": "RET_08",
+      "ticker": "NVDA",
+      "question": "What is NVIDIA's core business platform strategy across accelerated computing hardware, software, and systems?",
+      "category": "business_overview",
+      "gold_chunk_ids": [
+        "0001045810-26-000021:item1:0001",
+        "0001045810-26-000021:item1:0000"
+      ],
+      "retrieved_top3": [
+        "0001045810-26-000021:item1:0001",
+        "wiki:39120:wiki_products_and_development:0004",
+        "0001045810-26-000021:item1:0000"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 90.0
+    },
+    {
+      "id": "RET_09",
+      "ticker": "NVDA",
+      "question": "What networking architectures and interconnect technologies does NVIDIA offer for AI data centers?",
+      "category": "products",
+      "gold_chunk_ids": [
+        "0001045810-26-000021:item1:0002",
+        "0001045810-26-000021:item1:0003"
+      ],
+      "retrieved_top3": [
+        "0001045810-26-000021:item1:0003",
+        "0001045810-26-000021:item1:0001",
+        "0001045810-26-000021:item1:0005"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 93.1
+    },
+    {
+      "id": "RET_10",
+      "ticker": "NVDA",
+      "question": "In which international jurisdiction is NVIDIA's subsidiary Mellanox Technologies organized?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0001045810-26-000021:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0001045810-26-000021:exhibit21:0000",
+        "0000723125-26-000023:exhibit21:0000",
+        "wiki:39120:wiki_french_competition_authority_investigation:0034"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 82.7
+    },
+    {
+      "id": "RET_11",
+      "ticker": "NVDA",
+      "question": "What multi-year cloud service agreements and compute commitments has NVIDIA entered into?",
+      "category": "commitments",
+      "gold_chunk_ids": [
+        "0001045810-26-000021:item1a:0002"
+      ],
+      "retrieved_top3": [
+        "wiki:39120:wiki_products_and_development:0004",
+        "0001045810-26-000021:item1a:0002",
+        "0001045810-26-000021:item1:0001"
+      ],
+      "first_gold_rank": 2,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 88.2
+    },
+    {
+      "id": "RET_12",
+      "ticker": "NVDA",
+      "question": "What risks does NVIDIA highlight regarding business disruptions and operational concentration at its corporate headquarters?",
+      "category": "risk_factors",
+      "gold_chunk_ids": [
+        "0001045810-26-000021:item1a:0015"
+      ],
+      "retrieved_top3": [
+        "0001045810-26-000021:item1a:0015",
+        "0001045810-26-000021:item1a:0014",
+        "wiki:39120:wiki_french_competition_authority_investigation:0034"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 103.4
+    },
+    {
+      "id": "RET_13",
+      "ticker": "NVDA",
+      "question": "How does NVIDIA engage developers and build ecosystem software libraries for GPU optimization?",
+      "category": "developer_ecosystem",
+      "gold_chunk_ids": [
+        "0001045810-26-000021:item1:0007"
+      ],
+      "retrieved_top3": [
+        "0001045810-26-000021:item1:0001",
+        "wiki:39120:wiki_products_and_development:0004",
+        "wiki:39120:wiki_open-source_software_support:0023"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 147.4
+    },
+    {
+      "id": "RET_14",
+      "ticker": "NVDA",
+      "question": "Which subsidiaries does NVIDIA operate in the United States and abroad according to Exhibit 21?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0001045810-26-000021:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0001045810-26-000021:exhibit21:0000",
+        "0001193125-26-323660:exhibit21:0000",
+        "0001730168-25-000121:exhibit21:0000"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 136.1
+    },
+    {
+      "id": "RET_15",
+      "ticker": "AVGO",
+      "question": "What are Broadcom's two primary reportable business segments?",
+      "category": "business_overview",
+      "gold_chunk_ids": [
+        "0001730168-25-000121:item1:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:6896005:wiki_software:0013",
+        "wiki:6896005:wiki_products:0009",
+        "wiki:6896005:wiki_origin_in_hewlett-packard:0000"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 83.9
+    },
+    {
+      "id": "RET_16",
+      "ticker": "AVGO",
+      "question": "What major infrastructure software businesses has Broadcom acquired including VMware and Symantec?",
+      "category": "acquisitions",
+      "gold_chunk_ids": [
+        "0001730168-25-000121:item1:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:6896005:wiki_move_into_software:0004",
+        "wiki:6896005:wiki_software:0013",
+        "wiki:6896005:wiki_products:0009"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 91.5
+    },
+    {
+      "id": "RET_17",
+      "ticker": "AVGO",
+      "question": "Which operating subsidiaries does Broadcom maintain under Exhibit 21?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0001730168-25-000121:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0001730168-25-000121:exhibit21:0000",
+        "0001045810-26-000021:exhibit21:0000",
+        "wiki:6896005:wiki_software:0013"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 81.2
+    },
+    {
+      "id": "RET_18",
+      "ticker": "AVGO",
+      "question": "What types of semiconductor solutions does Broadcom provide for data center networking and broadband?",
+      "category": "products",
+      "gold_chunk_ids": [
+        "0001730168-25-000121:item1:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:6896005:wiki_products:0009",
+        "wiki:6896005:wiki_software:0013",
+        "wiki:6896005:wiki_move_into_software:0004"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 79.0
+    },
+    {
+      "id": "RET_19",
+      "ticker": "AVGO",
+      "question": "What dependencies does Broadcom have on third-party foundries and outsourced manufacturing?",
+      "category": "supply_chain_risks",
+      "gold_chunk_ids": [
+        "0001730168-25-000121:item1a:0000",
+        "0001730168-25-000121:item1a:0001"
+      ],
+      "retrieved_top3": [
+        "wiki:6896005:wiki_software:0013",
+        "wiki:6896005:wiki_products:0009",
+        "wiki:6896005:wiki_origin_in_hewlett-packard:0000"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 90.9
+    },
+    {
+      "id": "RET_20",
+      "ticker": "AVGO",
+      "question": "Where is Avago Technologies International Sales Pte. Limited incorporated according to Broadcom's filing?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0001730168-25-000121:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0001730168-25-000121:exhibit21:0000",
+        "wiki:6896005:wiki_acquisition_of_and_change_of_name_to_broadcom_limited:0002",
+        "wiki:6896005:EX-infobox:0015"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 90.9
+    },
+    {
+      "id": "RET_21",
+      "ticker": "AVGO",
+      "question": "How does Broadcom manage post-acquisition integration of acquired companies like VMware?",
+      "category": "integration_risks",
+      "gold_chunk_ids": [
+        "0001730168-25-000121:item1a:0000",
+        "0001730168-25-000121:item1:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:6896005:wiki_2020s:0007",
+        "wiki:6896005:wiki_move_into_software:0004",
+        "wiki:6896005:wiki_software:0013"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 81.0
+    },
+    {
+      "id": "RET_22",
+      "ticker": "INTC",
+      "question": "What competitive factors and product portfolio pressures does Intel face against other semiconductor manufacturers?",
+      "category": "competition",
+      "gold_chunk_ids": [
+        "0000050863-26-000011:item1a:0001"
+      ],
+      "retrieved_top3": [
+        "0000050863-26-000011:item1a:0002",
+        "wiki:14617:wiki_major_competitors:0025",
+        "0000002488-26-000018:item1a:0002"
+      ],
+      "first_gold_rank": 4,
+      "hit_3": false,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 79.6
+    },
+    {
+      "id": "RET_23",
+      "ticker": "INTC",
+      "question": "What packaging technologies and energy efficiency metrics are critical to Intel's semiconductor competitiveness?",
+      "category": "technology",
+      "gold_chunk_ids": [
+        "0000050863-26-000011:item1a:0002"
+      ],
+      "retrieved_top3": [
+        "0000050863-26-000011:item1a:0002",
+        "wiki:14617:wiki_renewed_competition_and_other_developments_(2018\u2013present):0007",
+        "wiki:14617:wiki_major_competitors:0025"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 80.7
+    },
+    {
+      "id": "RET_24",
+      "ticker": "INTC",
+      "question": "In which jurisdiction is Intel's subsidiary Mobileye incorporated according to Exhibit 21?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0000050863-26-000011:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0000050863-26-000011:exhibit21:0000",
+        "0000723125-26-000023:exhibit21:0000",
+        "0000002488-26-000018:exhibit21:0000"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 77.6
+    },
+    {
+      "id": "RET_25",
+      "ticker": "INTC",
+      "question": "What material risk factors does Intel describe regarding its foundry business and internal manufacturing capabilities?",
+      "category": "risk_factors",
+      "gold_chunk_ids": [
+        "0000050863-26-000011:item1a:0000"
+      ],
+      "retrieved_top3": [
+        "0000050863-26-000011:item1a:0008",
+        "0000050863-26-000011:item1a:0010",
+        "0000050863-26-000011:item1a:0000"
+      ],
+      "first_gold_rank": 3,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 96.0
+    },
+    {
+      "id": "RET_26",
+      "ticker": "INTC",
+      "question": "Which international subsidiaries does Intel operate in Ireland, Israel, and Germany?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0000050863-26-000011:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:14617:wiki_intel_israel:0033",
+        "0000050863-26-000011:exhibit21:0000",
+        "wiki:14617:wiki_manufacturing:0026"
+      ],
+      "first_gold_rank": 2,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 88.8
+    },
+    {
+      "id": "RET_27",
+      "ticker": "INTC",
+      "question": "How does Intel structure capital investments and government incentives under the CHIPS Act?",
+      "category": "regulation",
+      "gold_chunk_ids": [
+        "0000050863-26-000011:item1a:0000",
+        "0000050863-26-000011:item1a:0001"
+      ],
+      "retrieved_top3": [
+        "wiki:14617:wiki_u.s._government_stake_(2025):0008",
+        "0000723125-26-000023:item7:0006",
+        "0000050863-26-000011:item1a:0013"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 79.1
+    },
+    {
+      "id": "RET_28",
+      "ticker": "INTC",
+      "question": "What subsidiaries does Intel International, Inc. control according to Exhibit 21?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0000050863-26-000011:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0000050863-26-000011:exhibit21:0000",
+        "0001045810-26-000021:exhibit21:0000",
+        "0000723125-26-000023:exhibit21:0000"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 76.2
+    },
+    {
+      "id": "RET_29",
+      "ticker": "MU",
+      "question": "What are Micron's core semiconductor memory and storage product categories?",
+      "category": "products",
+      "gold_chunk_ids": [
+        "0000723125-26-000023:item1:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:487445:EX-infobox:0009",
+        "0000723125-26-000023:item1:0005",
+        "0000723125-26-000023:exhibit21:0000"
+      ],
+      "first_gold_rank": 7,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": true,
+      "latency_ms": 71.9
+    },
+    {
+      "id": "RET_30",
+      "ticker": "MU",
+      "question": "Which international subsidiaries does Micron operate in Taiwan, Singapore, and Japan?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0000723125-26-000023:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:487445:wiki_subsidiaries:0006",
+        "0000723125-26-000023:exhibit21:0000",
+        "wiki:487445:wiki_ownership:0008"
+      ],
+      "first_gold_rank": 2,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 73.8
+    },
+    {
+      "id": "RET_31",
+      "ticker": "MU",
+      "question": "Where is Micron Technology B.V. incorporated according to Exhibit 21?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0000723125-26-000023:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0000723125-26-000023:exhibit21:0000",
+        "0000002488-26-000018:exhibit21:0000",
+        "0001045810-26-000021:exhibit21:0000"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 69.0
+    },
+    {
+      "id": "RET_32",
+      "ticker": "MU",
+      "question": "What markets and end-user computing sectors use Micron DRAM memory solutions?",
+      "category": "markets",
+      "gold_chunk_ids": [
+        "0000723125-26-000023:item1:0000"
+      ],
+      "retrieved_top3": [
+        "0000723125-26-000023:item1:0001",
+        "0000723125-26-000023:item1a:0007",
+        "0000723125-26-000023:item1:0002"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 77.0
+    },
+    {
+      "id": "RET_33",
+      "ticker": "MU",
+      "question": "What primary risks does Micron face regarding semiconductor memory price volatility and cyclical downturns?",
+      "category": "risk_factors",
+      "gold_chunk_ids": [
+        "0000723125-26-000023:item1a:0001",
+        "0000723125-26-000023:item1a:0000"
+      ],
+      "retrieved_top3": [
+        "0001045810-26-000021:item1a:0010",
+        "0000002488-26-000018:item1a:0000",
+        "wiki:487445:wiki_financial:0007"
+      ],
+      "first_gold_rank": null,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 76.0
+    },
+    {
+      "id": "RET_34",
+      "ticker": "MU",
+      "question": "What operating entity conducts Micron's fab operations in Idaho?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0000723125-26-000023:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "wiki:487445:wiki_1978\u20131999:0000",
+        "0000723125-26-000023:item7:0006",
+        "wiki:487445:wiki_subsidiaries:0006"
+      ],
+      "first_gold_rank": 6,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": true,
+      "latency_ms": 68.7
+    },
+    {
+      "id": "RET_35",
+      "ticker": "MSFT",
+      "question": "What are Microsoft's three primary operating and reportable business segments?",
+      "category": "business_overview",
+      "gold_chunk_ids": [
+        "0001193125-26-323660:item1:0000"
+      ],
+      "retrieved_top3": [
+        "0001193125-26-323660:item7:0000",
+        "wiki:19001:wiki_subsidiaries:0016",
+        "0001193125-26-323660:item7:0002"
+      ],
+      "first_gold_rank": 5,
+      "hit_3": false,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 69.0
+    },
+    {
+      "id": "RET_36",
+      "ticker": "MSFT",
+      "question": "What products and cloud services are included in Microsoft's Intelligent Cloud segment?",
+      "category": "products",
+      "gold_chunk_ids": [
+        "0001193125-26-323660:item1:0000"
+      ],
+      "retrieved_top3": [
+        "0001193125-26-323660:item1:0003",
+        "0001193125-26-323660:item1:0002",
+        "0001193125-26-323660:item1:0004"
+      ],
+      "first_gold_rank": 6,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": true,
+      "latency_ms": 78.5
+    },
+    {
+      "id": "RET_37",
+      "ticker": "MSFT",
+      "question": "Who does Microsoft identify as primary competitors to its Office and productivity application suite?",
+      "category": "competition",
+      "gold_chunk_ids": [
+        "0001193125-26-323660:item1:0003"
+      ],
+      "retrieved_top3": [
+        "0001193125-26-323660:item1:0003",
+        "0001193125-26-323660:item1:0006",
+        "0001045810-26-000021:item1:0008"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 77.8
+    },
+    {
+      "id": "RET_38",
+      "ticker": "MSFT",
+      "question": "Under which jurisdiction is Microsoft subsidiary LinkedIn Corporation organized?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0001193125-26-323660:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0001193125-26-323660:exhibit21:0000",
+        "wiki:19001:wiki_subsidiaries:0016",
+        "wiki:19001:wiki_headquarters:0025"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 72.0
+    },
+    {
+      "id": "RET_39",
+      "ticker": "MSFT",
+      "question": "Which operating subsidiaries does Microsoft Corporation maintain in Ireland and Europe?",
+      "category": "subsidiaries",
+      "gold_chunk_ids": [
+        "0001193125-26-323660:exhibit21:0000"
+      ],
+      "retrieved_top3": [
+        "0001193125-26-323660:exhibit21:0000",
+        "wiki:19001:wiki_subsidiaries:0016",
+        "wiki:19001:wiki_headquarters:0025"
+      ],
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 89.5
+    },
+    {
+      "id": "RET_40",
+      "ticker": "MSFT",
+      "question": "What platform strategy does Microsoft pursue across AI infrastructure and enterprise cloud solutions?",
+      "category": "strategy",
+      "gold_chunk_ids": [
+        "0001193125-26-323660:item1:0000"
+      ],
+      "retrieved_top3": [
+        "0001193125-26-323660:item1:0001",
+        "0001193125-26-323660:item1:0004",
+        "0001193125-26-323660:item1:0003"
+      ],
+      "first_gold_rank": 8,
+      "hit_3": false,
+      "hit_5": false,
+      "hit_10": true,
+      "latency_ms": 73.1
+    }
+  ]
+}

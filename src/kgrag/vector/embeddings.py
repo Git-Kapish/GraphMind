@@ -73,33 +73,85 @@ def embed_unindexed_chunks(batch_size: int = 16) -> int:
     return updated
 
 
-def query_vector_baseline(query_text: str, top_k: int = 5) -> list[dict[str, Any]]:
-    """Query PostgreSQL using pgvector cosine distance (System A: Vector Baseline)."""
+def validate_vector_dimensions() -> dict[str, Any]:
+    """Validate that PostgreSQL pgvector column dimensions strictly agree with configured settings (PRD FR-2.5)."""
+    settings = get_settings()
+    expected_dim = settings.embedding.dimension
+
+    sql = """
+    SELECT attrelid::regclass::text AS table_name, attname, atttypmod
+    FROM pg_attribute
+    WHERE attrelid IN ('chunks'::regclass, 'entities'::regclass)
+      AND attname IN ('embedding', 'name_embedding');
+    """
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            rows = cur.fetchall()
+
+    for r in rows:
+        actual_dim = r["atttypmod"]
+        if actual_dim != expected_dim:
+            raise ValueError(
+                f"Vector dimension mismatch on {r['table_name']}.{r['attname']}: "
+                f"PostgreSQL column is vector({actual_dim}) but config/settings.yaml specifies {expected_dim}. "
+                "Changing dimension requires an explicit schema migration."
+            )
+
+    logger.info("Vector dimensions validated: all tables aligned with %d-d embeddings.", expected_dim)
+    return {"status": "ok", "dimension": expected_dim, "checked": len(rows)}
+
+
+def query_vector_baseline(
+    query_text: str,
+    top_k: int = 5,
+    item_filter: str | None = None,
+    ticker_filter: str | None = None,
+) -> list[dict[str, Any]]:
+    """Query PostgreSQL using pgvector cosine distance (System A: Vector Baseline, PRD §7.2, §11)."""
     llm = get_llm_client()
     query_embs = llm.embed([query_text])
     if not query_embs:
         return []
     query_vec = query_embs[0]
 
-    sql = """
+    conditions = ["c.embedding IS NOT NULL"]
+    params: dict[str, Any] = {"query_vec": str(query_vec), "top_k": top_k}
+
+    if item_filter:
+        conditions.append("c.item = %(item_filter)s")
+        params["item_filter"] = item_filter
+    if ticker_filter:
+        conditions.append("d.ticker = %(ticker_filter)s")
+        params["ticker_filter"] = ticker_filter.upper()
+
+    where_clause = " AND ".join(conditions)
+
+    sql = f"""
     SELECT
         c.chunk_id,
-        c.text,
+        c.doc_id,
+        c.section_path,
         c.item,
+        c.text,
+        c.entity_ids,
         d.company,
         d.ticker,
+        d.filing_date,
         1 - (c.embedding <=> %(query_vec)s::vector) AS cosine_similarity
     FROM chunks c
     JOIN documents d ON c.doc_id = d.doc_id
-    WHERE c.embedding IS NOT NULL
+    WHERE {where_clause}
     ORDER BY c.embedding <=> %(query_vec)s::vector
     LIMIT %(top_k)s;
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql, {"query_vec": str(query_vec), "top_k": top_k})
+            cur.execute(sql, params)
             return cur.fetchall()
 
 
 if __name__ == "__main__":
+    validate_vector_dimensions()
     embed_unindexed_chunks()
+

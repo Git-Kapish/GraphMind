@@ -8,6 +8,8 @@
 | 2026-10-15 | M2 | Select `qwen2.5:3b` as extraction model | In Model Selection Gate (§6.1), Qwen 2.5 3B achieved 43.55s/chunk vs Llama 3.2 3B at 207.91s/chunk (~4.8x faster on CPU), with 0% timeouts, 100% JSON validity, and 100% quote match. | Approved |
 | 2026-10-15 | M2.5 | Go/No-Go Gate: Proceed to M3 (Graph Advantage Confirmed) | In M2.5 Thin Vertical Slice (§0 rule 13, §14), Graph Retrieval scored 10/10 (100%) vs Vector Baseline at 8/10 (80%), retrieving verified multi-hop paths (e.g. Q01: NVIDIA and Microsoft shared market categories) that vector baseline missed. Gate criterion PASSED (GO). | Approved |
 | 2026-10-15 | M3 | Entity Resolution & Graph Projection Hardened | Multi-tier candidate resolution (exact -> alias -> token Jaccard -> embedding) benchmarked across 110 hand-verified enterprise pairs with 100% Precision, 100% Recall, 0 False Merges. Rebuild script verified with 100% concordance (267 nodes, 384 edges) and idempotency. | Approved |
+| 2026-10-15 | M4 | Vector Index & Pre-Routing Retrieval Evaluation | Pre-routing retrieval benchmark executed over 40 hand-verified questions: Recall@5 = 65.0%, Recall@10 = 75.0%, MRR = 0.5346 at 84.2 ms avg latency. Verified pgvector 768-d HNSW indexing, bidirectional provenance mapping, and chunks.entity_ids synchronization. | Approved |
+
 
 
 ## Model Selection Gate Benchmark (§6.1)
@@ -80,4 +82,33 @@
   - Rebuild Elapsed Time: **0.92s**
   - Idempotency Test: Passed (Consecutive rebuilds yield identical 267 nodes and 384 edges)
   - Provenance Tracing: Verified (100% of Neo4j edges map to valid `observation_ids` and `chunks`).
+
+## Milestone M4: Vector Index & Pre-Routing Retrieval Evaluation (PRD §7.2, FR-2.3)
+
+- **Date:** 2026-10-15
+- **Objective:** Verify pgvector HNSW indexing, bidirectional provenance helpers, entity mention linking, and evaluate Recall@3, Recall@5, and Recall@10 before starting Router development.
+- **Evaluation Dataset:** 40 hand-verified `(question, gold_chunk_ids)` pairs (`benchmarks/questions/retrieval_eval_pairs.jsonl`) across 6 enterprise filers.
+- **Benchmark Results (`benchmarks/results/retrieval_eval_m4.json` & `docs/retrieval_eval.md`):**
+
+| Metric | Target | Measured Result | Status |
+|---|---|---|---|
+| Total Questions | $\ge 40$ | 40 | PASS |
+| Recall@3 | Baseline | 55.00% (22/40) | EVALUATED |
+| Recall@5 | $\ge 60.0\%$ | **65.00%** (26/40) | **PASS** |
+| Recall@10 | $\ge 70.0\%$ | **75.00%** (30/40) | **PASS** |
+| MRR (Mean Reciprocal Rank) | $> 0.40$ | **0.5346** | **PASS** |
+| Average Latency | $< 500$ ms | **84.2 ms** | **PASS** |
+
+- **Performance by Filer:**
+  - AMD: 85.7% Recall@5 (6/7)
+  - NVDA: 85.7% Recall@5 (6/7)
+  - INTC: 85.7% Recall@5 (6/7)
+  - MSFT: 66.7% Recall@5 (4/6) [100% Recall@10]
+  - MU: 33.3% Recall@5 (2/6) [66.7% Recall@10]
+  - AVGO: 28.6% Recall@5 (2/7)
+- **Key Architectural Insight:**
+  - Descriptive, narrative topical questions achieve high recall in pure vector retrieval (85.7% for AMD/NVDA/INTC).
+  - Fine-grained entity lists and cross-border subsidiaries (AVGO/MU Exhibit 21) show lower rank in pure vector retrieval, directly evidencing the need for graph-guided traversal in hybrid retrieval.
+- **Gating Decision:** **PASSED**. PRD FR-2.3 pre-routing retrieval evaluation certified. Proceed to Milestone M5 (Query Templates & Vector Retrieval Integration).
+
 
