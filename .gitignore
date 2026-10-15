@@ -34,6 +34,7 @@ models/
 
 # Environment & Secrets (PRD §0 rule 6)
 .env
+.env.example
 .env.local
 *.pem
 *.key
