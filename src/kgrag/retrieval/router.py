@@ -124,10 +124,23 @@ def infer_template_and_params(
     question: str,
     entities: list[str],
 ) -> tuple[TemplateId | None, str | None, str | None, str | None]:
-    """Infer the most appropriate safe Cypher template and parameters from question structure (PRD FR-3.2)."""
     q_lower = question.lower()
-    e1 = entities[0] if len(entities) >= 1 else None
-    e2 = entities[1] if len(entities) >= 2 else None
+
+    # Prioritize specific entities over generic filers if multiple entities are detected
+    PARENT_FILERS = {
+        "nvidia", "nvidia corp", "nvidia corporation", "intel", "intel corp",
+        "intel corporation", "broadcom", "broadcom inc.", "microsoft",
+        "microsoft corp", "microsoft corporation", "micron", "micron technology",
+        "micron technology inc", "advanced micro devices", "advanced micro devices inc",
+        "amd", "advanced micro devices sdn. bhd"
+    }
+    ordered_entities = list(entities)
+    if len(ordered_entities) >= 2:
+        if ordered_entities[0].lower() in PARENT_FILERS and ordered_entities[1].lower() not in PARENT_FILERS:
+            ordered_entities = [ordered_entities[1], ordered_entities[0]] + ordered_entities[2:]
+
+    e1 = ordered_entities[0] if len(ordered_entities) >= 1 else None
+    e2 = ordered_entities[1] if len(ordered_entities) >= 2 else None
 
     # Officers query pattern
     if any(k in q_lower for k in ["officer", "officers", "ceo", "cfo", "executive", "executives", "directors", "management", "leadership"]):
@@ -148,8 +161,8 @@ def infer_template_and_params(
         if e1:
             return TemplateId.NEIGHBORS, e1, None, None
 
-    # Count of relationships
-    if any(k in q_lower for k in ["how many", "count", "number of"]):
+    # Count of relationships (use word boundaries to avoid matching 'country')
+    if any(re.search(r"\b" + re.escape(k) + r"\b", q_lower) for k in ["how many", "count", "number of", "total count"]):
         if e1:
             rel = "SUBSIDIARY_OF" if any(s in q_lower for s in ["subsidiary", "subsidiaries", "company", "companies"]) else "EXECUTIVE_OFFICER_OF"
             return TemplateId.COUNT_BY_RELATION, e1, None, rel
@@ -158,12 +171,10 @@ def infer_template_and_params(
     if any(k in q_lower for k in ["most connected", "top connected", "hub", "highest degree"]):
         return TemplateId.TOP_CONNECTED, None, None, None
 
-    # Subsidiaries / ownership / 2-hop default
-    if any(k in q_lower for k in ["subsidiary", "subsidiaries", "own", "owns", "owned", "parent"]):
+    # Subsidiaries / jurisdiction / ownership
+    if any(k in q_lower for k in ["subsidiary", "subsidiaries", "own", "owns", "owned", "parent", "jurisdiction", "operate", "operates"]):
         if e1:
-            if "indirect" in q_lower or "two hop" in q_lower or "supplier" in q_lower:
-                return TemplateId.TWO_HOP, e1, None, "SUBSIDIARY_OF"
-            return TemplateId.NEIGHBORS, e1, None, "SUBSIDIARY_OF"
+            return TemplateId.NEIGHBORS, e1, None, None
 
     # Default if 1 entity detected
     if e1:

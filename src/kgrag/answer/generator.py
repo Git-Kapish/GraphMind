@@ -31,7 +31,7 @@ CRITICAL RULES FOR CITATION AND EVIDENCE GROUNDING:
 1. Every factual statement or relationship MUST include a bracketed citation label indicating where the fact was obtained:
    - Use [G1], [G2], ... for evidence from the GRAPH FACTS section.
    - Use [P1], [P2], ... for evidence from the RETRIEVED PASSAGES section.
-   - Place citation labels immediately after the claim (e.g., "NVIDIA partnered with Microsoft [G1] to deploy HGX H100 systems [P1].").
+   - Place citation labels immediately after each factual claim (e.g., "Entity X operates in Jurisdiction Y [G1]."). Never cite labels that are absent from the supplied evidence.
 2. You must NEVER invent, fabricate, or hallucinate citation labels. Cite ONLY labels explicitly listed in the evidence.
 3. If the supplied evidence is missing, contradictory, or insufficient to answer the question, you MUST refuse by stating:
    "The provided filings do not contain sufficient evidence to answer this question."

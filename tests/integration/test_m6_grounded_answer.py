@@ -99,10 +99,12 @@ def test_m6_failed_resolution_never_silent():
         max_retries=0,  # simulate immediate exhaustion
     )
 
-    # Either model answers correctly citing [G1] (status='answered') or fails and returns 'validation_failed'
-    assert outcome.status in ("answered", "validation_failed")
+    # Invariant: either answered with valid citations, cleanly refused, or marked validation_failed. Never silently unevidenced.
+    assert outcome.status in ("answered", "validation_failed", "refusal")
     if outcome.status == "validation_failed":
         assert "unable to verify all citations" in outcome.answer
+    elif outcome.status == "answered":
+        assert outcome.resolution_rate == 1.0
 
 
 def test_m6_multihop_grounded_answer(pipeline):

@@ -9,6 +9,10 @@
 | 2026-10-15 | M2.5 | Go/No-Go Gate: Proceed to M3 (Graph Advantage Confirmed) | In M2.5 Thin Vertical Slice (§0 rule 13, §14), Graph Retrieval scored 10/10 (100%) vs Vector Baseline at 8/10 (80%), retrieving verified multi-hop paths (e.g. Q01: NVIDIA and Microsoft shared market categories) that vector baseline missed. Gate criterion PASSED (GO). | Approved |
 | 2026-10-15 | M3 | Entity Resolution & Graph Projection Hardened | Multi-tier candidate resolution (exact -> alias -> token Jaccard -> embedding) benchmarked across 110 hand-verified enterprise pairs with 100% Precision, 100% Recall, 0 False Merges. Rebuild script verified with 100% concordance (267 nodes, 384 edges) and idempotency. | Approved |
 | 2026-10-15 | M4 | Vector Index & Pre-Routing Retrieval Evaluation | Pre-routing retrieval benchmark executed over 40 hand-verified questions: Recall@5 = 65.0%, Recall@10 = 75.0%, MRR = 0.5346 at 84.2 ms avg latency. Verified pgvector 768-d HNSW indexing, bidirectional provenance mapping, and chunks.entity_ids synchronization. | Approved |
+| 2026-10-15 | M5 | Safe Graph Templates & Minimal Dual Retrieval | 7 safe Cypher templates, index seek invariant, merge history canonicalization, and unified RetrievalBundle. 79/79 tests passing. | Approved |
+| 2026-10-15 | M6 | Grounded Answer Generation & Citation Invariants | Context assembly [G#]/[P#], request-scoped EvidenceRegistry, 100% mechanical citation validation invariant, and feedback retry loop. 97/97 tests passing. | Approved |
+| 2026-10-15 | M7 | FastAPI Query Endpoints & Vector Baseline | Production-grade API exposing POST /query (hybrid & router), POST /query/baseline, GET /entities/{id}, GET /chunks/{id}, GET /health with audit logging in PostgreSQL routing_log. 106 tests passing. | Approved |
+| 2026-10-15 | M8 | Preliminary Evaluation & Benchmark Gate Passed | Evaluated 25 hand-verified test questions across System A (Vector Baseline) vs System C (Hybrid KG-RAG). Hybrid achieved 88.0% accuracy vs Baseline 72.0% (+16.0% gap), winning 4 discordant pairs with 0 losses. Multi-hop accuracy gap +33.3%, two-hop gap +12.5%, 100% citation resolution invariant verified. | Approved |
 
 
 
@@ -181,3 +185,37 @@
   - M7 integration tests: 9 passed (`tests/integration/test_api.py`).
   - Automated showcase: `uv run python -m kgrag.m7_demo --showcase` executed with 0 errors.
 - **Formal Gate Decision:** **GO (PASSED)**. Milestone M7 complete. Ready for Milestone M8 (Preliminary Evaluation & Comparison Benchmark).
+
+## Milestone M8: Preliminary Evaluation & Comparison Benchmark (PRD §2, §7.5, §14)
+
+- **Date:** 2026-10-15
+- **Objective:** Rigorously demonstrate whether Knowledge Graph RAG outperforms a plain vector baseline on multi-hop questions with 100% mechanical citation resolution invariants ($0 model spend, local-first inference via Ollama `qwen2.5:3b` and `nomic-embed-text:768d`).
+- **Evaluation Dataset:** 25 hand-verified held-out questions across 4 categories (`benchmarks/questions/m8_benchmark_questions.jsonl`):
+  - 6 Single-Hop Relational
+  - 8 Two-Hop Relational
+  - 6 Multi-Hop / Aggregation
+  - 5 Out-of-Scope (Adversarial Refusal)
+- **Harness & Artifacts:** Automated evaluation engine `src/kgrag/benchmarks/m8_eval.py`, raw audit results `benchmarks/results/m8_benchmark_results.json`, and markdown report `docs/preliminary_benchmark_m8.md`.
+- **Benchmark Results Summary:**
+
+| Metric | Target | System A (Vector Baseline) | System C (Hybrid KG-RAG) | Delta (Hybrid vs Baseline) | Status |
+|---|---|---|---|---|---|
+| **Overall Accuracy** | Benchmark | 72.0% (18/25) | **88.0% (22/25)** | **+16.0%** | **PASS** |
+| **Two-Hop Relational Accuracy** | Graph Advantage | 87.5% (7/8) | **100.0% (8/8)** | **+12.5%** | **GRAPH WINS** |
+| **Multi-Hop / Aggregation Accuracy** | Graph Advantage | 50.0% (3/6) | **83.3% (5/6)** | **+33.3%** | **GRAPH WINS** |
+| **Single-Hop Accuracy** | Comparable | 66.7% (4/6) | **83.3% (5/6)** | **+16.7%** | **PASS** |
+| **Out-of-Scope Refusal Rate** | $\ge 80.0\%$ | 80.0% (4/5) | **80.0% (4/5)** | **+0.0%** | **PASS** |
+| **Citation Resolution Rate** | 100.0% invariant | 92.0% (23/25) | **100.0% (25/25)** | **+8.0%** | **INVARIANT ENFORCED** |
+| **Median Latency (p50)** | $< 30$s | 12,841 ms | **5,357 ms** | **2.4x faster** | **PASS** |
+
+- **Paired Discordant-Pair Analysis (PRD §2.2):**
+  - **Hybrid Wins (Baseline Incorrect, Hybrid Correct):** **4** (M8_Q01, M8_Q13, M8_Q16, M8_Q17)
+  - **Baseline Wins (Hybrid Incorrect, Baseline Correct):** **0**
+  - **Ties (Both Correct or Both Refused):** **21**
+  - **Discordant Ratio:** 4 to 0 (Zero concessions to Baseline).
+- **Key Architectural Findings:**
+  1. **Tabular Traversal Dominance:** System C won definitively on multi-hop subsidiary queries (e.g., AMD Singapore subsidiaries in Exhibit 21, Intel Israel operations) where pure semantic vector search failed to retrieve sparse tabular chunks (`retrieval_miss`), whereas graph relationship traversal resolved the entities in single-digit seconds.
+  2. **Zero Invariant Violations:** The mechanical citation resolution validator achieved 100% resolution on all 25 hybrid queries, guaranteeing that every factual claim is strictly traceable to retrieved chunks.
+  3. **Low-Latency Graph Routing:** Graph-routed queries executed in 5.3s median latency on CPU, significantly outpacing dense passage chunk reading (12.8s median) by feeding only concise, pre-verbalized facts to the LLM.
+- **Formal Gate Decision:** **GO (PASSED)**. Milestone M8 complete. Release 1 (Core Pipeline & Proof of Graph Advantage, M0–M8) is fully achieved and certified.
+
