@@ -158,3 +158,26 @@
   - M6 unit tests: 13 passed (`test_verbalizer.py`, `test_context_assembly.py`, `test_citation_validator.py`).
   - M6 integration gate tests: 5 passed (`test_m6_grounded_answer.py`).
 - **Formal Gate Decision:** **GO (PASSED)**. Milestone M6 complete. Ready for Milestone M7 (FastAPI Query Endpoints & Baseline Endpoint).
+
+## Milestone M7: FastAPI Query Endpoints & Vector Baseline (PRD §8, §9.1, §14)
+
+- **Date:** 2026-10-15
+- **Objective:** Expose grounded KG-RAG query answering, plain vector baseline comparison, entity/chunk provenance lookups, query routing with fallback, and persistent routing audit logging via FastAPI.
+- **Accepted Criteria & Verification:**
+
+| Acceptance Criterion | Requirement | Verification Method | Status |
+|---|---|---|---|
+| **Query Endpoint (`POST /query`)** | End-to-end answer returns route, status, citations, latency breakdown, and request ID | `tests/integration/test_api.py::test_query_auto_relational_graph` | **PASS** |
+| **Baseline Endpoint (`POST /query/baseline`)** | Plain vector RAG sharing identical generation conventions & citation validation | `tests/integration/test_api.py::test_query_baseline_vector_retrieval` | **PASS** |
+| **Entity Lookup (`GET /entities/{entity_id}`)** | Canonical metadata, Neo4j topology degree/edges, and merge provenance; 404 for unknown | `tests/integration/test_api.py::test_get_entity_detail_*` | **PASS** |
+| **Chunk Lookup (`GET /chunks/{chunk_id}`)** | Authoritative text, SEC filing metadata, and extraction observations; 404 for unknown | `tests/integration/test_api.py::test_get_chunk_detail_*` | **PASS** |
+| **Health Check (`GET /health`)** | Reachability for PostgreSQL (with pgvector), Neo4j, and Ollama without secret leakage | `tests/integration/test_api.py::test_api_health_endpoint` | **PASS** |
+| **Input Validation** | Question length (3–500 chars) and top_k bounds (1–20) enforced | `tests/integration/test_api.py::test_query_input_validation` | **PASS** |
+| **Routing Decision Audit** | Every routing decision recorded to PostgreSQL `routing_log` | `log_routing_decision()` verified in DB | **PASS** |
+| **Payload Privacy** | Internal evidence and passages omitted unless `debug=True` | `test_query_debug_flag_controls_payload_exposure` | **PASS** |
+
+- **Test Suite Results:**
+  - Full suite: **106/106 passed in 85.06s** (0 failures, 0 regressions).
+  - M7 integration tests: 9 passed (`tests/integration/test_api.py`).
+  - Automated showcase: `uv run python -m kgrag.m7_demo --showcase` executed with 0 errors.
+- **Formal Gate Decision:** **GO (PASSED)**. Milestone M7 complete. Ready for Milestone M8 (Preliminary Evaluation & Comparison Benchmark).
