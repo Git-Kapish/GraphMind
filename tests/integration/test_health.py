@@ -1,13 +1,14 @@
 """Integration tests for FastAPI health endpoint (PRD §8)."""
 
-from fastapi.testclient import TestClient
+import httpx
 
 from kgrag.api.app import app
 
 
-def test_health_endpoint():
-    with TestClient(app) as client:
-        response = client.get("/health")
+async def test_health_endpoint():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        response = await client.get("/health")
         assert response.status_code == 200
         data = response.json()
         assert "status" in data

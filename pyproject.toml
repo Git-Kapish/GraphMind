@@ -42,6 +42,9 @@ packages = ["src/kgrag"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 asyncio_mode = "auto"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
 
 [tool.ruff]
 target-version = "py312"

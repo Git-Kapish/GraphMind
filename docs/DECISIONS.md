@@ -6,6 +6,7 @@
 | 2026-10-15 | M0 | Ollama local runtime with nomic-embed-text & llama3.2 | $0 model spend constraint; local-first; nomic-embed-text matches 768-d pgvector configuration. | Approved |
 | 2026-10-15 | M0 | PostgreSQL as authoritative source of truth | Neo4j is a rebuildable projection from extraction_observations. | Approved |
 | 2026-10-15 | M2 | Select `qwen2.5:3b` as extraction model | In Model Selection Gate (§6.1), Qwen 2.5 3B achieved 43.55s/chunk vs Llama 3.2 3B at 207.91s/chunk (~4.8x faster on CPU), with 0% timeouts, 100% JSON validity, and 100% quote match. | Approved |
+| 2026-10-15 | M2.5 | Go/No-Go Gate: Proceed to M3 (Graph Advantage Confirmed) | In M2.5 Thin Vertical Slice (§0 rule 13, §14), Graph Retrieval scored 10/10 (100%) vs Vector Baseline at 8/10 (80%), retrieving verified multi-hop paths (e.g. Q01: NVIDIA and Microsoft shared market categories) that vector baseline missed. Gate criterion PASSED (GO). | Approved |
 
 ## Model Selection Gate Benchmark (§6.1)
 
@@ -22,3 +23,33 @@
 1. Qwen 2.5 3B demonstrates superior instruction following with concise JSON emission on dense SEC filing text, avoiding the generation loops and token bloat that caused Llama 3.2 3B to exceed 240 seconds per chunk on CPU.
 2. Qwen 2.5 3B correctly resolved company self-references ("we" -> filer name) and extracted verbatim quotes verified at score 1.0.
 3. Timeout configuration for extraction in `config/settings.yaml` calibrated to 120.0s, giving ample margin over the 43.55s average.
+
+## Milestone M2.5: Thin Vertical Slice & Go/No-Go Gate Decision (§0 rule 13, §14)
+
+- **Date:** 2026-10-15
+- **Objective:** Verify whether Graph Retrieval returns correct, evidenced paths that Vector Baseline misses on at least 1 verified multi-hop question before committing to M3 hardening.
+- **Corpus State:** 592 SEC 10-K chunks embedded with `nomic-embed-text:latest` (768-d pgvector), 265 canonical entities, 391 Neo4j relationships.
+- **Results on 10 Hand-Verified Benchmark Questions:**
+
+| Question ID | Category | Hops | System A (pgvector Top-5) | System B (Neo4j Graph) | Outcome / Advantage |
+|---|---|---|---|---|---|
+| Q01 | multi_hop | 2 | FAIL | PASS | **[+] GRAPH WINS** (Vector failed to connect shared market taxonomy) |
+| Q02 | multi_hop | 2 | PASS | PASS | = Both answered (AMD -> TF AMD Penang -> Malaysia) |
+| Q03 | multi_hop | 2 | PASS | PASS | = Both answered (AMD -> AMD Japan -> Japan) |
+| Q04 | multi_hop | 2 | PASS | PASS | = Both answered (AMD -> AMD ROU -> Romania) |
+| Q05 | multi_hop | 2 | PASS | PASS | = Both answered (AMD -> AMD India -> India) |
+| Q06 | multi_hop | 2 | PASS | PASS | = Both answered (NVIDIA -> Worldwide <- Microsoft) |
+| Q07 | single_hop | 1 | PASS | PASS | = Both answered (Broadcom -> VMware/CA/Symantec) |
+| Q08 | single_hop | 1 | FAIL | PASS | **[+] GRAPH WINS** (Vector retrieved general business descriptions instead of headquarters) |
+| Q09 | single_hop | 1 | PASS | PASS | = Both answered (Microsoft -> Redmond, Washington) |
+| Q10 | single_hop | 1 | PASS | PASS | = Both answered (NVIDIA -> Jensen Huang / founders) |
+
+- **Summary Scores:**
+  - **System A (Vector Baseline):** 8/10 (80.0%)
+  - **System B (Graph Retrieval):** 10/10 (100.0%)
+  - **Multi-Hop Questions Won by Graph:** 1 (Q01)
+  - **Single-Hop Questions Won by Graph:** 1 (Q08)
+- **Gate Evaluation:**
+  - PRD Criterion: *"Does graph retrieval return correct, evidenced paths that vector baseline misses on at least 1 verified multi-hop question?"*
+  - Answer: **YES** (Graph Retrieval successfully resolved Q01 multi-hop path connecting NVIDIA and Microsoft through `computer hardware companies`, which vector top-5 missed).
+- **Formal Gate Decision:** **GO (PASSED)**. Proceed to Milestone M3 (Entity Resolution & Graph Projection Hardening).
