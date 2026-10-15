@@ -132,6 +132,7 @@ class OllamaClient:
                 "temperature": temperature
                 if temperature is not None
                 else get_settings().llm.temperature,
+                "num_predict": 256,
             },
         }
         resp = self.client.post(url, json=payload, timeout=timeout or self.timeout_seconds)

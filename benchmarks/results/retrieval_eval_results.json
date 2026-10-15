@@ -1,11 +1,11 @@
 {
   "total_questions": 40,
-  "recall_at_3": 0.55,
+  "recall_at_3": 0.525,
   "recall_at_5": 0.65,
   "recall_at_10": 0.75,
-  "mrr": 0.5346,
-  "avg_latency_ms": 106.7,
-  "hits_at_3": 22,
+  "mrr": 0.52,
+  "avg_latency_ms": 118.8,
+  "hits_at_3": 21,
   "hits_at_5": 26,
   "hits_at_10": 30,
   "ticker_breakdown": {
@@ -29,7 +29,7 @@
     },
     "INTC": {
       "total": 7,
-      "hit_3": 5,
+      "hit_3": 4,
       "hit_5": 6,
       "hit_10": 6
     },
@@ -64,7 +64,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 107.3
+      "latency_ms": 135.5
     },
     {
       "id": "RET_02",
@@ -83,7 +83,7 @@
       "hit_3": false,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 133.5
+      "latency_ms": 274.5
     },
     {
       "id": "RET_03",
@@ -102,7 +102,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 125.7
+      "latency_ms": 295.9
     },
     {
       "id": "RET_04",
@@ -121,7 +121,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 110.9
+      "latency_ms": 303.2
     },
     {
       "id": "RET_05",
@@ -140,7 +140,7 @@
       "hit_3": false,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 119.8
+      "latency_ms": 108.1
     },
     {
       "id": "RET_06",
@@ -159,7 +159,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 114.4
+      "latency_ms": 95.5
     },
     {
       "id": "RET_07",
@@ -178,7 +178,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 129.0
+      "latency_ms": 111.0
     },
     {
       "id": "RET_08",
@@ -198,7 +198,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 122.3
+      "latency_ms": 110.2
     },
     {
       "id": "RET_09",
@@ -218,7 +218,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 103.4
+      "latency_ms": 112.8
     },
     {
       "id": "RET_10",
@@ -230,14 +230,14 @@
       ],
       "retrieved_top3": [
         "0001045810-26-000021:exhibit21:0000",
-        "0000723125-26-000023:exhibit21:0000",
-        "wiki:39120:wiki_french_competition_authority_investigation:0034"
+        "0000804328-25-000085:exhibit21:0000",
+        "0000723125-26-000023:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 111.6
+      "latency_ms": 91.6
     },
     {
       "id": "RET_11",
@@ -256,7 +256,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 103.1
+      "latency_ms": 105.1
     },
     {
       "id": "RET_12",
@@ -267,15 +267,15 @@
         "0001045810-26-000021:item1a:0015"
       ],
       "retrieved_top3": [
+        "0000320193-25-000079:item1a:0003",
         "0001045810-26-000021:item1a:0015",
-        "0001045810-26-000021:item1a:0014",
-        "wiki:39120:wiki_french_competition_authority_investigation:0034"
+        "0001045810-26-000021:item1a:0014"
       ],
-      "first_gold_rank": 1,
+      "first_gold_rank": 2,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 126.7
+      "latency_ms": 106.2
     },
     {
       "id": "RET_13",
@@ -294,7 +294,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 107.1
+      "latency_ms": 110.4
     },
     {
       "id": "RET_14",
@@ -313,7 +313,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 101.5
+      "latency_ms": 99.0
     },
     {
       "id": "RET_15",
@@ -332,7 +332,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 111.3
+      "latency_ms": 122.6
     },
     {
       "id": "RET_16",
@@ -351,7 +351,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 112.1
+      "latency_ms": 98.2
     },
     {
       "id": "RET_17",
@@ -363,14 +363,14 @@
       ],
       "retrieved_top3": [
         "0001730168-25-000121:exhibit21:0000",
-        "0001045810-26-000021:exhibit21:0000",
-        "wiki:6896005:wiki_software:0013"
+        "0001652044-26-000018:exhibit21:0000",
+        "0000804328-25-000085:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 97.5
+      "latency_ms": 100.0
     },
     {
       "id": "RET_18",
@@ -389,7 +389,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 102.3
+      "latency_ms": 97.7
     },
     {
       "id": "RET_19",
@@ -397,8 +397,8 @@
       "question": "What dependencies does Broadcom have on third-party foundries and outsourced manufacturing?",
       "category": "supply_chain_risks",
       "gold_chunk_ids": [
-        "0001730168-25-000121:item1a:0001",
-        "0001730168-25-000121:item1a:0000"
+        "0001730168-25-000121:item1a:0000",
+        "0001730168-25-000121:item1a:0001"
       ],
       "retrieved_top3": [
         "wiki:6896005:wiki_software:0013",
@@ -409,7 +409,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 105.8
+      "latency_ms": 106.4
     },
     {
       "id": "RET_20",
@@ -428,7 +428,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 102.3
+      "latency_ms": 116.0
     },
     {
       "id": "RET_21",
@@ -448,7 +448,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 107.8
+      "latency_ms": 110.5
     },
     {
       "id": "RET_22",
@@ -467,7 +467,7 @@
       "hit_3": false,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 85.1
+      "latency_ms": 94.5
     },
     {
       "id": "RET_23",
@@ -486,7 +486,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 104.1
+      "latency_ms": 115.7
     },
     {
       "id": "RET_24",
@@ -499,13 +499,13 @@
       "retrieved_top3": [
         "0000050863-26-000011:exhibit21:0000",
         "0000723125-26-000023:exhibit21:0000",
-        "0000002488-26-000018:exhibit21:0000"
+        "0000320193-25-000079:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 102.4
+      "latency_ms": 95.6
     },
     {
       "id": "RET_25",
@@ -516,15 +516,15 @@
         "0000050863-26-000011:item1a:0000"
       ],
       "retrieved_top3": [
+        "0000804328-25-000085:item1a:0015",
         "0000050863-26-000011:item1a:0008",
-        "0000050863-26-000011:item1a:0010",
-        "0000050863-26-000011:item1a:0000"
+        "0000050863-26-000011:item1a:0010"
       ],
-      "first_gold_rank": 3,
-      "hit_3": true,
+      "first_gold_rank": 4,
+      "hit_3": false,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 93.8
+      "latency_ms": 101.3
     },
     {
       "id": "RET_26",
@@ -543,7 +543,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 97.3
+      "latency_ms": 92.1
     },
     {
       "id": "RET_27",
@@ -551,8 +551,8 @@
       "question": "How does Intel structure capital investments and government incentives under the CHIPS Act?",
       "category": "regulation",
       "gold_chunk_ids": [
-        "0000050863-26-000011:item1a:0001",
-        "0000050863-26-000011:item1a:0000"
+        "0000050863-26-000011:item1a:0000",
+        "0000050863-26-000011:item1a:0001"
       ],
       "retrieved_top3": [
         "wiki:14617:wiki_u.s._government_stake_(2025):0008",
@@ -563,7 +563,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 107.3
+      "latency_ms": 94.0
     },
     {
       "id": "RET_28",
@@ -575,14 +575,14 @@
       ],
       "retrieved_top3": [
         "0000050863-26-000011:exhibit21:0000",
-        "0001045810-26-000021:exhibit21:0000",
-        "0000723125-26-000023:exhibit21:0000"
+        "0000320193-25-000079:exhibit21:0000",
+        "0001045810-26-000021:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 103.0
+      "latency_ms": 98.2
     },
     {
       "id": "RET_29",
@@ -601,7 +601,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": true,
-      "latency_ms": 87.1
+      "latency_ms": 100.6
     },
     {
       "id": "RET_30",
@@ -614,13 +614,13 @@
       "retrieved_top3": [
         "wiki:487445:wiki_subsidiaries:0006",
         "0000723125-26-000023:exhibit21:0000",
-        "wiki:487445:wiki_ownership:0008"
+        "0000320193-25-000079:exhibit21:0000"
       ],
       "first_gold_rank": 2,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 99.1
+      "latency_ms": 109.3
     },
     {
       "id": "RET_31",
@@ -639,7 +639,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 120.9
+      "latency_ms": 91.8
     },
     {
       "id": "RET_32",
@@ -658,7 +658,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 89.7
+      "latency_ms": 113.2
     },
     {
       "id": "RET_33",
@@ -666,19 +666,19 @@
       "question": "What primary risks does Micron face regarding semiconductor memory price volatility and cyclical downturns?",
       "category": "risk_factors",
       "gold_chunk_ids": [
-        "0000723125-26-000023:item1a:0000",
-        "0000723125-26-000023:item1a:0001"
+        "0000723125-26-000023:item1a:0001",
+        "0000723125-26-000023:item1a:0000"
       ],
       "retrieved_top3": [
+        "0000804328-25-000085:item1a:0042",
         "0001045810-26-000021:item1a:0010",
-        "0000002488-26-000018:item1a:0000",
-        "wiki:487445:wiki_financial:0007"
+        "0000002488-26-000018:item1a:0000"
       ],
       "first_gold_rank": null,
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 108.3
+      "latency_ms": 103.4
     },
     {
       "id": "RET_34",
@@ -697,7 +697,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": true,
-      "latency_ms": 110.2
+      "latency_ms": 103.8
     },
     {
       "id": "RET_35",
@@ -716,7 +716,7 @@
       "hit_3": false,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 89.4
+      "latency_ms": 95.0
     },
     {
       "id": "RET_36",
@@ -735,7 +735,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": true,
-      "latency_ms": 98.6
+      "latency_ms": 96.6
     },
     {
       "id": "RET_37",
@@ -754,7 +754,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 102.7
+      "latency_ms": 102.1
     },
     {
       "id": "RET_38",
@@ -773,7 +773,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 92.8
+      "latency_ms": 118.9
     },
     {
       "id": "RET_39",
@@ -792,7 +792,7 @@
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 107.9
+      "latency_ms": 100.7
     },
     {
       "id": "RET_40",
@@ -811,7 +811,7 @@
       "hit_3": false,
       "hit_5": false,
       "hit_10": true,
-      "latency_ms": 111.4
+      "latency_ms": 114.3
     }
   ]
 }

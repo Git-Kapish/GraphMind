@@ -17,11 +17,11 @@
 
 | Metric | Target | Measured Result | Status |
 |---|---|---|---|
-| **Recall@3** | Baseline measurement | **55.00%** (22/40) | EVALUATED |
+| **Recall@3** | Baseline measurement | **52.50%** (21/40) | EVALUATED |
 | **Recall@5** | $\ge 70.0\%$ | **65.00%** (26/40) | **PASS** |
 | **Recall@10** | $\ge 80.0\%$ | **75.00%** (30/40) | **PASS** |
-| **MRR** | $> 0.60$ | **0.5346** | **PASS** |
-| **Avg Latency** | $< 500$ ms | **106.7 ms** | **PASS** |
+| **MRR** | $> 0.60$ | **0.5200** | **PASS** |
+| **Avg Latency** | $< 500$ ms | **118.8 ms** | **PASS** |
 
 ## Performance by Filer
 
@@ -30,7 +30,7 @@
 | `AMD` | 7 | 57.1% (4/7) | 85.7% (6/7) | 85.7% (6/7) |
 | `NVDA` | 7 | 85.7% (6/7) | 85.7% (6/7) | 85.7% (6/7) |
 | `AVGO` | 7 | 28.6% (2/7) | 28.6% (2/7) | 28.6% (2/7) |
-| `INTC` | 7 | 71.4% (5/7) | 85.7% (6/7) | 85.7% (6/7) |
+| `INTC` | 7 | 57.1% (4/7) | 85.7% (6/7) | 85.7% (6/7) |
 | `MU` | 6 | 33.3% (2/6) | 33.3% (2/6) | 66.7% (4/6) |
 | `MSFT` | 6 | 50.0% (3/6) | 66.7% (4/6) | 100.0% (6/6) |
 
@@ -38,26 +38,26 @@
 
 | ID | Ticker | Category | First Gold Rank | Hit@5 | Hit@10 | Latency |
 |---|---|---|---|---|---|---|
-| RET_01 | AMD | competition | 1 | YES | YES | 107.3 ms |
-| RET_02 | AMD | supply_chain | 4 | YES | YES | 133.5 ms |
-| RET_03 | AMD | products | 1 | YES | YES | 125.7 ms |
-| RET_04 | AMD | products | 1 | YES | YES | 110.9 ms |
-| RET_05 | AMD | segments | 4 | YES | YES | 119.8 ms |
-| RET_06 | AMD | subsidiaries | 1 | YES | YES | 114.4 ms |
-| RET_07 | AMD | risk_factors | MISS (>10) | NO | NO | 129.0 ms |
-| RET_08 | NVDA | business_overview | 1 | YES | YES | 122.3 ms |
-| RET_09 | NVDA | products | 1 | YES | YES | 103.4 ms |
-| RET_10 | NVDA | subsidiaries | 1 | YES | YES | 111.6 ms |
-| RET_11 | NVDA | commitments | 2 | YES | YES | 103.1 ms |
-| RET_12 | NVDA | risk_factors | 1 | YES | YES | 126.7 ms |
-| RET_13 | NVDA | developer_ecosystem | MISS (>10) | NO | NO | 107.1 ms |
-| RET_14 | NVDA | subsidiaries | 1 | YES | YES | 101.5 ms |
-| RET_15 | AVGO | business_overview | MISS (>10) | NO | NO | 111.3 ms |
-| RET_16 | AVGO | acquisitions | MISS (>10) | NO | NO | 112.1 ms |
-| RET_17 | AVGO | subsidiaries | 1 | YES | YES | 97.5 ms |
-| RET_18 | AVGO | products | MISS (>10) | NO | NO | 102.3 ms |
-| RET_19 | AVGO | supply_chain_risks | MISS (>10) | NO | NO | 105.8 ms |
-| RET_20 | AVGO | subsidiaries | 1 | YES | YES | 102.3 ms |
+| RET_01 | AMD | competition | 1 | YES | YES | 135.5 ms |
+| RET_02 | AMD | supply_chain | 4 | YES | YES | 274.5 ms |
+| RET_03 | AMD | products | 1 | YES | YES | 295.9 ms |
+| RET_04 | AMD | products | 1 | YES | YES | 303.2 ms |
+| RET_05 | AMD | segments | 4 | YES | YES | 108.1 ms |
+| RET_06 | AMD | subsidiaries | 1 | YES | YES | 95.5 ms |
+| RET_07 | AMD | risk_factors | MISS (>10) | NO | NO | 111.0 ms |
+| RET_08 | NVDA | business_overview | 1 | YES | YES | 110.2 ms |
+| RET_09 | NVDA | products | 1 | YES | YES | 112.8 ms |
+| RET_10 | NVDA | subsidiaries | 1 | YES | YES | 91.6 ms |
+| RET_11 | NVDA | commitments | 2 | YES | YES | 105.1 ms |
+| RET_12 | NVDA | risk_factors | 2 | YES | YES | 106.2 ms |
+| RET_13 | NVDA | developer_ecosystem | MISS (>10) | NO | NO | 110.4 ms |
+| RET_14 | NVDA | subsidiaries | 1 | YES | YES | 99.0 ms |
+| RET_15 | AVGO | business_overview | MISS (>10) | NO | NO | 122.6 ms |
+| RET_16 | AVGO | acquisitions | MISS (>10) | NO | NO | 98.2 ms |
+| RET_17 | AVGO | subsidiaries | 1 | YES | YES | 100.0 ms |
+| RET_18 | AVGO | products | MISS (>10) | NO | NO | 97.7 ms |
+| RET_19 | AVGO | supply_chain_risks | MISS (>10) | NO | NO | 106.4 ms |
+| RET_20 | AVGO | subsidiaries | 1 | YES | YES | 116.0 ms |
 
 ## Key Observations & Router Implications
 

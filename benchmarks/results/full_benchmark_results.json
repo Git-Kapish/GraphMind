@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "timestamp": "2026-10-15T16:58:52Z",
+    "split": "test",
+    "total_questions": 2,
+    "systems_evaluated": [
+      "A",
+      "C"
+    ],
+    "elapsed_seconds": 14.08,
+    "model": "qwen2.5:3b",
+    "embedding_model": "nomic-embed-text:768d",
+    "pgvector_table": "chunks (789 rows)",
+    "neo4j_nodes": 331,
+    "neo4j_edges": 481
+  },
+  "system_summaries": {
+    "A": {
+      "accuracy": 1.0,
+      "correct_count": 2,
+      "total_count": 2,
+      "wilson_ci_95": [
+        0.3424,
+        1.0
+      ],
+      "citation_resolution_rate": 1.0,
+      "latency_p50": 6096,
+      "latency_p95": 6096
+    },
+    "C": {
+      "accuracy": 1.0,
+      "correct_count": 2,
+      "total_count": 2,
+      "wilson_ci_95": [
+        0.3424,
+        1.0
+      ],
+      "citation_resolution_rate": 1.0,
+      "latency_p50": 3002,
+      "latency_p95": 3002
+    }
+  },
+  "paired_statistics_vs_baseline": {
+    "C": {
+      "paired_accuracy_delta": 0.0,
+      "bootstrap_ci_95": [
+        0.0,
+        0.0
+      ],
+      "mcnemar": {
+        "n10_system_wins": 0,
+        "n01_baseline_wins": 0,
+        "n11_both_correct": 2,
+        "n00_both_incorrect": 0,
+        "discordant_total": 0,
+        "p_value": 1.0,
+        "system_win_ratio": "0 to 0"
+      }
+    }
+  },
+  "category_breakdown": {
+    "single_hop": {
+      "count": 2,
+      "is_exploratory": true,
+      "status_label": "[Exploratory: N < 15]",
+      "systems": {
+        "A": {
+          "correct": 2,
+          "accuracy": 1.0,
+          "wilson_ci_95": [
+            0.3424,
+            1.0
+          ]
+        },
+        "C": {
+          "correct": 2,
+          "accuracy": 1.0,
+          "wilson_ci_95": [
+            0.3424,
+            1.0
+          ]
+        }
+      },
+      "hybrid_vs_baseline": {
+        "delta": 0.0,
+        "bootstrap_ci_95": [
+          0.0,
+          0.0
+        ],
+        "mcnemar": {
+          "n10_system_wins": 0,
+          "n01_baseline_wins": 0,
+          "n11_both_correct": 2,
+          "n00_both_incorrect": 0,
+          "discordant_total": 0,
+          "p_value": 1.0,
+          "system_win_ratio": "0 to 0"
+        }
+      }
+    }
+  },
+  "failure_breakdown": {
+    "A": {},
+    "C": {}
+  },
+  "per_question_results": [
+    {
+      "id": "M10_Q02",
+      "category": "single_hop",
+      "hop_count": 1,
+      "question": "Who were the founders of Intel Corporation?",
+      "systems": {
+        "A": {
+          "id": "M10_Q02",
+          "category": "single_hop",
+          "hop_count": 1,
+          "system": "System A (Vector Baseline)",
+          "correct": true,
+          "failure_category": "none",
+          "retrieval_recall": false,
+          "status": "ok",
+          "route": "vector",
+          "citations_count": 1,
+          "citation_resolution_passed": true,
+          "latency_ms": 6096,
+          "answer": "Intel was incorporated in Mountain View, California, on July 18, 1968, by Gordon E. Moore, a chemist; Robert Noyce, a physicist and co-inventor of the integrated circuit; and Arthu"
+        },
+        "C": {
+          "id": "M10_Q02",
+          "category": "single_hop",
+          "hop_count": 1,
+          "system": "System C (Hybrid Auto-Routed)",
+          "correct": true,
+          "failure_category": "none",
+          "retrieval_recall": false,
+          "status": "ok",
+          "route": "hybrid",
+          "citations_count": 1,
+          "citation_resolution_passed": true,
+          "latency_ms": 2779,
+          "answer": "Robert Noyce and Gordon Moore were the founders of Intel Corporation [P1]."
+        }
+      }
+    },
+    {
+      "id": "M10_Q03",
+      "category": "single_hop",
+      "hop_count": 1,
+      "question": "Where is Microsoft's corporate headquarters located?",
+      "systems": {
+        "A": {
+          "id": "M10_Q03",
+          "category": "single_hop",
+          "hop_count": 1,
+          "system": "System A (Vector Baseline)",
+          "correct": true,
+          "failure_category": "none",
+          "retrieval_recall": false,
+          "status": "ok",
+          "route": "vector",
+          "citations_count": 1,
+          "citation_resolution_passed": true,
+          "latency_ms": 2194,
+          "answer": "Microsoft's corporate headquarters is located at One Microsoft Way in Redmond, Washington [P1]."
+        },
+        "C": {
+          "id": "M10_Q03",
+          "category": "single_hop",
+          "hop_count": 1,
+          "system": "System C (Hybrid Auto-Routed)",
+          "correct": true,
+          "failure_category": "none",
+          "retrieval_recall": false,
+          "status": "ok",
+          "route": "hybrid",
+          "citations_count": 1,
+          "citation_resolution_passed": true,
+          "latency_ms": 3002,
+          "answer": "Microsoft's corporate headquarters is located at One Microsoft Way in Redmond, Washington, U.S. [G3]"
+        }
+      }
+    }
+  ]
+}
