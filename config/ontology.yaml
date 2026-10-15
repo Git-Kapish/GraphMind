@@ -1,0 +1,101 @@
+# Knowledge Graph Ontology (PRD FR-1.1)
+version: "v1.0"
+
+entity_types:
+  - name: Company
+    description: "A corporation, enterprise, subsidiary, business organization, or filer"
+  - name: Person
+    description: "An individual, executive officer, founder, or key employee"
+  - name: Product
+    description: "A commercial product, service, brand, semiconductor chip, or platform"
+  - name: Technology
+    description: "An underlying architecture, technical standard, software framework, or process node"
+  - name: Market
+    description: "An industry sector, target commercial domain, or market segment"
+  - name: Location
+    description: "A country, state, city, or geographic jurisdiction of operations"
+  - name: Regulation
+    description: "A specific governmental law, trade restriction, export control, or compliance rule"
+
+relationship_types:
+  - name: SUBSIDIARY_OF
+    source_type: Company
+    target_type: Company
+    symmetric: false
+    extraction_method_default: parser  # Exhibit 21
+    description: "One company is a legally owned subsidiary or operating unit of another"
+
+  - name: ACQUIRED
+    source_type: Company
+    target_type: Company
+    symmetric: false
+    allowed_properties: [year, role]
+    description: "One company acquired or completed a business combination with another"
+
+  - name: INVESTS_IN
+    source_type: Company
+    target_type: Company
+    symmetric: false
+    description: "A company made a direct equity or venture investment in another"
+
+  - name: PARTNERS_WITH
+    source_type: Company
+    target_type: Company
+    symmetric: true
+    description: "Two companies maintain an explicit commercial or technical partnership"
+
+  - name: SUPPLIES_TO
+    source_type: Company
+    target_type: Company
+    symmetric: false
+    description: "Supplier company provides components, materials, or services to customer company"
+
+  - name: MANUFACTURED_BY
+    source_type: [Product, Company]
+    target_type: Company
+    symmetric: false
+    description: "A product or company's designs are fabricated or assembled by another company"
+
+  - name: COMPETES_WITH
+    source_type: Company
+    target_type: Company
+    symmetric: true
+    description: "Two companies explicitly identify each other as direct market competitors"
+
+  - name: OFFERS
+    source_type: Company
+    target_type: Product
+    symmetric: false
+    description: "A company develops, sells, or offers a named product or service line"
+
+  - name: BUILT_ON
+    source_type: Product
+    target_type: Technology
+    symmetric: false
+    description: "A product is constructed using or based on an underlying technology or standard"
+
+  - name: COMPETES_IN
+    source_type: Company
+    target_type: Market
+    symmetric: false
+    description: "A company operates, sells into, or competes within a specific industry market"
+
+  - name: OPERATES_IN
+    source_type: Company
+    target_type: Location
+    symmetric: false
+    description: "A company has facilities, headquarters, or operational presence in a geographic area"
+
+  - name: SUBJECT_TO
+    source_type: Company
+    target_type: Regulation
+    symmetric: false
+    description: "A company is specifically subject to an export control, treaty, or regulatory rule"
+
+  - name: OFFICER_OF
+    source_type: Person
+    target_type: Company
+    symmetric: false
+    allowed_properties: [role, year]
+    extraction_method_default: parser  # Tabular executive officer lists
+    description: "An individual serves as an executive officer or titled leader of a company"

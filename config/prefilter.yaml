@@ -1,0 +1,52 @@
+# Pre-Filter Configuration (PRD §5.7)
+
+relation_cues:
+  - "supplier"
+  - "supply"
+  - "manufactur"
+  - "foundry"
+  - "fabricat"
+  - "acquir"
+  - "acquisition"
+  - "competitor"
+  - "compete"
+  - "partner"
+  - "partnership"
+  - "collaborat"
+  - "joint venture"
+  - "invest"
+  - "investment"
+  - "subsidiar"
+  - "customer"
+  - "licens"
+  - "executive officer"
+  - "chief executive"
+  - "chief financial"
+  - "president"
+  - "vice president"
+
+gazetteer:
+  min_entity_mentions: 2
+  case_sensitive: false
+  # Seed filers & tickers for initial scanning
+  seed_entities:
+    - name: "NVIDIA Corporation"
+      aliases: ["NVIDIA", "NVDA"]
+    - name: "Advanced Micro Devices, Inc."
+      aliases: ["AMD", "Advanced Micro Devices"]
+    - name: "Intel Corporation"
+      aliases: ["Intel", "INTC"]
+    - name: "Micron Technology, Inc."
+      aliases: ["Micron", "MU"]
+    - name: "Broadcom Inc."
+      aliases: ["Broadcom", "AVGO"]
+    - name: "Qualcomm Incorporated"
+      aliases: ["Qualcomm", "QCOM"]
+    - name: "Microsoft Corporation"
+      aliases: ["Microsoft", "MSFT"]
+    - name: "Alphabet Inc."
+      aliases: ["Alphabet", "Google", "GOOGL", "GOOG"]
+    - name: "Taiwan Semiconductor Manufacturing Company Limited"
+      aliases: ["TSMC", "Taiwan Semiconductor"]
+    - name: "Arm Holdings plc"
+      aliases: ["Arm", "ARM"]
