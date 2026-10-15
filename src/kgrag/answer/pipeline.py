@@ -42,8 +42,9 @@ class GroundedAnswerResult(BaseModel):
 class GroundedAnswerPipeline:
     """Pipeline coordinating retrieval, verbalization, context assembly, generation, and citation validation."""
 
-    def __init__(self, engine: RetrievalEngine | None = None) -> None:
+    def __init__(self, engine: RetrievalEngine | None = None, llm: Any | None = None) -> None:
         self.engine = engine or RetrievalEngine()
+        self.llm = llm
 
     def answer_question(
         self,
@@ -115,6 +116,7 @@ class GroundedAnswerPipeline:
             context_text=context_text,
             registry=registry,
             max_retries=max_retries,
+            llm=self.llm,
         )
         latencies["generation_ms"] = int((time.perf_counter() - t_gen_0) * 1000)
         latencies["total_pipeline_ms"] = int((time.perf_counter() - t0) * 1000)

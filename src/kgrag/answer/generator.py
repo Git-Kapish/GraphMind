@@ -57,10 +57,11 @@ def generate_grounded_answer(
     context_text: str,
     registry: EvidenceRegistry,
     max_retries: int = 2,
+    llm: Any | None = None,
 ) -> GenerationOutcome:
     """Generate an evidence-grounded answer with mechanical citation validation and feedback retries (PRD FR-4.3, FR-4.4A)."""
     t0 = time.perf_counter()
-    llm = get_llm_client()
+    client = llm or get_llm_client()
 
     valid_labels = registry.get_valid_labels()
 
@@ -96,7 +97,7 @@ Provide your grounded answer below. Remember to cite every factual claim using O
 
     for attempt in range(max_retries + 1):
         try:
-            raw_response = llm.generate(current_prompt, temperature=0.0)
+            raw_response = client.generate(current_prompt, temperature=0.0)
             last_answer = raw_response.strip()
         except Exception as e:
             logger.error("LLM generation error on attempt %d: %s", attempt, e)

@@ -65,10 +65,11 @@ def ingest_chunks(chunks: list[ChunkRecord]) -> int:
         char_start = EXCLUDED.char_start,
         char_end = EXCLUDED.char_end;
     """
-    with get_connection(autocommit=True) as conn:
+    with get_connection(autocommit=False) as conn:
         with conn.cursor() as cur:
             for chunk in chunks:
                 cur.execute(sql, chunk.model_dump())
+        conn.commit()
     return len(chunks)
 
 
@@ -92,10 +93,11 @@ def ingest_parser_observations(observations: list[ParserObservation]) -> int:
         evidence_verified = EXCLUDED.evidence_verified,
         validation_result = EXCLUDED.validation_result;
     """
-    with get_connection(autocommit=True) as conn:
+    with get_connection(autocommit=False) as conn:
         with conn.cursor() as cur:
             for obs in observations:
                 data = obs.model_dump()
                 data["validation_result"] = Jsonb(data["validation_result"])
                 cur.execute(sql, data)
+        conn.commit()
     return len(observations)

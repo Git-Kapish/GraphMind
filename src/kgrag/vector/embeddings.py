@@ -11,9 +11,9 @@ from kgrag.llm.client import get_llm_client
 logger = logging.getLogger(__name__)
 
 
-def embed_unindexed_chunks(batch_size: int = 16) -> int:
+def embed_unindexed_chunks(batch_size: int = 16, llm: Any | None = None) -> int:
     """Generate vector embeddings for any chunks in PostgreSQL lacking embeddings."""
-    llm = get_llm_client()
+    embedder = llm or get_llm_client()
     settings = get_settings()
 
     with get_connection() as conn:
@@ -48,12 +48,12 @@ def embed_unindexed_chunks(batch_size: int = 16) -> int:
         batch = rows[i : i + batch_size]
         texts = [r["text"][:2000] for r in batch]  # Cap input text for embedder
 
-        embeddings = llm.embed(texts)
+        embeddings = embedder.embed(texts)
         if len(embeddings) != len(batch):
             logger.warning("Embeddings count mismatch (%d != %d)", len(embeddings), len(batch))
             continue
 
-        with get_connection(autocommit=True) as conn:
+        with get_connection(autocommit=False) as conn:
             with conn.cursor() as cur:
                 for r, emb in zip(batch, embeddings):
                     cur.execute(
@@ -64,6 +64,7 @@ def embed_unindexed_chunks(batch_size: int = 16) -> int:
                             "model": settings.embedding.model,
                         },
                     )
+            conn.commit()
         updated += len(batch)
         if (i // batch_size) % 5 == 0 or updated == total_chunks:
             logger.info("Embedded [%d/%d] chunks...", updated, total_chunks)
@@ -107,10 +108,11 @@ def query_vector_baseline(
     top_k: int = 5,
     item_filter: str | None = None,
     ticker_filter: str | None = None,
+    llm: Any | None = None,
 ) -> list[dict[str, Any]]:
     """Query PostgreSQL using pgvector cosine distance (System A: Vector Baseline, PRD §7.2, §11)."""
-    llm = get_llm_client()
-    query_embs = llm.embed([query_text])
+    embedder = llm or get_llm_client()
+    query_embs = embedder.embed([query_text])
     if not query_embs:
         return []
     query_vec = query_embs[0]

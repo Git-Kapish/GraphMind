@@ -15,7 +15,7 @@ from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from kgrag import __version__
@@ -37,7 +37,7 @@ from kgrag.api.models import (
 from kgrag.db import neo4j as neo4j_db
 from kgrag.db import postgres as pg_db
 from kgrag.graph.templates import StrictResolutionStatus, resolve_entity_strict
-from kgrag.llm.client import get_llm_client
+from kgrag.llm.client import close_llm_client, get_llm_client
 from kgrag.retrieval.engine import GraphPathResult, RetrievalEngine, VectorPassageResult
 from kgrag.retrieval.router import log_routing_decision, route_query
 
@@ -62,6 +62,7 @@ async def lifespan(app: FastAPI):
 
     logger.info("Shutting down Knowledge Graph RAG service...")
     neo4j_db.close_driver()
+    close_llm_client()
 
 
 app = FastAPI(
@@ -79,8 +80,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global retrieval engine instance
+# Global retrieval engine instance and dependency provider
 engine = RetrievalEngine()
+
+
+def get_engine() -> RetrievalEngine:
+    """Dependency injection provider for RetrievalEngine."""
+    return engine
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -121,7 +127,10 @@ def health_check() -> HealthResponse:
 
 
 @app.post("/query", response_model=QueryResponse)
-def query_endpoint(req: QueryRequest) -> QueryResponse:
+def query_endpoint(
+    req: QueryRequest,
+    retrieval_engine: RetrievalEngine = Depends(get_engine),
+) -> QueryResponse:
     """End-to-end grounded query endpoint with auto/explicit routing and citation resolution (PRD §8)."""
     t0 = time.perf_counter()
     request_id = str(uuid.uuid4())
@@ -172,11 +181,11 @@ def query_endpoint(req: QueryRequest) -> QueryResponse:
     fallback_used = decision.fallback_used
 
     if decision.chosen == "vector":
-        vector_passages = engine.retrieve_vector(req.question, top_k=req.top_k)
+        vector_passages = retrieval_engine.retrieve_vector(req.question, top_k=req.top_k)
     elif decision.chosen == "graph":
         if decision.template_id and decision.entity_1:
             try:
-                graph_paths = engine.retrieve_graph(
+                graph_paths = retrieval_engine.retrieve_graph(
                     template_id=decision.template_id,
                     entity_1=decision.entity_1,
                     entity_2=decision.entity_2,
@@ -190,12 +199,12 @@ def query_endpoint(req: QueryRequest) -> QueryResponse:
         # If auto mode selected graph but no paths found, fall back to vector retrieval (PRD FR-3.1)
         if not graph_paths and req.mode == "auto":
             logger.info("Graph path returned 0 results in auto mode; falling back to vector retrieval.")
-            vector_passages = engine.retrieve_vector(req.question, top_k=req.top_k)
+            vector_passages = retrieval_engine.retrieve_vector(req.question, top_k=req.top_k)
             fallback_used = True
     else:  # hybrid
         if decision.template_id and decision.entity_1:
             try:
-                graph_paths = engine.retrieve_graph(
+                graph_paths = retrieval_engine.retrieve_graph(
                     template_id=decision.template_id,
                     entity_1=decision.entity_1,
                     entity_2=decision.entity_2,
@@ -205,7 +214,7 @@ def query_endpoint(req: QueryRequest) -> QueryResponse:
                 )
             except Exception as e:
                 logger.warning("Graph template query failed in hybrid mode: %s", e)
-        vector_passages = engine.retrieve_vector(req.question, top_k=req.top_k)
+        vector_passages = retrieval_engine.retrieve_vector(req.question, top_k=req.top_k)
 
     t_ret = int((time.perf_counter() - t_ret_0) * 1000)
 
@@ -327,7 +336,10 @@ def query_endpoint(req: QueryRequest) -> QueryResponse:
 
 
 @app.post("/query/baseline", response_model=QueryResponse)
-def baseline_query_endpoint(req: QueryRequest) -> QueryResponse:
+def baseline_query_endpoint(
+    req: QueryRequest,
+    retrieval_engine: RetrievalEngine = Depends(get_engine),
+) -> QueryResponse:
     """System A: Plain vector RAG baseline using identical generation conventions (PRD §8, §7.5)."""
     t0 = time.perf_counter()
     request_id = str(uuid.uuid4())
@@ -338,7 +350,7 @@ def baseline_query_endpoint(req: QueryRequest) -> QueryResponse:
 
     # 2. Vector retrieval only
     t_ret_0 = time.perf_counter()
-    vector_passages = engine.retrieve_vector(req.question, top_k=req.top_k)
+    vector_passages = retrieval_engine.retrieve_vector(req.question, top_k=req.top_k)
     t_ret = int((time.perf_counter() - t_ret_0) * 1000)
 
     # 3. Context assembly (passages only, no graph facts)

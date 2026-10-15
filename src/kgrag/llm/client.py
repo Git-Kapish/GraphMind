@@ -78,7 +78,19 @@ class OllamaClient:
         self.model = model or settings.llm.model
         self.embedding_model = embedding_model or settings.embedding.model
         self.timeout_seconds = timeout_seconds or settings.llm.timeout_seconds
-        self.client = httpx.Client(timeout=self.timeout_seconds)
+        limits = httpx.Limits(max_keepalive_connections=20, max_connections=50)
+        self.client = httpx.Client(timeout=self.timeout_seconds, limits=limits)
+
+    def close(self) -> None:
+        """Close underlying HTTP client session."""
+        if hasattr(self, "client") and self.client is not None:
+            self.client.close()
+
+    def __enter__(self) -> "OllamaClient":
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        self.close()
 
     def check_health(self) -> dict[str, Any]:
         """Verify Ollama reachability and list available models."""
@@ -246,3 +258,13 @@ def get_llm_client() -> LLMClient:
     if _default_client is None:
         _default_client = OllamaClient()
     return _default_client
+
+
+def close_llm_client() -> None:
+    """Safely shut down the singleton LLM client session."""
+    global _default_client
+    if _default_client is not None:
+        if hasattr(_default_client, "close"):
+            _default_client.close()
+        _default_client = None
+
