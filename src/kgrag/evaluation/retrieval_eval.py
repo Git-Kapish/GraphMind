@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def evaluate_retrieval(
     dataset_path: str = "benchmarks/questions/retrieval_eval_pairs.jsonl",
-    output_json_path: str = "benchmarks/results/retrieval_eval_m4.json",
+    output_json_path: str = "benchmarks/results/retrieval_eval_results.json",
     output_doc_path: str = "docs/retrieval_eval.md",
 ) -> dict[str, Any]:
     """Execute pre-routing retrieval evaluation on labeled pairs and report recall@k."""

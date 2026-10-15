@@ -1,4 +1,4 @@
-"""Integration test suite for Milestone M6: Grounded Answers & Citation Invariants (PRD §7.4, §14).
+"""Integration test suite for Grounded Answers & Citation Invariants (PRD §7.4, §14).
 
 Acceptance Criteria:
 1. Grounded answer generation with valid citation labels resolved to actual retrieved chunks.
@@ -22,8 +22,8 @@ def pipeline():
     return GroundedAnswerPipeline()
 
 
-def test_m6_grounded_answer_with_valid_citations(pipeline):
-    """M6 Gate: Verified filing query generates grounded answer with 100% resolvable citations (PRD §14)."""
+def test_grounded_answer_with_valid_citations(pipeline):
+    """Verified filing query generates grounded answer with 100% resolvable citations (PRD §14)."""
     res = pipeline.answer_question(
         question="What corporate partnerships does NVIDIA have according to its filings?",
         template_id="neighbors",
@@ -48,8 +48,8 @@ def test_m6_grounded_answer_with_valid_citations(pipeline):
         assert cit.text_snippet or cit.evidence_quote, "Citation missing quote/snippet."
 
 
-def test_m6_out_of_scope_refusal(pipeline):
-    """M6 Gate: Out-of-scope questions without supporting evidence produce refusal (PRD FR-4.5)."""
+def test_out_of_scope_refusal(pipeline):
+    """Out-of-scope questions without supporting evidence produce refusal (PRD FR-4.5)."""
     res = pipeline.answer_question(
         question="Who won the 2026 FIFA World Cup according to NVIDIA's 10-K filing?",
         top_k=2,
@@ -60,8 +60,8 @@ def test_m6_out_of_scope_refusal(pipeline):
     assert res.citation_resolution_rate == 1.0
 
 
-def test_m6_citation_resolution_rejects_hallucinations_with_retries():
-    """M6 Gate: Model inventing non-existent citations is rejected and never passed silently (PRD FR-4.4A)."""
+def test_citation_resolution_rejects_hallucinations_with_retries():
+    """Model inventing non-existent citations is rejected and never passed silently (PRD FR-4.4A)."""
     registry = EvidenceRegistry()
     registry.register(
         EvidenceItem(
@@ -82,8 +82,8 @@ def test_m6_citation_resolution_rejects_hallucinations_with_retries():
     assert "P99" in val.feedback_message
 
 
-def test_m6_failed_resolution_never_silent():
-    """M6 Invariant: Failed citation resolution does not silently return a confident answer (PRD §14)."""
+def test_failed_resolution_never_silent():
+    """Invariant: Failed citation resolution does not silently return a confident answer (PRD §14)."""
     from kgrag.answer.generator import GenerationOutcome
     from kgrag.answer.validator import CitationValidationResult
 
@@ -107,8 +107,8 @@ def test_m6_failed_resolution_never_silent():
         assert outcome.resolution_rate == 1.0
 
 
-def test_m6_multihop_grounded_answer(pipeline):
-    """M6 Gate: Multi-hop question answered with evidenced citations across hop steps (PRD §7.4)."""
+def test_multihop_grounded_answer(pipeline):
+    """Multi-hop question answered with evidenced citations across hop steps (PRD §7.4)."""
     res = pipeline.answer_question(
         question="Which shared markets and geographic reach do both NVIDIA and Microsoft operate in according to filings?",
         template_id="shared_neighbors",

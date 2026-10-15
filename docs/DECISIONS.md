@@ -124,7 +124,7 @@
 | Acceptance Criterion | Requirement | Verification Method | Status |
 |---|---|---|---|
 | **Safe Template Library** | Minimum 7 templates (`neighbors`, `two_hop`, `path_between`, `shared_neighbors`, `count_by_relation`, `top_connected`, `officers_of`) | `tests/unit/test_graph_templates.py` | **PASS** |
-| **Multi-Hop Evidenced Paths** | At least 1 multi-hop query returns correct path with evidence for every edge | `tests/integration/test_m5_minimal_retrieval.py` | **PASS** |
+| **Multi-Hop Evidenced Paths** | At least 1 multi-hop query returns correct path with evidence for every edge | `tests/integration/test_minimal_retrieval.py` | **PASS** |
 | **Index Seek on Anchor Node** | Query plan verifies `NodeUniqueIndexSeek` on `:Entity(entity_id)` | `EXPLAIN` query plan inspection | **PASS** |
 | **Symmetry Invariant** | Symmetric relations (`COMPETES_WITH`, `PARTNERS_WITH`) match undirected | `test_symmetric_relation_undirected_matching` | **PASS** |
 | **Directionality Invariant** | Directed relations (`OFFICER_OF`, `SUBSIDIARY_OF`) not matched in reverse | `test_directed_relation_not_matched_in_reverse` | **PASS** |
@@ -152,15 +152,15 @@
 | **Context Assembly & Registry** | Labeled sections `[G#]`, `[P#]`, passage deduplication, token budget enforcement, internal request-scoped registry | `tests/unit/test_context_assembly.py` | **PASS** |
 | **Mechanical Citation Resolution** | 100% of citation labels map to a chunk actually retrieved for that request; enforced as runtime invariant | `tests/unit/test_citation_validator.py` | **PASS** |
 | **Hallucination Rejection** | Invented citation labels (e.g. `[P99]`) are rejected with targeted regeneration feedback | `test_validate_citations_hallucinated_label_rejected` | **PASS** |
-| **No Silent Unresolved Answers** | Invariant: Failed citation resolution never silently returns a confident answer | `test_m6_failed_resolution_never_silent` | **PASS** |
-| **Out-of-Scope Refusal** | Missing or unevidenced questions cleanly trigger explicit refusal without guessing | `test_m6_out_of_scope_refusal` | **PASS** |
+| **No Silent Unresolved Answers** | Invariant: Failed citation resolution never silently returns a confident answer | `test_failed_resolution_never_silent` | **PASS** |
+| **Out-of-Scope Refusal** | Missing or unevidenced questions cleanly trigger explicit refusal without guessing | `test_out_of_scope_refusal` | **PASS** |
 | **Ambiguity Handling** | Ambiguous entity mentions trigger `needs_clarification` | `GroundedAnswerPipeline.answer_question()` | **PASS** |
-| **Grounded Generation Pipeline** | Full pipeline (`answer_question`) generating grounded answers with verified citations | `tests/integration/test_m6_grounded_answer.py` | **PASS** |
+| **Grounded Generation Pipeline** | Full pipeline (`answer_question`) generating grounded answers with verified citations | `tests/integration/test_grounded_answer.py` | **PASS** |
 
 - **Test Suite Results:**
   - Full suite: **97/97 passed in 48.94s** (0 failures, 0 regressions).
   - M6 unit tests: 13 passed (`test_verbalizer.py`, `test_context_assembly.py`, `test_citation_validator.py`).
-  - M6 integration gate tests: 5 passed (`test_m6_grounded_answer.py`).
+  - M6 integration gate tests: 5 passed (`test_grounded_answer.py`).
 - **Formal Gate Decision:** **GO (PASSED)**. Milestone M6 complete. Ready for Milestone M7 (FastAPI Query Endpoints & Baseline Endpoint).
 
 ## Milestone M7: FastAPI Query Endpoints & Vector Baseline (PRD §8, §9.1, §14)
@@ -183,19 +183,19 @@
 - **Test Suite Results:**
   - Full suite: **106/106 passed in 85.06s** (0 failures, 0 regressions).
   - M7 integration tests: 9 passed (`tests/integration/test_api.py`).
-  - Automated showcase: `uv run python -m kgrag.m7_demo --showcase` executed with 0 errors.
+  - Automated showcase: `uv run python -m kgrag.demo --showcase` executed with 0 errors.
 - **Formal Gate Decision:** **GO (PASSED)**. Milestone M7 complete. Ready for Milestone M8 (Preliminary Evaluation & Comparison Benchmark).
 
 ## Milestone M8: Preliminary Evaluation & Comparison Benchmark (PRD §2, §7.5, §14)
 
 - **Date:** 2026-10-15
 - **Objective:** Rigorously demonstrate whether Knowledge Graph RAG outperforms a plain vector baseline on multi-hop questions with 100% mechanical citation resolution invariants ($0 model spend, local-first inference via Ollama `qwen2.5:3b` and `nomic-embed-text:768d`).
-- **Evaluation Dataset:** 25 hand-verified held-out questions across 4 categories (`benchmarks/questions/m8_benchmark_questions.jsonl`):
+- **Evaluation Dataset:** 25 hand-verified held-out questions across 4 categories (`benchmarks/questions/benchmark_questions.jsonl`):
   - 6 Single-Hop Relational
   - 8 Two-Hop Relational
   - 6 Multi-Hop / Aggregation
   - 5 Out-of-Scope (Adversarial Refusal)
-- **Harness & Artifacts:** Automated evaluation engine `src/kgrag/benchmarks/m8_eval.py`, raw audit results `benchmarks/results/m8_benchmark_results.json`, and markdown report `docs/preliminary_benchmark_m8.md`.
+- **Harness & Artifacts:** Automated evaluation engine `src/kgrag/benchmarks/eval.py`, raw audit results `benchmarks/results/benchmark_results.json`, and markdown report `docs/preliminary_benchmark.md`.
 - **Benchmark Results Summary:**
 
 | Metric | Target | System A (Vector Baseline) | System C (Hybrid KG-RAG) | Delta (Hybrid vs Baseline) | Status |

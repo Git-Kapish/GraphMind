@@ -10,7 +10,7 @@ def test_retrieval_evaluation_benchmark_runs_and_passes_gate():
     """Verify that retrieval evaluation runs across 40 questions and satisfies gate criteria."""
     result = evaluate_retrieval(
         dataset_path="benchmarks/questions/retrieval_eval_pairs.jsonl",
-        output_json_path="benchmarks/results/retrieval_eval_m4.json",
+        output_json_path="benchmarks/results/retrieval_eval_results.json",
         output_doc_path="docs/retrieval_eval.md",
     )
 
@@ -22,5 +22,5 @@ def test_retrieval_evaluation_benchmark_runs_and_passes_gate():
     assert result["avg_latency_ms"] < 500.0, f"Expected latency < 500ms, got {result['avg_latency_ms']:.1f}ms"
 
     # Verify generated artifact files exist
-    assert Path("benchmarks/results/retrieval_eval_m4.json").exists()
+    assert Path("benchmarks/results/retrieval_eval_results.json").exists()
     assert Path("docs/retrieval_eval.md").exists()

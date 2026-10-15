@@ -1,8 +1,8 @@
-"""Interactive & Automated Demonstration for Milestone M7: FastAPI Query Endpoints & Baseline (PRD §8, §14).
+"""Interactive & Automated Demonstration for Knowledge Graph RAG API & Baseline (PRD §8, §14).
 
 Usage:
-    uv run python -m kgrag.m7_demo               # Interactive CLI menu or automated showcase
-    uv run python -m kgrag.m7_demo --showcase    # Non-interactive complete automated showcase
+    uv run python -m kgrag.demo               # Interactive CLI menu or automated showcase
+    uv run python -m kgrag.demo --showcase    # Non-interactive complete automated showcase
 """
 
 import argparse
@@ -29,8 +29,8 @@ def print_section(title: str) -> None:
 
 
 def run_showcase() -> None:
-    """Run the complete automated Milestone M7 showcase across all API endpoints."""
-    print_banner("KNOWLEDGE GRAPH RAG - MILESTONE M7 API & BASELINE DEMONSTRATION")
+    """Run the complete automated showcase across all API endpoints."""
+    print_banner("KNOWLEDGE GRAPH RAG - API & BASELINE DEMONSTRATION")
     print("Local-first hybrid Knowledge Graph & Vector RAG over Enterprise SEC 10-K Filings.")
     print("Zero model spend ($0) via local Ollama (qwen2.5:3b + nomic-embed-text) & pgvector + Neo4j.")
 
@@ -247,7 +247,7 @@ def interactive_mode() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Milestone M7 API Showcase & Interactive Tester")
+    parser = argparse.ArgumentParser(description="Knowledge Graph RAG API Showcase & Interactive Tester")
     parser.add_argument("--showcase", action="store_true", help="Run automated capability showcase and exit")
     parser.add_argument("--interactive", action="store_true", help="Launch interactive query tester")
     args = parser.parse_args()
@@ -261,7 +261,7 @@ def main() -> None:
         return
 
     # Default menu
-    print_banner("KNOWLEDGE GRAPH RAG - MILESTONE M7 MENU")
+    print_banner("KNOWLEDGE GRAPH RAG - DEMO MENU")
     print("1. Run complete automated API capability showcase")
     print("2. Launch interactive question testing CLI")
     print("3. Exit")

@@ -1,4 +1,4 @@
-# Milestone M8: Preliminary Benchmark Report
+# Preliminary Benchmark Report
 
 ## Comparative Evaluation: System A (Vector Baseline) vs. System C (Hybrid KG-RAG)
 
@@ -6,7 +6,7 @@
 - **Corpus:** Enterprise SEC 10-K Filings & Exhibits (AMD, NVDA, INTC, AVGO, MSFT, MU)
 - **Model Configuration:** Local Ollama (`qwen2.5:3b` for LLM, `nomic-embed-text` 768-d for embeddings, $0 model spend)
 - **Database Backend:** PostgreSQL 17 + `pgvector` & Neo4j 5.26 Community
-- **Test Set:** 25 hand-verified held-out questions (`benchmarks/questions/m8_benchmark_questions.jsonl`)
+- **Test Set:** 25 hand-verified held-out questions (`benchmarks/questions/benchmark_questions.jsonl`)
 
 ---
 

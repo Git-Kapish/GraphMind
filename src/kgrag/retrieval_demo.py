@@ -1,8 +1,8 @@
-"""Interactive & Automated Demonstration for Milestone M5: Minimal Retrieval & Safe Graph Templates (PRD §7.3, §14).
+"""Interactive & Automated Demonstration for Minimal Retrieval & Safe Graph Templates (PRD §7.3, §14).
 
 Usage:
-    uv run python -m kgrag.m5_demo               # Interactive menu or automated showcase
-    uv run python -m kgrag.m5_demo --showcase    # Non-interactive complete showcase
+    uv run python -m kgrag.retrieval_demo               # Interactive menu or automated showcase
+    uv run python -m kgrag.retrieval_demo --showcase    # Non-interactive complete showcase
 """
 
 import argparse

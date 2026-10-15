@@ -1,7 +1,7 @@
-"""Milestone M8: Preliminary Benchmark Harness comparing System A (Vector Baseline) vs System C (Hybrid / KG-RAG) (PRD §2, §7.5, §14).
+"""Preliminary Benchmark Harness comparing System A (Vector Baseline) vs System C (Hybrid / KG-RAG) (PRD §2, §7.5, §14).
 
 Usage:
-    uv run python -m kgrag.benchmarks.m8_eval
+    uv run python -m kgrag.benchmarks.eval
 """
 
 import json
@@ -20,9 +20,9 @@ from kgrag.api.app import app
 
 logger = logging.getLogger(__name__)
 
-BENCHMARK_FILE = Path(__file__).resolve().parent.parent.parent.parent / "benchmarks" / "questions" / "m8_benchmark_questions.jsonl"
-RESULTS_FILE = Path(__file__).resolve().parent.parent.parent.parent / "benchmarks" / "results" / "m8_benchmark_results.json"
-REPORT_FILE = Path(__file__).resolve().parent.parent.parent.parent / "docs" / "preliminary_benchmark_m8.md"
+BENCHMARK_FILE = Path(__file__).resolve().parent.parent.parent.parent / "benchmarks" / "questions" / "benchmark_questions.jsonl"
+RESULTS_FILE = Path(__file__).resolve().parent.parent.parent.parent / "benchmarks" / "results" / "benchmark_results.json"
+REPORT_FILE = Path(__file__).resolve().parent.parent.parent.parent / "docs" / "preliminary_benchmark.md"
 
 REFUSAL_KEYWORDS = [
     "not contain", "does not contain", "do not contain", "insufficient evidence",
@@ -320,7 +320,7 @@ def generate_markdown_report(summary: dict[str, Any]) -> None:
     meta = summary["metadata"]
     pairs = overall["discordant_pairs"]
 
-    md = f"""# Milestone M8: Preliminary Benchmark Report
+    md = f"""# Preliminary Benchmark Report
 
 ## Comparative Evaluation: System A (Vector Baseline) vs. System C (Hybrid KG-RAG)
 
@@ -328,7 +328,7 @@ def generate_markdown_report(summary: dict[str, Any]) -> None:
 - **Corpus:** Enterprise SEC 10-K Filings & Exhibits (AMD, NVDA, INTC, AVGO, MSFT, MU)
 - **Model Configuration:** Local Ollama (`qwen2.5:3b` for LLM, `nomic-embed-text` 768-d for embeddings, $0 model spend)
 - **Database Backend:** PostgreSQL 17 + `pgvector` & Neo4j 5.26 Community
-- **Test Set:** {meta['total_questions']} hand-verified held-out questions (`benchmarks/questions/m8_benchmark_questions.jsonl`)
+- **Test Set:** {meta['total_questions']} hand-verified held-out questions (`benchmarks/questions/benchmark_questions.jsonl`)
 
 ---
 
