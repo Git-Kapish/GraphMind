@@ -43,6 +43,26 @@ class LLMClient(Protocol):
         ...
 
 
+def _pydantic_to_template_dict(schema: type[BaseModel]) -> dict[str, Any]:
+    """Generate a clean example JSON template matching Pydantic fields."""
+    template = {}
+    for name, field in getattr(schema, "model_fields", {}).items():
+        annotation = field.annotation
+        if annotation is str:
+            template[name] = "string"
+        elif annotation in (int, float):
+            template[name] = 0.0
+        elif annotation is bool:
+            template[name] = True
+        elif getattr(annotation, "__origin__", None) is list or getattr(annotation, "__name__", "") == "list":
+            template[name] = []
+        elif getattr(annotation, "__origin__", None) is dict or getattr(annotation, "__name__", "") == "dict":
+            template[name] = {}
+        else:
+            template[name] = "string"
+    return template
+
+
 class OllamaClient:
     """Ollama implementation of LLMClient protocol."""
 
@@ -119,12 +139,35 @@ class OllamaClient:
         current_prompt = prompt
         schema_json_str = json.dumps(schema.model_json_schema(), indent=2)
 
+        if getattr(schema, "__name__", "") == "ExtractionResult":
+            format_instruction = (
+                "{\n"
+                '  "chunk_id": "string",\n'
+                '  "relations": [\n'
+                "    {\n"
+                '      "head_name": "string",\n'
+                '      "head_type": "Company|Person|Product|Technology|Market|Location|Regulation",\n'
+                '      "relation": "RELATION_TYPE",\n'
+                '      "tail_name": "string",\n'
+                '      "tail_type": "Company|Person|Product|Technology|Market|Location|Regulation",\n'
+                '      "evidence_quote": "verbatim sentence from text",\n'
+                '      "confidence": 0.95\n'
+                "    }\n"
+                "  ]\n"
+                "}\n"
+                'If no explicit relationships exist in the text, return: {"chunk_id": "...", "relations": []}.'
+            )
+        else:
+            template = _pydantic_to_template_dict(schema)
+            format_instruction = json.dumps(template, indent=2) if template else schema_json_str
+
         for attempt in range(retries + 1):
             enhanced_prompt = (
                 f"{current_prompt}\n\n"
-                f"You MUST respond ONLY with a valid JSON object matching this JSON Schema:\n"
-                f"```json\n{schema_json_str}\n```\n"
-                f"Do not include any explanatory text, markdown formatting, or preamble outside the JSON."
+                f"OUTPUT FORMAT REQUIREMENT:\n"
+                f"Respond ONLY with a valid JSON object matching this structure with the actual values filled in:\n"
+                f"{format_instruction}\n"
+                f"No markdown backticks, no comments, no explanation outside the JSON."
             )
             payload = {
                 "model": self.model,
