@@ -1,0 +1,17 @@
+{
+  "total_pairs": 110,
+  "auto_merge_threshold": 0.85,
+  "review_band_lower": 0.7,
+  "true_positives": 62,
+  "false_positives": 0,
+  "true_negatives": 48,
+  "false_negatives": 0,
+  "review_band_count": 0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "accuracy": 1.0,
+  "false_merges": [],
+  "missed_merges": [],
+  "review_band_pairs": []
+}

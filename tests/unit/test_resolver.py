@@ -44,3 +44,22 @@ def test_normalize_name_deterministic_id():
     _, eid1 = normalize_name("Broadcom Inc.", "Company")
     _, eid2 = normalize_name("broadcom", "Company")
     assert eid1 == eid2  # Both resolve to same canonical entity ID!
+
+
+def test_get_review_queue_and_merge_history():
+    from kgrag.resolve.resolver import get_merge_history, get_review_queue
+
+    history = get_merge_history(limit=10)
+    assert isinstance(history, list)
+    if history:
+        item = history[0]
+        assert "source_entity_id" in item
+        assert "canonical_entity_id" in item
+        assert "decision" in item
+        assert "method" in item
+
+    queue = get_review_queue()
+    assert isinstance(queue, list)
+    for q in queue:
+        assert q["decision"] == "needs_review" or "reviewer_note" in q
+

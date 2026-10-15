@@ -1,0 +1,110 @@
+{"surface_a": "NVIDIA Corporation", "surface_b": "NVIDIA Corp.", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Intel Corporation", "surface_b": "Intel Inc.", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Advanced Micro Devices, Inc.", "surface_b": "Advanced Micro Devices", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Broadcom Inc.", "surface_b": "Broadcom Corporation", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Qualcomm Incorporated", "surface_b": "Qualcomm Inc.", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Micron Technology, Inc.", "surface_b": "Micron Technology", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Microsoft Corporation", "surface_b": "Microsoft Corp", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Alphabet Inc.", "surface_b": "Alphabet LLC", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Amazon.com, Inc.", "surface_b": "Amazon.com", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Apple Inc.", "surface_b": "Apple Incorporated", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Cisco Systems, Inc.", "surface_b": "Cisco Systems", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Applied Materials, Inc.", "surface_b": "Applied Materials", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Lam Research Corporation", "surface_b": "Lam Research", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "KLA Corporation", "surface_b": "KLA Corp.", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Cadence Design Systems, Inc.", "surface_b": "Cadence Design Systems", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Synopsys, Inc.", "surface_b": "Synopsys", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Marvell Technology, Inc.", "surface_b": "Marvell Technology", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Monolithic Power Systems, Inc.", "surface_b": "Monolithic Power Systems", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Texas Instruments Incorporated", "surface_b": "Texas Instruments", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Analog Devices, Inc.", "surface_b": "Analog Devices", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Skyworks Solutions, Inc.", "surface_b": "Skyworks Solutions", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Qorvo, Inc.", "surface_b": "Qorvo", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "ON Semiconductor Corporation", "surface_b": "ON Semiconductor", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Microchip Technology Incorporated", "surface_b": "Microchip Technology", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Wolfspeed, Inc.", "surface_b": "Wolfspeed", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Amkor Technology, Inc.", "surface_b": "Amkor Technology", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Teradyne, Inc.", "surface_b": "Teradyne", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Entegris, Inc.", "surface_b": "Entegris", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Lattice Semiconductor Corporation", "surface_b": "Lattice Semiconductor", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Rambus Inc.", "surface_b": "Rambus", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Silicon Laboratories Inc.", "surface_b": "Silicon Laboratories", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Cirrus Logic, Inc.", "surface_b": "Cirrus Logic", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Power Integrations, Inc.", "surface_b": "Power Integrations", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Semtech Corporation", "surface_b": "Semtech", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "MaxLinear, Inc.", "surface_b": "MaxLinear", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Diodes Incorporated", "surface_b": "Diodes Inc.", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "FormFactor, Inc.", "surface_b": "FormFactor", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Cohu, Inc.", "surface_b": "Cohu", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Axcelis Technologies, Inc.", "surface_b": "Axcelis Technologies", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Ultra Clean Holdings, Inc.", "surface_b": "Ultra Clean Holdings", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Ichor Holdings, Ltd.", "surface_b": "Ichor Holdings", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Veeco Instruments Inc.", "surface_b": "Veeco Instruments", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "ACM Research, Inc.", "surface_b": "ACM Research", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "SiTime Corporation", "surface_b": "SiTime", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Credo Technology Group Holding Ltd", "surface_b": "Credo Technology Group", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Impinj, Inc.", "surface_b": "Impinj", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "SMART Global Holdings, Inc.", "surface_b": "SMART Global Holdings", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Macom Technology Solutions Holdings, Inc.", "surface_b": "Macom Technology Solutions", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Alpha and Omega Semiconductor Limited", "surface_b": "Alpha and Omega Semiconductor", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "QuickLogic Corporation", "surface_b": "QuickLogic", "entity_type": "Company", "match": true, "category": "legal_suffix"}
+{"surface_a": "Taiwan Semiconductor Manufacturing Company", "surface_b": "TSMC", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Advanced Micro Devices", "surface_b": "AMD", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "International Business Machines", "surface_b": "IBM", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Hewlett Packard Enterprise", "surface_b": "HPE", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Amazon Web Services", "surface_b": "AWS", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Super Micro Computer", "surface_b": "Supermicro", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Taiwan Semiconductor Manufacturing Co., Ltd.", "surface_b": "Taiwan Semiconductor", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "TF AMD Microelectronics (Penang)", "surface_b": "TF AMD Microelectronics", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "OpenAI OpCo, LLC", "surface_b": "OpenAI", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "ASML Holding N.V.", "surface_b": "ASML", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Sanmina Corporation", "surface_b": "Sanmina", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Cisco Systems", "surface_b": "Cisco", "entity_type": "Company", "match": true, "category": "acronym_alias"}
+{"surface_a": "Applied Materials", "surface_b": "Applied Optoelectronics", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Applied Materials", "surface_b": "Applied DNA Sciences", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Silicon Laboratories", "surface_b": "Silicon Motion Technology", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Silicon Laboratories", "surface_b": "Silicon Graphics International", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Microchip Technology", "surface_b": "Micron Technology", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Microchip Technology", "surface_b": "Microsemi", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Western Digital", "surface_b": "Western Union", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Apple Inc.", "surface_b": "Apple Hospitality REIT", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Sysco Corporation", "surface_b": "Cisco Systems", "entity_type": "Company", "match": false, "category": "hard_negative_phonetic"}
+{"surface_a": "Advanced Micro Devices", "surface_b": "Arm Holdings", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Intel Corporation", "surface_b": "Intel Capital", "entity_type": "Company", "match": false, "category": "hard_negative_subsidiary"}
+{"surface_a": "Alphabet Inc.", "surface_b": "Altaba Inc.", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Broadcom Inc.", "surface_b": "Qualcomm Inc.", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "NVIDIA Corporation", "surface_b": "Advanced Micro Devices", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Taiwan Semiconductor Manufacturing Company", "surface_b": "United Microelectronics Corporation", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Texas Instruments", "surface_b": "National Instruments", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Analog Devices", "surface_b": "Maxim Integrated Products", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Lam Research", "surface_b": "Tokyo Electron", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "KLA Corporation", "surface_b": "Onto Innovation", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Synopsys", "surface_b": "Cadence Design Systems", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Skyworks Solutions", "surface_b": "Qorvo", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Wolfspeed", "surface_b": "Coherent Corp.", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Amkor Technology", "surface_b": "ASE Technology Holding", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Teradyne", "surface_b": "Advantest Corporation", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Lattice Semiconductor", "surface_b": "Xilinx", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Cirrus Logic", "surface_b": "Realtek Semiconductor", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Semtech", "surface_b": "Intersil", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "MaxLinear", "surface_b": "Broadcom", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "FormFactor", "surface_b": "Technoprobe", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Axcelis Technologies", "surface_b": "Varian Semiconductor", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Veeco Instruments", "surface_b": "Aixtron", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Impinj", "surface_b": "NXP Semiconductors", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Macom Technology Solutions", "surface_b": "Skyworks Solutions", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Credo Technology Group", "surface_b": "Marvell Technology", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "SiTime", "surface_b": "Murata Manufacturing", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Super Micro Computer", "surface_b": "Dell Technologies", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Microsoft Corporation", "surface_b": "Sony Group", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Amazon.com", "surface_b": "Alibaba Group", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Google LLC", "surface_b": "Baidu, Inc.", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Oracle Corporation", "surface_b": "SAP SE", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Salesforce, Inc.", "surface_b": "ServiceNow, Inc.", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Meta Platforms, Inc.", "surface_b": "Snap Inc.", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Tesla, Inc.", "surface_b": "Rivian Automotive", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Corning Incorporated", "surface_b": "Coherent Corp.", "entity_type": "Company", "match": false, "category": "hard_negative_token_overlap"}
+{"surface_a": "Marvell Technology", "surface_b": "Cavium", "entity_type": "Company", "match": false, "category": "hard_negative_competitor"}
+{"surface_a": "Broadcom Inc.", "surface_b": "Avago Technologies", "entity_type": "Company", "match": false, "category": "hard_negative_historical"}
+{"surface_a": "Intel Corporation", "surface_b": "Mobileye Global", "entity_type": "Company", "match": false, "category": "hard_negative_subsidiary"}
+{"surface_a": "Advanced Micro Devices", "surface_b": "Xilinx", "entity_type": "Company", "match": false, "category": "hard_negative_subsidiary"}

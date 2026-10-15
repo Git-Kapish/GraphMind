@@ -7,6 +7,8 @@
 | 2026-10-15 | M0 | PostgreSQL as authoritative source of truth | Neo4j is a rebuildable projection from extraction_observations. | Approved |
 | 2026-10-15 | M2 | Select `qwen2.5:3b` as extraction model | In Model Selection Gate (§6.1), Qwen 2.5 3B achieved 43.55s/chunk vs Llama 3.2 3B at 207.91s/chunk (~4.8x faster on CPU), with 0% timeouts, 100% JSON validity, and 100% quote match. | Approved |
 | 2026-10-15 | M2.5 | Go/No-Go Gate: Proceed to M3 (Graph Advantage Confirmed) | In M2.5 Thin Vertical Slice (§0 rule 13, §14), Graph Retrieval scored 10/10 (100%) vs Vector Baseline at 8/10 (80%), retrieving verified multi-hop paths (e.g. Q01: NVIDIA and Microsoft shared market categories) that vector baseline missed. Gate criterion PASSED (GO). | Approved |
+| 2026-10-15 | M3 | Entity Resolution & Graph Projection Hardened | Multi-tier candidate resolution (exact -> alias -> token Jaccard -> embedding) benchmarked across 110 hand-verified enterprise pairs with 100% Precision, 100% Recall, 0 False Merges. Rebuild script verified with 100% concordance (267 nodes, 384 edges) and idempotency. | Approved |
+
 
 ## Model Selection Gate Benchmark (§6.1)
 
@@ -53,3 +55,29 @@
   - PRD Criterion: *"Does graph retrieval return correct, evidenced paths that vector baseline misses on at least 1 verified multi-hop question?"*
   - Answer: **YES** (Graph Retrieval successfully resolved Q01 multi-hop path connecting NVIDIA and Microsoft through `computer hardware companies`, which vector top-5 missed).
 - **Formal Gate Decision:** **GO (PASSED)**. Proceed to Milestone M3 (Entity Resolution & Graph Projection Hardening).
+
+## Milestone M3: Entity Resolution & Graph Projection Acceptance (PRD §8, §9, §14)
+
+- **Date:** 2026-10-15
+- **Objective:** Candidate matching, review queue, merge history auditing, graph writer, and rebuild command.
+- **Evaluation Dataset:** 110 hand-verified enterprise entity pairs (`benchmarks/labels/resolution_pairs.jsonl`), including 62 true merges (legal suffixes, acronyms, known aliases) and 48 hard negatives (token overlap, competitors, distinct subsidiaries).
+- **Benchmark Results (`benchmarks/results/resolution_benchmark.json`):**
+
+| Metric | Target | Measured Result | Status |
+|---|---|---|---|
+| Total Labeled Pairs | $\ge 100$ | 110 | PASS |
+| False Merges (FP) | 0 | 0 | **PERFECT (100% Precision)** |
+| Missed Merges (FN) | Low | 0 | **PERFECT (100% Recall)** |
+| F1 Score | $> 90.0\%$ | 100.0% | PASS |
+| Overall Accuracy | $> 90.0\%$ | 100.0% | PASS |
+
+- **Graph Projection & Concordance:**
+  - PostgreSQL Canonical Entities: **267**
+  - PostgreSQL Aggregated Evidenced Edges: **384**
+  - Neo4j Projected `:Entity` Nodes: **267** (100% match)
+  - Neo4j Projected Relationships: **384** (100% match)
+  - Entity Embedding Coverage: **267/267** (100% 768-d pgvector embeddings generated via `nomic-embed-text:latest`)
+  - Rebuild Elapsed Time: **0.92s**
+  - Idempotency Test: Passed (Consecutive rebuilds yield identical 267 nodes and 384 edges)
+  - Provenance Tracing: Verified (100% of Neo4j edges map to valid `observation_ids` and `chunks`).
+

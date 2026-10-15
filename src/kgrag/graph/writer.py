@@ -81,7 +81,8 @@ def upsert_edges_batch(session: Session, edges: list[dict[str, Any]], batch_size
         # Parameterized query with sanitized relation type from closed ontology
         query = f"""
         UNWIND $batch AS item
-        MATCH (h:Entity {{entity_id: item.head_id}}), (t:Entity {{entity_id: item.tail_id}})
+        MATCH (h:Entity {{entity_id: item.head_id}})
+        MATCH (t:Entity {{entity_id: item.tail_id}})
         MERGE (h)-[r:{rel_type}]->(t)
         SET r.observation_ids = item.obs_ids,
             r.source_chunks = item.chunks,
