@@ -155,7 +155,7 @@ def link_mention_to_entities(
 
     norm_name = normalize_company_name(mention_text)
 
-    # 1. Exact canonical or alias lookup in PostgreSQL
+    # 1. Exact canonical, alias, or filing ticker lookup in PostgreSQL
     exact_sql = """
     SELECT entity_id, canonical_name, type, aliases, 1.0 AS cosine_similarity, 'exact_or_alias' AS link_method
     FROM entities
@@ -163,12 +163,35 @@ def link_mention_to_entities(
        OR LOWER(canonical_name) = LOWER(%(raw)s)
        OR %(norm)s ILIKE ANY(aliases)
        OR %(raw)s ILIKE ANY(aliases)
+       OR %(raw_upper)s IN (SELECT UPPER(ticker) FROM documents WHERE company = canonical_name AND ticker <> '')
     LIMIT %(top_k)s;
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(exact_sql, {"norm": norm_name, "raw": mention_text, "top_k": top_k})
-            exact_matches = cur.fetchall()
+            cur.execute(
+                exact_sql,
+                {
+                    "norm": norm_name,
+                    "raw": mention_text,
+                    "raw_upper": mention_text.strip().upper(),
+                    "top_k": top_k,
+                },
+            )
+            exact_matches = list(cur.fetchall())
+
+            # Also check if ticker matches filing document company which alias-matches an entity
+            if not exact_matches and len(mention_text.strip()) <= 5:
+                cur.execute(
+                    """
+                    SELECT e.entity_id, e.canonical_name, e.type, e.aliases, 1.0 AS cosine_similarity, 'exact_or_alias' AS link_method
+                    FROM documents d
+                    JOIN entities e ON LOWER(e.canonical_name) = LOWER(d.company) OR d.company ILIKE ANY(e.aliases)
+                    WHERE UPPER(d.ticker) = %(ticker)s AND d.ticker <> ''
+                    LIMIT %(top_k)s;
+                    """,
+                    {"ticker": mention_text.strip().upper(), "top_k": top_k},
+                )
+                exact_matches.extend(cur.fetchall())
 
     seen_ids = {r["entity_id"] for r in exact_matches}
     remaining_k = top_k - len(exact_matches)

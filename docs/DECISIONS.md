@@ -111,4 +111,50 @@
   - Fine-grained entity lists and cross-border subsidiaries (AVGO/MU Exhibit 21) show lower rank in pure vector retrieval, directly evidencing the need for graph-guided traversal in hybrid retrieval.
 - **Gating Decision:** **PASSED**. PRD FR-2.3 pre-routing retrieval evaluation certified. Proceed to Milestone M5 (Query Templates & Vector Retrieval Integration).
 
+## Milestone M5: Safe Graph Templates & Minimal Dual Retrieval (PRD §7.3 FR-3.2, §14)
 
+- **Date:** 2026-10-15
+- **Objective:** Implement the complete safe parameterized Cypher query template library (7 templates), strict entity resolution policy, index seek plan validation, query safety invariants, and the Minimal Dual Retrieval Engine.
+- **Accepted Criteria & Verification:**
+
+| Acceptance Criterion | Requirement | Verification Method | Status |
+|---|---|---|---|
+| **Safe Template Library** | Minimum 7 templates (`neighbors`, `two_hop`, `path_between`, `shared_neighbors`, `count_by_relation`, `top_connected`, `officers_of`) | `tests/unit/test_graph_templates.py` | **PASS** |
+| **Multi-Hop Evidenced Paths** | At least 1 multi-hop query returns correct path with evidence for every edge | `tests/integration/test_m5_minimal_retrieval.py` | **PASS** |
+| **Index Seek on Anchor Node** | Query plan verifies `NodeUniqueIndexSeek` on `:Entity(entity_id)` | `EXPLAIN` query plan inspection | **PASS** |
+| **Symmetry Invariant** | Symmetric relations (`COMPETES_WITH`, `PARTNERS_WITH`) match undirected | `test_symmetric_relation_undirected_matching` | **PASS** |
+| **Directionality Invariant** | Directed relations (`OFFICER_OF`, `SUBSIDIARY_OF`) not matched in reverse | `test_directed_relation_not_matched_in_reverse` | **PASS** |
+| **Node Repeat Avoidance** | Intermediate and target nodes cannot repeat within traversal | `test_template_2_two_hop_no_node_repeats` | **PASS** |
+| **Hard Caps & Timeouts** | Limit and transaction timeouts enforced at driver level | `test_hard_limit_enforced` & `session.run(..., timeout=5.0)` | **PASS** |
+| **Strict Entity Resolution** | Exact/alias resolved, review band flagged as `needs_clarification`, unknown as `not_found`, zero guessing | `test_resolve_entity_strict_*` | **PASS** |
+| **Merge History Mapping** | Absorbed entity IDs mapped to surviving canonical node via `entity_merge_history` | `map_to_canonical_entity_id()` | **PASS** |
+| **Dual Retrieval Engine** | Unified bundle combining graph paths and vector passages with provenance | `tests/unit/test_retrieval_engine.py` | **PASS** |
+
+- **Test Suite Results:**
+  - Full suite: **79/79 passed in 27.88s** (0 failures, 0 regressions).
+  - M5 unit tests: 20 passed.
+  - M5 integration gate tests: 5 passed.
+- **Formal Gate Decision:** **GO (PASSED)**. Milestone M5 complete. Ready to proceed to Milestone M6 (Grounded Answer Generation & Citation Validation).
+
+## Milestone M6: Grounded Answer Generation & Citation Invariants (PRD §7.4, §14)
+
+- **Date:** 2026-10-15
+- **Objective:** Implement context assembly (`GRAPH FACTS` [G#] and `RETRIEVED PASSAGES` [P#]), request-scoped `EvidenceRegistry`, grounded prompt generation, mechanical citation resolution validator, feedback retry loops, and out-of-scope refusal logic.
+- **Accepted Criteria & Verification:**
+
+| Acceptance Criterion | Requirement | Verification Method | Status |
+|---|---|---|---|
+| **Graph Path Verbalization** | Convert graph paths into human-readable statements preserving observation IDs & source chunks | `tests/unit/test_verbalizer.py` | **PASS** |
+| **Context Assembly & Registry** | Labeled sections `[G#]`, `[P#]`, passage deduplication, token budget enforcement, internal request-scoped registry | `tests/unit/test_context_assembly.py` | **PASS** |
+| **Mechanical Citation Resolution** | 100% of citation labels map to a chunk actually retrieved for that request; enforced as runtime invariant | `tests/unit/test_citation_validator.py` | **PASS** |
+| **Hallucination Rejection** | Invented citation labels (e.g. `[P99]`) are rejected with targeted regeneration feedback | `test_validate_citations_hallucinated_label_rejected` | **PASS** |
+| **No Silent Unresolved Answers** | Invariant: Failed citation resolution never silently returns a confident answer | `test_m6_failed_resolution_never_silent` | **PASS** |
+| **Out-of-Scope Refusal** | Missing or unevidenced questions cleanly trigger explicit refusal without guessing | `test_m6_out_of_scope_refusal` | **PASS** |
+| **Ambiguity Handling** | Ambiguous entity mentions trigger `needs_clarification` | `GroundedAnswerPipeline.answer_question()` | **PASS** |
+| **Grounded Generation Pipeline** | Full pipeline (`answer_question`) generating grounded answers with verified citations | `tests/integration/test_m6_grounded_answer.py` | **PASS** |
+
+- **Test Suite Results:**
+  - Full suite: **97/97 passed in 48.94s** (0 failures, 0 regressions).
+  - M6 unit tests: 13 passed (`test_verbalizer.py`, `test_context_assembly.py`, `test_citation_validator.py`).
+  - M6 integration gate tests: 5 passed (`test_m6_grounded_answer.py`).
+- **Formal Gate Decision:** **GO (PASSED)**. Milestone M6 complete. Ready for Milestone M7 (FastAPI Query Endpoints & Baseline Endpoint).
