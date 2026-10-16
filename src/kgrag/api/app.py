@@ -13,10 +13,12 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from kgrag import __version__
 from kgrag.answer.context import assemble_context
@@ -610,3 +612,9 @@ def get_chunk_detail(chunk_id: str) -> ChunkDetailResponse:
         observations_count=len(observations),
         observations=observations,
     )
+
+
+# Mount built React frontend SPA if dist exists (PRD §8 production serving)
+frontend_dist = Path(__file__).resolve().parents[3] / "frontend" / "dist"
+if frontend_dist.is_dir():
+    app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")
