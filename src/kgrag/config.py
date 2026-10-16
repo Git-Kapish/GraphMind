@@ -128,23 +128,23 @@ class PostgresSettings(BaseModel):
 
     @property
     def host(self) -> str:
-        return os.getenv(self.host_env, "127.0.0.1")
+        return os.getenv(self.host_env) or os.getenv("DATABASE_POSTGRES_HOST") or "127.0.0.1"
 
     @property
     def port(self) -> int:
-        return int(os.getenv(self.port_env, "5432"))
+        return int(os.getenv(self.port_env) or os.getenv("DATABASE_POSTGRES_PORT") or "5432")
 
     @property
     def database(self) -> str:
-        return os.getenv(self.database_env, "kgrag")
+        return os.getenv(self.database_env) or os.getenv("DATABASE_POSTGRES_DB") or "kgrag"
 
     @property
     def user(self) -> str:
-        return os.getenv(self.user_env, "kgrag")
+        return os.getenv(self.user_env) or os.getenv("DATABASE_POSTGRES_USER") or "kgrag"
 
     @property
     def password(self) -> str:
-        return os.getenv(self.password_env, "")
+        return os.getenv(self.password_env) or os.getenv("DATABASE_POSTGRES_PASSWORD") or ""
 
     @property
     def dsn(self) -> str:
@@ -158,15 +158,15 @@ class Neo4jSettings(BaseModel):
 
     @property
     def uri(self) -> str:
-        return os.getenv(self.uri_env, "bolt://127.0.0.1:7687")
+        return os.getenv(self.uri_env) or os.getenv("DATABASE_NEO4J_URI") or "bolt://127.0.0.1:7687"
 
     @property
     def user(self) -> str:
-        return os.getenv(self.user_env, "neo4j")
+        return os.getenv(self.user_env) or os.getenv("DATABASE_NEO4J_USER") or "neo4j"
 
     @property
     def password(self) -> str:
-        return os.getenv(self.password_env, "")
+        return os.getenv(self.password_env) or os.getenv("DATABASE_NEO4J_PASSWORD") or ""
 
 
 class DatabaseSettings(BaseModel):
