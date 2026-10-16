@@ -8,7 +8,6 @@ Exposes:
 - GET /health: Component reachability health check without leaking secrets.
 """
 
-import json
 import logging
 import time
 import uuid
@@ -625,116 +624,6 @@ def get_chunk_detail(chunk_id: str) -> ChunkDetailResponse:
         observations_count=len(observations),
         observations=observations,
     )
-
-
-@app.get("/benchmarks/retrieval")
-def get_benchmark_results() -> dict[str, Any]:
-    """Return latest retrieval ablation metrics and statistical benchmark results (PRD §2.2, Milestone M10)."""
-    results_dir = Path(__file__).resolve().parents[3] / "benchmarks" / "results"
-    retrieval_file = results_dir / "retrieval_eval_results.json"
-    full_ablation_file = results_dir / "full_benchmark_results.json"
-
-    retrieval_data: dict[str, Any] = {}
-    if retrieval_file.exists():
-        try:
-            with open(retrieval_file, encoding="utf-8") as f:
-                retrieval_data = json.load(f)
-        except Exception as e:
-            logger.warning("Failed to load retrieval_eval_results.json: %s", e)
-
-    ablation_data: dict[str, Any] = {}
-    if full_ablation_file.exists():
-        try:
-            with open(full_ablation_file, encoding="utf-8") as f:
-                ablation_data = json.load(f)
-        except Exception as e:
-            logger.warning("Failed to load full_benchmark_results.json: %s", e)
-
-    return {
-        "status": "success",
-        "retrieval_metrics": {
-            "total_questions": retrieval_data.get("total_questions", 40),
-            "recall_at_3": retrieval_data.get("recall_at_3", 0.70),
-            "recall_at_5": retrieval_data.get("recall_at_5", 0.725),
-            "recall_at_10": retrieval_data.get("recall_at_10", 0.85),
-            "mrr": retrieval_data.get("mrr", 0.6258),
-            "avg_latency_ms": retrieval_data.get("avg_latency_ms", 1539.0),
-        },
-        "5_way_ablation_summary": [
-            {
-                "id": "A",
-                "system": "System A (Vector Baseline)",
-                "recall_at_5": 0.725,
-                "mrr": 0.626,
-                "accuracy": 0.720,
-                "citation_resolution": 0.920,
-                "latency_p50_ms": 11809,
-            },
-            {
-                "id": "B",
-                "system": "System B (Graph-Only)",
-                "recall_at_5": 0.500,
-                "mrr": 0.485,
-                "accuracy": 0.500,
-                "citation_resolution": 1.000,
-                "latency_p50_ms": 5103,
-            },
-            {
-                "id": "C",
-                "system": "System C (Hybrid Auto-Routed)",
-                "recall_at_5": 0.875,
-                "mrr": 0.812,
-                "accuracy": 0.880,
-                "citation_resolution": 1.000,
-                "latency_p50_ms": 7339,
-            },
-            {
-                "id": "D",
-                "system": "System D (Hybrid-Always)",
-                "recall_at_5": 0.875,
-                "mrr": 0.795,
-                "accuracy": 0.875,
-                "citation_resolution": 1.000,
-                "latency_p50_ms": 3222,
-            },
-            {
-                "id": "E",
-                "system": "System E (Oracle Diagnostic)",
-                "recall_at_5": 0.925,
-                "mrr": 0.890,
-                "accuracy": 0.875,
-                "citation_resolution": 1.000,
-                "latency_p50_ms": 2445,
-            },
-        ],
-        "category_breakdown": {
-            "multi_hop": {
-                "count": 6,
-                "baseline_accuracy": 0.50,
-                "hybrid_accuracy": 0.833,
-                "gap": "+33.3%",
-            },
-            "single_hop": {
-                "count": 6,
-                "baseline_accuracy": 0.667,
-                "hybrid_accuracy": 0.833,
-                "gap": "+16.7%",
-            },
-            "two_hop": {
-                "count": 8,
-                "baseline_accuracy": 0.875,
-                "hybrid_accuracy": 1.00,
-                "gap": "+12.5%",
-            },
-            "out_of_scope": {
-                "count": 5,
-                "baseline_accuracy": 0.80,
-                "hybrid_accuracy": 0.80,
-                "gap": "+0.0%",
-            },
-        },
-        "raw_ablation": ablation_data,
-    }
 
 
 # Mount built React frontend SPA if dist exists (PRD §8 production serving)

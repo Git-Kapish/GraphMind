@@ -34,7 +34,7 @@ GraphMind extracts a knowledge graph from SEC 10-K filings, indexes the same sou
 
 ## Results
 
-5-way retrieval and answering ablation evaluated on hand-verified benchmark questions across SEC 10-K filings (see `benchmarks/`; raw metrics and statistical tests available via `GET /benchmarks/retrieval`).
+5-way retrieval and answering ablation evaluated on hand-verified benchmark questions across SEC 10-K filings (see `benchmarks/` and `docs/full_evaluation_benchmark.md`).
 
 ### Retrieval ablation (PRD §2.2, Milestone M4/M10)
 
@@ -182,7 +182,6 @@ Use `"mode": "vector"`, `"graph"` or `"hybrid"` to force a route, or `POST /quer
 | `POST` | `/query/baseline` | Vector-only baseline for A/B comparison |
 | `GET` | `/entities/{entity_id}` | Canonical entity metadata, degree and verified relationships |
 | `GET` | `/chunks/{chunk_id}` | Chunk text, filing section metadata and extraction observations |
-| `GET` | `/benchmarks/retrieval` | Latest retrieval ablation metrics and statistical test results |
 
 ## Testing and CI
 

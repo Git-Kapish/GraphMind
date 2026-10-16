@@ -133,30 +133,6 @@ class MercuryDecideClient:
         self, state: dict[str, Any], questions: dict[str, Any], timeout: float | None = None
     ) -> dict[str, Any]:
         """Send decision request to OpenRouter Decisions API and parse answers."""
-        if self.api_key.startswith("mock"):
-            mock_answers = {}
-            for q_name, q_spec in questions.items():
-                if q_spec.get("type") == "choice":
-                    criteria = q_spec.get("criteria", {})
-                    choices = list(criteria.keys()) if criteria else ["vector", "graph", "hybrid"]
-                    choice = choices[0] if choices else "vector"
-                    mock_answers[q_name] = {
-                        "type": "choice",
-                        "choice": choice,
-                        "confidence": 0.95,
-                        "probabilities": {
-                            c: (0.95 if c == choice else 0.05 / max(1, len(choices) - 1))
-                            for c in choices
-                        },
-                    }
-                else:
-                    mock_answers[q_name] = {
-                        "type": "noul",
-                        "value": "supported",
-                        "confidence": 0.90,
-                    }
-            return mock_answers
-
         headers = self._get_headers()
         payload = {
             "model": self.model,
