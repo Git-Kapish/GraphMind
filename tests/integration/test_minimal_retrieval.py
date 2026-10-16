@@ -13,9 +13,6 @@ from kgrag.graph.templates import (
     TemplateId,
     explain_template_query,
     query_neighbors,
-    query_path_between,
-    query_shared_neighbors,
-    query_two_hop,
 )
 from kgrag.retrieval.engine import (
     GraphPathResult,
@@ -44,8 +41,12 @@ def test_verified_multihop_returns_evidenced_path(engine):
     for path in paths:
         assert isinstance(path, GraphPathResult)
         assert len(path.nodes) >= 3, f"Expected at least 3 nodes in 2-hop path, got: {path.nodes}"
-        assert len(path.relations) >= 2, f"Expected at least 2 relations in 2-hop path, got: {path.relations}"
-        assert len(path.observation_ids) >= 2, f"Expected at least 2 observation IDs for 2 edges, got: {path.observation_ids}"
+        assert len(path.relations) >= 2, (
+            f"Expected at least 2 relations in 2-hop path, got: {path.relations}"
+        )
+        assert len(path.observation_ids) >= 2, (
+            f"Expected at least 2 observation IDs for 2 edges, got: {path.observation_ids}"
+        )
         assert len(path.evidence) >= 1, "Expected attached verbatim evidence quotes."
 
         # Every evidence item must trace directly to a source chunk and quote
@@ -66,7 +67,9 @@ def test_symmetry_and_directionality_invariants():
     # Outgoing from Company must be empty; incoming must contain officer
     out_edges = query_neighbors("nvidia", relation_type="OFFICER_OF", direction="out", limit=5)
     in_edges = query_neighbors("nvidia", relation_type="OFFICER_OF", direction="in", limit=5)
-    assert len(out_edges) == 0, "Directed relation OFFICER_OF matched in reverse outgoing direction!"
+    assert len(out_edges) == 0, (
+        "Directed relation OFFICER_OF matched in reverse outgoing direction!"
+    )
     assert len(in_edges) > 0, "Directed relation OFFICER_OF failed to match in incoming direction!"
 
 
@@ -74,12 +77,16 @@ def test_anchor_node_index_seek():
     """Query plan verifies NodeUniqueIndexSeek on anchor entity_id (PRD §7.3, §14)."""
     cypher = "MATCH (a:Entity {entity_id: $a_id})-[r:COMPETES_WITH]-(b:Entity) RETURN a, r, b"
     plan_info = explain_template_query(cypher, {"a_id": "ent_99ee45010f6a"})
-    assert plan_info["has_index_seek"] is True, f"Expected NodeUniqueIndexSeek in plan: {plan_info['plan_string']}"
+    assert plan_info["has_index_seek"] is True, (
+        f"Expected NodeUniqueIndexSeek in plan: {plan_info['plan_string']}"
+    )
 
 
 def test_vector_retrieval_returns_source_chunks(engine):
     """Vector retrieval returns source chunks with valid scores and provenance (PRD §14)."""
-    passages = engine.retrieve_vector("What are Broadcom's principal subsidiaries and products?", top_k=5)
+    passages = engine.retrieve_vector(
+        "What are Broadcom's principal subsidiaries and products?", top_k=5
+    )
     assert len(passages) == 5
     for p in passages:
         assert isinstance(p, VectorPassageResult)
@@ -87,7 +94,9 @@ def test_vector_retrieval_returns_source_chunks(engine):
         assert p.doc_id, "Missing doc_id."
         assert isinstance(p.ticker, str), "Missing ticker field."
         assert len(p.text) > 50, "Chunk text too short or empty."
-        assert -1.0 <= p.cosine_similarity <= 1.0, f"Invalid cosine similarity: {p.cosine_similarity}"
+        assert -1.0 <= p.cosine_similarity <= 1.0, (
+            f"Invalid cosine similarity: {p.cosine_similarity}"
+        )
 
 
 def test_dual_retrieval_bundle_integration(engine):

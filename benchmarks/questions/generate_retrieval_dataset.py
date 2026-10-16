@@ -62,7 +62,6 @@ RETRIEVAL_PAIRS = [
         "category": "risk_factors",
         "description": "Government trade restrictions, tariffs, and export controls",
     },
-
     # --- NVIDIA (7 questions) ---
     {
         "id": "RET_08",
@@ -120,7 +119,6 @@ RETRIEVAL_PAIRS = [
         "category": "subsidiaries",
         "description": "NVIDIA Exhibit 21 corporate subsidiary list",
     },
-
     # --- Broadcom (7 questions) ---
     {
         "id": "RET_15",
@@ -178,7 +176,6 @@ RETRIEVAL_PAIRS = [
         "category": "integration_risks",
         "description": "Integration and operational execution across acquired software assets",
     },
-
     # --- Intel (7 questions) ---
     {
         "id": "RET_22",
@@ -236,7 +233,6 @@ RETRIEVAL_PAIRS = [
         "category": "subsidiaries",
         "description": "Intel International, Inc. California and overseas subsidiaries",
     },
-
     # --- Micron Technology (6 questions) ---
     {
         "id": "RET_29",
@@ -286,7 +282,6 @@ RETRIEVAL_PAIRS = [
         "category": "subsidiaries",
         "description": "Micron Idaho Semiconductor LLC in Delaware/Idaho",
     },
-
     # --- Microsoft (6 questions) ---
     {
         "id": "RET_35",
@@ -344,7 +339,9 @@ def write_retrieval_dataset(output_path: Path):
     with open(output_path, "w", encoding="utf-8") as f:
         for p in RETRIEVAL_PAIRS:
             f.write(json.dumps(p) + "\n")
-    print(f"Successfully generated {len(RETRIEVAL_PAIRS)} retrieval evaluation pairs in {output_path}")
+    print(
+        f"Successfully generated {len(RETRIEVAL_PAIRS)} retrieval evaluation pairs in {output_path}"
+    )
 
 
 if __name__ == "__main__":

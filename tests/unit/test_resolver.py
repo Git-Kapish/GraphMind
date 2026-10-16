@@ -1,6 +1,5 @@
 """Unit tests for entity resolution normalizer (PRD §8, Milestone M2.5/M3)."""
 
-import pytest
 from kgrag.resolve.resolver import normalize_name
 
 
@@ -62,4 +61,3 @@ def test_get_review_queue_and_merge_history():
     assert isinstance(queue, list)
     for q in queue:
         assert q["decision"] == "needs_review" or "reviewer_note" in q
-

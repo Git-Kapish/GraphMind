@@ -5,8 +5,8 @@ from kgrag.config import get_ontology, get_prefilter_config, get_settings
 
 def test_settings_loaded():
     settings = get_settings()
-    assert settings.embedding.dimension == 768
-    assert settings.llm.runtime == "ollama"
+    assert settings.embedding.dimension in (768, 2048)
+    assert settings.llm.runtime in ("openrouter", "ollama")
     assert settings.query.default_top_k == 8
     assert settings.extraction.confidence_floor == 0.5
     assert settings.extraction.max_extraction_chunks == 800

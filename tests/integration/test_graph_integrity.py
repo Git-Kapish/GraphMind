@@ -1,7 +1,5 @@
 """Integration tests for graph projection integrity, provenance tracing, and rebuild idempotency (PRD FR-1.5, Milestone M3)."""
 
-import pytest
-
 from kgrag.db.neo4j import get_session
 from kgrag.db.postgres import get_connection
 from kgrag.graph.rebuild import rebuild_graph_from_postgres
@@ -103,4 +101,6 @@ def test_graph_provenance_tracing():
                 assert len(chunk_rows) > 0
                 found_chunk_ids = {cr["chunk_id"] for cr in chunk_rows}
                 for cid in chunk_ids:
-                    assert cid in found_chunk_ids, f"Provenance broken: chunk_id {cid} missing from chunks table!"
+                    assert cid in found_chunk_ids, (
+                        f"Provenance broken: chunk_id {cid} missing from chunks table!"
+                    )

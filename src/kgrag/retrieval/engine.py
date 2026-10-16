@@ -3,6 +3,7 @@
 import logging
 import time
 from typing import Any, Literal
+
 from pydantic import BaseModel, Field
 
 from kgrag.graph.templates import (
@@ -17,7 +18,6 @@ from kgrag.graph.templates import (
     query_two_hop,
 )
 from kgrag.vector.embeddings import query_vector_baseline
-from kgrag.vector.provenance import link_mention_to_entities
 
 logger = logging.getLogger(__name__)
 
@@ -76,18 +76,27 @@ class RetrievalEngine:
         tid = TemplateId(template_id)
         raw_paths: list[dict[str, Any]] = []
 
-        if tid in (TemplateId.NEIGHBORS, TemplateId.TWO_HOP, TemplateId.COUNT_BY_RELATION, TemplateId.OFFICERS_OF):
+        if tid in (
+            TemplateId.NEIGHBORS,
+            TemplateId.TWO_HOP,
+            TemplateId.COUNT_BY_RELATION,
+            TemplateId.OFFICERS_OF,
+        ):
             if not entity_1:
                 raise ValueError(f"{tid.value} template requires entity_1.")
 
         if tid == TemplateId.NEIGHBORS:
             raw_paths = query_neighbors(entity_1, relation_type=relation_type, limit=limit)
         elif tid == TemplateId.TWO_HOP:
-            raw_paths = query_two_hop(entity_1, relation_1=relation_type, relation_2=relation_2, limit=limit)
+            raw_paths = query_two_hop(
+                entity_1, relation_1=relation_type, relation_2=relation_2, limit=limit
+            )
         elif tid == TemplateId.SHARED_NEIGHBORS:
             if not entity_1 or not entity_2:
                 raise ValueError("SHARED_NEIGHBORS template requires both entity_1 and entity_2.")
-            raw_paths = query_shared_neighbors(entity_1, entity_2, relation_type=relation_type, limit=limit)
+            raw_paths = query_shared_neighbors(
+                entity_1, entity_2, relation_type=relation_type, limit=limit
+            )
         elif tid == TemplateId.PATH_BETWEEN:
             if not entity_2:
                 raise ValueError("PATH_BETWEEN template requires entity_2.")
@@ -120,7 +129,16 @@ class RetrievalEngine:
             ]
 
             nodes = []
-            for k in ("source", "intermediate", "target", "entity_1", "shared_entity", "entity_2", "officer_name", "company_name"):
+            for k in (
+                "source",
+                "intermediate",
+                "target",
+                "entity_1",
+                "shared_entity",
+                "entity_2",
+                "officer_name",
+                "company_name",
+            ):
                 if k in p and p[k] and p[k] not in nodes:
                     nodes.append(str(p[k]))
             if "path_nodes" in p:
@@ -140,7 +158,9 @@ class RetrievalEngine:
                     relations=relations,
                     observation_ids=p.get("observation_ids", []),
                     evidence=evidence_items,
-                    metadata={k: v for k, v in p.items() if k not in ("evidence", "observation_ids")},
+                    metadata={
+                        k: v for k, v in p.items() if k not in ("evidence", "observation_ids")
+                    },
                 )
             )
 

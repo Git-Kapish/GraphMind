@@ -1,6 +1,7 @@
 """Unit tests for Statistical Reporting Engine (PRD §2.2)."""
 
 import pytest
+
 from kgrag.benchmarks.statistics import (
     mcnemar_exact_test,
     paired_bootstrap_ci,
@@ -18,7 +19,6 @@ def test_wilson_ci():
     lower, upper = wilson_ci(10, 10)
     assert 0.65 < lower < 0.75
     assert pytest.approx(upper, 1e-6) == 1.0
-
 
     # 50 out of 100
     lower, upper = wilson_ci(50, 100)

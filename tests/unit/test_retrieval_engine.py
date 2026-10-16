@@ -27,7 +27,9 @@ def test_engine_retrieve_graph_neighbors(engine):
 
 def test_engine_retrieve_graph_shared_neighbors(engine):
     """Verify 2-hop shared neighbor path retrieval."""
-    paths = engine.retrieve_graph(TemplateId.SHARED_NEIGHBORS, entity_1="nvidia", entity_2="microsoft", limit=3)
+    paths = engine.retrieve_graph(
+        TemplateId.SHARED_NEIGHBORS, entity_1="nvidia", entity_2="microsoft", limit=3
+    )
     assert len(paths) > 0
     assert paths[0].template_id == "shared_neighbors"
     assert len(paths[0].nodes) >= 3

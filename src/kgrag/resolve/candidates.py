@@ -1,6 +1,7 @@
 """Entity candidate generator and similarity matching (PRD §8, Milestone M3)."""
 
 from dataclasses import dataclass
+
 import numpy as np
 
 from kgrag.resolve.normalizer import (

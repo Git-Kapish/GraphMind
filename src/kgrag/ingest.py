@@ -2,7 +2,6 @@
 
 import argparse
 import hashlib
-import json
 import logging
 import sys
 import time
@@ -108,7 +107,11 @@ def reset_failed_checkpoints() -> int:
             cache_deleted = cur.rowcount
             cur.execute("DELETE FROM ingestion_checkpoints WHERE status = 'failed';")
             checkpoints_deleted = cur.rowcount
-    logger.info("Cleared %d failed cache entries and %d failed checkpoints.", cache_deleted, checkpoints_deleted)
+    logger.info(
+        "Cleared %d failed cache entries and %d failed checkpoints.",
+        cache_deleted,
+        checkpoints_deleted,
+    )
     return cache_deleted + checkpoints_deleted
 
 
@@ -143,7 +146,10 @@ def run_dry_run(sample_size: int = 20) -> dict[str, Any]:
         return {}
 
     print("\n" + "=" * 75, flush=True)
-    print(f"  KNOWLEDGE GRAPH RAG: INGESTION DRY-RUN (SAMPLE: {len(sampled_chunks)} CHUNKS)", flush=True)
+    print(
+        f"  KNOWLEDGE GRAPH RAG: INGESTION DRY-RUN (SAMPLE: {len(sampled_chunks)} CHUNKS)",
+        flush=True,
+    )
     print(f"  Target Model: {settings.llm.model} | Runtime: {settings.llm.runtime}", flush=True)
     print(f"  Hardware: Local CPU | Total Ingested Chunks in DB: {total_db_chunks}", flush=True)
     print("=" * 75 + "\n", flush=True)
@@ -188,7 +194,9 @@ def run_dry_run(sample_size: int = 20) -> dict[str, Any]:
             rel_summary = ", ".join(f"{r['relation_type']}" for r in relations[:2])
             if len(relations) > 2:
                 rel_summary += f" (+{len(relations) - 2} more)"
-            print(f"{chunk_id:<35} | {'PASS':<10} | {elapsed:>5.2f}s | {rel_summary or 'None verified'}")
+            print(
+                f"{chunk_id:<35} | {'PASS':<10} | {elapsed:>5.2f}s | {rel_summary or 'None verified'}"
+            )
         else:
             print(f"{chunk_id:<35} | {'SKIP':<10} | {'0.00s':>6} | (Skipped by prefilter)")
 
@@ -208,7 +216,9 @@ def run_dry_run(sample_size: int = 20) -> dict[str, Any]:
     print("  DRY-RUN MEASURED BENCHMARK & EXTRAPOLATION SUMMARY (PRD §5.7, FR-1.6)")
     print("=" * 75)
     print(f"- Sampled Chunks Evaluated:        {len(sampled_chunks)}")
-    print(f"- Pre-Filter Pass Rate:            {pass_rate * 100:.1f}% ({prefilter_passed}/{len(sampled_chunks)})")
+    print(
+        f"- Pre-Filter Pass Rate:            {pass_rate * 100:.1f}% ({prefilter_passed}/{len(sampled_chunks)})"
+    )
     print(f"- LLM Model Calls Executed:        {llm_invocations}")
     print(f"- Total Verified Relations Found:  {extracted_relations_count}")
     print(f"- Deterministic Officer Relations: {deterministic_officer_count}")
@@ -217,8 +227,12 @@ def run_dry_run(sample_size: int = 20) -> dict[str, Any]:
     print(f"- Total Chunks Available in DB:    {total_db_chunks}")
     print(f"- Projected LLM Chunks to Extract: {estimated_passed_chunks}")
     print(f"- Estimated Ingestion Time (LLM):  {estimated_total_hours:.2f} hours")
-    print(f"- Recommended max_extraction_chunks: {recommended_chunk_budget} chunks (for <= 1 hr run)")
-    print(f"- Configured max_extraction_chunks:  {settings.extraction.max_extraction_chunks} chunks")
+    print(
+        f"- Recommended max_extraction_chunks: {recommended_chunk_budget} chunks (for <= 1 hr run)"
+    )
+    print(
+        f"- Configured max_extraction_chunks:  {settings.extraction.max_extraction_chunks} chunks"
+    )
     print("\n[BOTTLENECK & COMPUTE BUDGET ADVISORY]")
     print("  Local CPU execution performs best when deterministic parsers (Exhibit 21 + Officers)")
     print("  extract 80%+ of relational edges in <0.2s, while LLM extraction is reserved for")
@@ -291,7 +305,9 @@ def run_scale_ingestion(
         # -------------------------------------------------------------
         fetch_status = get_latest_checkpoint_status(ticker, "fetch_parse")
         if fetch_status == "completed" and not force:
-            logger.info("[%s] Fetch/Parse already marked completed in checkpoint. Loading...", ticker)
+            logger.info(
+                "[%s] Fetch/Parse already marked completed in checkpoint. Loading...", ticker
+            )
 
         t0 = time.perf_counter()
         try:
@@ -339,7 +355,9 @@ def run_scale_ingestion(
             elapsed_seconds=time.perf_counter() - t0,
             metadata={"sections": [s.item for s in parsed.sections]},
         )
-        logger.info("[%s] Chunked into %d chunks in %.2fs", ticker, num_chunks, time.perf_counter() - t0)
+        logger.info(
+            "[%s] Chunked into %d chunks in %.2fs", ticker, num_chunks, time.perf_counter() - t0
+        )
 
         # -------------------------------------------------------------
         # STAGE 3: Deterministic Parsing (Exhibit 21 + Officers)
@@ -389,7 +407,9 @@ def run_scale_ingestion(
         # -------------------------------------------------------------
         if skip_llm:
             logger.info("[%s] Skipping LLM extraction as requested (--skip-llm).", ticker)
-            record_checkpoint(run_id=run_id, ticker=ticker, stage="llm_extraction", status="skipped")
+            record_checkpoint(
+                run_id=run_id, ticker=ticker, stage="llm_extraction", status="skipped"
+            )
         else:
             t0 = time.perf_counter()
             ticker_llm_obs = 0
@@ -537,7 +557,9 @@ def run_scale_ingestion(
     print("=" * 75)
     print(f"- Run ID:                          {run_id}")
     print(f"- Target Subset:                   {subset.upper()} ({len(tickers)} Filers)")
-    print(f"- Total Ingestion Time:            {total_elapsed:.2f} seconds ({total_elapsed / 60.0:.2f} min)")
+    print(
+        f"- Total Ingestion Time:            {total_elapsed:.2f} seconds ({total_elapsed / 60.0:.2f} min)"
+    )
     print(f"- New Chunks Ingested:             {total_chunks_ingested}")
     print(f"- Deterministic Observations:      {total_deterministic_obs}")
     print(f"- LLM Verified Relations:          {total_llm_obs}")
@@ -564,20 +586,43 @@ def run_scale_ingestion(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Knowledge Graph RAG Scale Ingestion & Dry-Run CLI (PRD §5.7, FR-1.6)")
-    parser.add_argument("--dry-run", action="store_true", help="Run benchmark dry-run on sampled chunks")
-    parser.add_argument("--sample-size", type=int, default=20, help="Number of chunks to sample for dry-run (default: 20)")
+    parser = argparse.ArgumentParser(
+        description="Knowledge Graph RAG Scale Ingestion & Dry-Run CLI (PRD §5.7, FR-1.6)"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Run benchmark dry-run on sampled chunks"
+    )
+    parser.add_argument(
+        "--sample-size",
+        type=int,
+        default=20,
+        help="Number of chunks to sample for dry-run (default: 20)",
+    )
     parser.add_argument(
         "--subset",
         choices=["dev", "expanded", "full"],
         default="expanded",
         help="Corpus subset: dev (6 filers), expanded (4 new filers), full (all 10 filers)",
     )
-    parser.add_argument("--confirm", action="store_true", help="Confirm execution of full ingestion run")
-    parser.add_argument("--max-chunks", type=int, default=None, help="Maximum chunks to send to LLM extraction")
-    parser.add_argument("--retry-failed", action="store_true", help="Retry failed extractions from cache/checkpoints")
-    parser.add_argument("--skip-llm", action="store_true", help="Fast mode: run deterministic parsers and embeddings only")
-    parser.add_argument("--force", action="store_true", help="Force re-execution of previously completed stages")
+    parser.add_argument(
+        "--confirm", action="store_true", help="Confirm execution of full ingestion run"
+    )
+    parser.add_argument(
+        "--max-chunks", type=int, default=None, help="Maximum chunks to send to LLM extraction"
+    )
+    parser.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Retry failed extractions from cache/checkpoints",
+    )
+    parser.add_argument(
+        "--skip-llm",
+        action="store_true",
+        help="Fast mode: run deterministic parsers and embeddings only",
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Force re-execution of previously completed stages"
+    )
 
     args = parser.parse_args()
 

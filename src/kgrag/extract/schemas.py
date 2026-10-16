@@ -2,6 +2,7 @@
 
 from enum import Enum
 from typing import Any
+
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -104,7 +105,6 @@ def _match_relation_type(val: Any) -> RelationType | None:
         "PROVIDES": RelationType.OFFERS,
     }
     return synonyms.get(clean)
-
 
 
 class ExtractedRelation(BaseModel):

@@ -48,7 +48,10 @@ def evaluate_model_on_sample(
             valid_json_count += 1
             total_quote_verified_relations += len(relations)
             total_relations_extracted += len(relations)
-            print(f"[{idx}/{total_chunks}] {chunk_id}: {len(relations)} relations ({elapsed:.2f}s)", flush=True)
+            print(
+                f"[{idx}/{total_chunks}] {chunk_id}: {len(relations)} relations ({elapsed:.2f}s)",
+                flush=True,
+            )
         except Exception as e:
             elapsed = time.perf_counter() - t0
             total_elapsed += elapsed
@@ -73,7 +76,9 @@ def evaluate_model_on_sample(
     }
 
 
-def run_model_selection_gate(sample_size: int = 10, models: list[str] | None = None) -> list[dict[str, Any]]:
+def run_model_selection_gate(
+    sample_size: int = 10, models: list[str] | None = None
+) -> list[dict[str, Any]]:
     """Run model selection gate comparing candidate models (§6.1)."""
     candidate_models = models or ["llama3.2:latest", "qwen2.5:3b"]
 
@@ -106,13 +111,15 @@ def run_model_selection_gate(sample_size: int = 10, models: list[str] | None = N
     print("\n" + "=" * 70)
     print("  MODEL SELECTION GATE BENCHMARK COMPARISON (§6.1)")
     print("=" * 70)
-    print(f"{'Model':<20} | {'JSON Valid':<10} | {'Quote Match':<11} | {'Relations':<9} | {'Sec/Chunk'}")
+    print(
+        f"{'Model':<20} | {'JSON Valid':<10} | {'Quote Match':<11} | {'Relations':<9} | {'Sec/Chunk'}"
+    )
     print("-" * 70)
     for r in results:
         print(
             f"{r['model']:<20} | "
-            f"{r['valid_json_rate']*100:>8.1f}% | "
-            f"{r['quote_match_rate']*100:>9.1f}% | "
+            f"{r['valid_json_rate'] * 100:>8.1f}% | "
+            f"{r['quote_match_rate'] * 100:>9.1f}% | "
             f"{r['total_relations']:>9} | "
             f"{r['avg_sec_per_chunk']:>6.2f}s"
         )

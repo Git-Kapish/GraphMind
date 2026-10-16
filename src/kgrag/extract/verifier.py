@@ -2,6 +2,7 @@
 
 import logging
 import re
+
 from rapidfuzz import fuzz
 
 logger = logging.getLogger(__name__)

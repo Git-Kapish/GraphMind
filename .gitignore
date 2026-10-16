@@ -34,8 +34,9 @@ models/
 
 # Environment & Secrets (PRD §0 rule 6)
 .env
-.env.example
 .env.local
+.env.*.local
+!.env.example
 *.pem
 *.key
 
@@ -50,6 +51,10 @@ neo4j_logs/
 htmlcov/
 .ruff_cache/
 .mypy_cache/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
 
 # IDE & OS
 .vscode/

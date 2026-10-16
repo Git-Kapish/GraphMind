@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Network, Info, Eye, ExternalLink } from 'lucide-react';
+import { Network, Info } from 'lucide-react';
 
-export default function GraphCanvas({ graphPaths, onSelectEvidence }) {
+export default function GraphCanvas({ graphPaths }) {
   const [selectedItem, setSelectedItem] = useState(null);
 
   if (!graphPaths || graphPaths.length === 0) {
@@ -24,7 +24,7 @@ export default function GraphCanvas({ graphPaths, onSelectEvidence }) {
     const relations = path.relations || [];
     const evidence = path.evidence || [];
 
-    nodes.forEach((nodeName, nIdx) => {
+    nodes.forEach((nodeName) => {
       if (!nodeSet.has(nodeName)) {
         nodeSet.add(nodeName);
         // Categorize type heuristically

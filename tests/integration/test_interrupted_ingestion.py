@@ -7,8 +7,10 @@ Verifies that:
 4. Resumed ingestion does not produce duplicate chunks, observations, or orphan records.
 """
 
-import pytest
 import uuid
+
+import pytest
+
 from kgrag.db.postgres import get_connection
 from kgrag.ingest import (
     get_latest_checkpoint_status,

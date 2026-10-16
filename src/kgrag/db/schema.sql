@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS chunks (
     char_start INT NOT NULL,
     char_end INT NOT NULL,
     entity_ids TEXT[] DEFAULT '{}',
-    embedding vector(768),
+    embedding vector(2048),
     embedding_model VARCHAR(64),
     chunker_version VARCHAR(32)
 );
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS entities (
     type VARCHAR(32) NOT NULL,
     canonical_name VARCHAR(255) NOT NULL,
     aliases TEXT[] DEFAULT '{}',
-    name_embedding vector(768),
+    name_embedding vector(2048),
     embedding_model VARCHAR(64)
 );
 CREATE INDEX IF NOT EXISTS idx_entities_canonical_name ON entities(canonical_name);

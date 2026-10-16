@@ -9,7 +9,6 @@ from kgrag.graph.templates import (
     query_neighbors,
     query_path_between,
     query_shared_neighbors,
-    query_two_hop,
 )
 from kgrag.vector.embeddings import query_vector_baseline
 
@@ -245,10 +244,10 @@ def run_vertical_slice() -> dict[str, Any]:
     print(f"- Total Hand-Verified Questions:    {total_q}")
     print(f"- Multi-Hop Questions Evaluated:    {multihop_total}")
     print(
-        f"- System A (Vector Baseline) Score:  {vector_correct}/{total_q} ({vector_correct/total_q*100:.1f}%)"
+        f"- System A (Vector Baseline) Score:  {vector_correct}/{total_q} ({vector_correct / total_q * 100:.1f}%)"
     )
     print(
-        f"- System B (Graph Retrieval) Score:  {graph_correct}/{total_q} ({graph_correct/total_q*100:.1f}%)"
+        f"- System B (Graph Retrieval) Score:  {graph_correct}/{total_q} ({graph_correct / total_q * 100:.1f}%)"
     )
     print(f"- Multi-Hop Questions Won by Graph: {multihop_graph_wins}")
     print(

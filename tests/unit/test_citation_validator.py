@@ -12,8 +12,12 @@ from kgrag.answer.validator import (
 @pytest.fixture
 def mock_registry():
     registry = EvidenceRegistry()
-    registry.register(EvidenceItem(label="[G1]", chunk_id="chunk_graph_01", text_snippet="Graph fact 1"))
-    registry.register(EvidenceItem(label="[G2]", chunk_id="chunk_graph_02", text_snippet="Graph fact 2"))
+    registry.register(
+        EvidenceItem(label="[G1]", chunk_id="chunk_graph_01", text_snippet="Graph fact 1")
+    )
+    registry.register(
+        EvidenceItem(label="[G2]", chunk_id="chunk_graph_02", text_snippet="Graph fact 2")
+    )
     registry.register(EvidenceItem(label="[P1]", chunk_id="chunk_vec_01", text_snippet="Passage 1"))
     registry.register(EvidenceItem(label="[P2]", chunk_id="chunk_vec_02", text_snippet="Passage 2"))
     return registry
@@ -21,7 +25,9 @@ def mock_registry():
 
 def test_parse_citation_labels():
     """Verify regex extraction of bracketed citation labels."""
-    text = "NVIDIA partnered with Microsoft [G1] to expand Azure data centers [P1] and AI clouds [G2]."
+    text = (
+        "NVIDIA partnered with Microsoft [G1] to expand Azure data centers [P1] and AI clouds [G2]."
+    )
     labels = parse_citation_labels(text)
     assert labels == ["[G1]", "[P1]", "[G2]"]
 

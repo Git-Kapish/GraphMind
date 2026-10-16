@@ -1,7 +1,5 @@
 """Unit tests for Context Assembly and Request-Scoped Evidence Registry (PRD §7.4, FR-4.2, Milestone M6)."""
 
-import pytest
-
 from kgrag.answer.context import EvidenceRegistry, assemble_context
 from kgrag.retrieval.engine import GraphEvidenceItem, GraphPathResult, VectorPassageResult
 
@@ -12,7 +10,10 @@ def test_evidence_registry_basic_operations():
     assert len(registry) == 0
 
     from kgrag.answer.context import EvidenceItem
-    item1 = EvidenceItem(label="[G1]", chunk_id="chk_01", text_snippet="NVIDIA partnered with Microsoft")
+
+    item1 = EvidenceItem(
+        label="[G1]", chunk_id="chk_01", text_snippet="NVIDIA partnered with Microsoft"
+    )
     item2 = EvidenceItem(label="[P1]", chunk_id="chk_02", text_snippet="Passage text")
 
     registry.register(item1)

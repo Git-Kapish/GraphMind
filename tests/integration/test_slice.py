@@ -1,6 +1,5 @@
 """Integration test running Milestone M2.5 Thin Vertical Slice (PRD §0 rule 13, §14)."""
 
-import pytest
 from kgrag.slice_demo import run_vertical_slice
 
 

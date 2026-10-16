@@ -1,0 +1,44 @@
+# Git and VCS
+.git/
+.gitignore
+.gitattributes
+
+# Environment and secrets (CRITICAL: never bake secrets into images)
+.env
+.env.*
+!.env.example
+
+# Python cache and environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Tests, benchmarks, and scratch scripts
+tests/
+benchmarks/
+scratch/
+test_e2e.py
+
+# Raw SEC filings and data
+data/raw/
+data/cache/
+
+# Node and frontend build artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/.oxlintrc.json
+
+# IDE and OS artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

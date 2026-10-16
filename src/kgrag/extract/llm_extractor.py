@@ -1,10 +1,10 @@
 """Structured LLM extraction pipeline with caching, retries, and quote verification (PRD FR-1.3)."""
 
 import hashlib
-import json
 import logging
 import time
 from typing import Any
+
 from psycopg.types.json import Jsonb
 
 from kgrag.config import get_ontology, get_settings
@@ -61,7 +61,9 @@ Extraction Output:
 class LLMExtractor:
     """Structured extraction pipeline enforcing ontology constraints and evidence verification."""
 
-    def __init__(self, llm_client: LLMClient | None = None, prefilter: ChunkPreFilter | None = None):
+    def __init__(
+        self, llm_client: LLMClient | None = None, prefilter: ChunkPreFilter | None = None
+    ):
         self.llm = llm_client or get_llm_client()
         self.prefilter = prefilter or ChunkPreFilter()
         self.settings = get_settings()
@@ -284,7 +286,10 @@ Text:
             self.save_cache_result(
                 chunk_sha,
                 status="success",
-                result_json={"verified_relations": verified_relations, "extracted_count": len(result.relations)},
+                result_json={
+                    "verified_relations": verified_relations,
+                    "extracted_count": len(result.relations),
+                },
                 latency_ms=elapsed_ms,
             )
 

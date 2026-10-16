@@ -99,8 +99,104 @@ def validate_vector_dimensions() -> dict[str, Any]:
                 "Changing dimension requires an explicit schema migration."
             )
 
-    logger.info("Vector dimensions validated: all tables aligned with %d-d embeddings.", expected_dim)
+    logger.info(
+        "Vector dimensions validated: all tables aligned with %d-d embeddings.", expected_dim
+    )
     return {"status": "ok", "dimension": expected_dim, "checked": len(rows)}
+
+
+def migrate_vector_dimensions(
+    target_dim: int = 2048, reset_existing: bool = True
+) -> dict[str, Any]:
+    """Migrate PostgreSQL pgvector column dimensions and reset legacy vectors to prevent mixing (PRD FR-2.5).
+
+    Args:
+        target_dim: The new embedding vector dimension (default 2048 for nvidia/nemotron-3-embed-1b:free).
+        reset_existing: If True, sets legacy embeddings to NULL to prevent mixed vector space contamination.
+
+    Returns:
+        Summary dictionary with previous dimensions, new dimension, and unindexed chunk count.
+    """
+    dim_sql = """
+    SELECT attrelid::regclass::text AS table_name, attname, atttypmod
+    FROM pg_attribute
+    WHERE attrelid IN ('chunks'::regclass, 'entities'::regclass)
+      AND attname IN ('embedding', 'name_embedding');
+    """
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(dim_sql)
+            rows = cur.fetchall()
+
+    prev_dims = {f"{r['table_name']}.{r['attname']}": r["atttypmod"] for r in rows}
+    needs_migration = any(dim != target_dim for dim in prev_dims.values())
+
+    if not needs_migration:
+        logger.info("All vector columns already aligned with %d-d.", target_dim)
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT count(*) as unindexed FROM chunks WHERE embedding IS NULL;")
+                unindexed = cur.fetchone()["unindexed"]
+        return {
+            "status": "already_aligned",
+            "dimension": target_dim,
+            "dimensions": prev_dims,
+            "unindexed_chunks": unindexed,
+        }
+
+    logger.warning("Migrating vector columns from %s to %d-d...", prev_dims, target_dim)
+
+    migration_commands = [
+        "DROP INDEX IF EXISTS idx_chunks_embedding;",
+        "DROP INDEX IF EXISTS idx_entities_name_embedding;",
+        f"ALTER TABLE chunks ALTER COLUMN embedding TYPE vector({target_dim}) USING NULL;",
+        f"ALTER TABLE entities ALTER COLUMN name_embedding TYPE vector({target_dim}) USING NULL;",
+    ]
+    if reset_existing:
+        migration_commands.extend(
+            [
+                "UPDATE chunks SET embedding = NULL, embedding_model = NULL;",
+                "UPDATE entities SET name_embedding = NULL, embedding_model = NULL;",
+            ]
+        )
+
+    if target_dim <= 2000:
+        migration_commands.extend(
+            [
+                "CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON chunks USING hnsw (embedding vector_cosine_ops);",
+                "CREATE INDEX IF NOT EXISTS idx_entities_name_embedding ON entities USING hnsw (name_embedding vector_cosine_ops);",
+            ]
+        )
+    else:
+        migration_commands.extend(
+            [
+                f"CREATE INDEX IF NOT EXISTS idx_chunks_embedding ON chunks USING hnsw ((embedding::halfvec({target_dim})) halfvec_cosine_ops);",
+                f"CREATE INDEX IF NOT EXISTS idx_entities_name_embedding ON entities USING hnsw ((name_embedding::halfvec({target_dim})) halfvec_cosine_ops);",
+            ]
+        )
+
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            for cmd in migration_commands:
+                try:
+                    cur.execute(cmd)
+                except Exception as e:
+                    logger.warning("Migration command error: %s (%s)", cmd, e)
+
+            cur.execute("SELECT count(*) as unindexed FROM chunks WHERE embedding IS NULL;")
+            unindexed = cur.fetchone()["unindexed"]
+
+    logger.info(
+        "Successfully migrated vector columns to %d-d. %d chunks ready for re-embedding.",
+        target_dim,
+        unindexed,
+    )
+    return {
+        "status": "migrated",
+        "previous_dimensions": prev_dims,
+        "new_dimension": target_dim,
+        "unindexed_chunks": unindexed,
+    }
 
 
 def query_vector_baseline(
@@ -156,4 +252,3 @@ def query_vector_baseline(
 if __name__ == "__main__":
     validate_vector_dimensions()
     embed_unindexed_chunks()
-

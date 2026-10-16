@@ -1,6 +1,5 @@
 """Unit tests for ChunkPreFilter (PRD §5.7)."""
 
-import pytest
 from kgrag.extract.prefilter import ChunkPreFilter
 
 

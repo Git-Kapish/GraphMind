@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Sparkles, SlidersHorizontal, ArrowRight, CornerDownLeft, SplitSquareVertical } from 'lucide-react';
+import { Search, Sparkles, SlidersHorizontal, CornerDownLeft, SplitSquareVertical } from 'lucide-react';
 
 const EXAMPLE_CATEGORIES = [
   {

@@ -1,7 +1,7 @@
 """Integration tests for FastAPI Query Endpoints and Baseline Endpoint (PRD §8, Milestone M7)."""
 
-import pytest
 import httpx
+import pytest
 
 from kgrag.api.app import app
 from kgrag.db.postgres import get_connection
@@ -37,7 +37,9 @@ async def test_get_entity_detail_existing(test_client):
     # Fetch an existing canonical entity from database
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT entity_id, canonical_name FROM entities WHERE canonical_name ILIKE '%nvidia%' LIMIT 1;")
+            cur.execute(
+                "SELECT entity_id, canonical_name FROM entities WHERE canonical_name ILIKE '%nvidia%' LIMIT 1;"
+            )
             row = cur.fetchone()
 
     assert row is not None, "Need at least one entity in database"
@@ -153,7 +155,9 @@ async def test_query_baseline_vector_retrieval(test_client):
         # Verify entry was recorded into routing_log
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT * FROM routing_log WHERE request_id = %s;", (data["request_id"],))
+                cur.execute(
+                    "SELECT * FROM routing_log WHERE request_id = %s;", (data["request_id"],)
+                )
                 logged = cur.fetchone()
                 assert logged is not None
                 assert logged["route"] == "vector_baseline"
@@ -190,7 +194,9 @@ async def test_query_auto_relational_graph(test_client):
         # Verify routing log
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT * FROM routing_log WHERE request_id = %s;", (data["request_id"],))
+                cur.execute(
+                    "SELECT * FROM routing_log WHERE request_id = %s;", (data["request_id"],)
+                )
                 logged = cur.fetchone()
                 assert logged is not None
                 assert logged["route"] == data["route"]["chosen"]

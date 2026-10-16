@@ -200,7 +200,9 @@ def query_endpoint(
 
         # If auto mode selected graph but no paths found, fall back to vector retrieval (PRD FR-3.1)
         if not graph_paths and req.mode == "auto":
-            logger.info("Graph path returned 0 results in auto mode; falling back to vector retrieval.")
+            logger.info(
+                "Graph path returned 0 results in auto mode; falling back to vector retrieval."
+            )
             vector_passages = retrieval_engine.retrieve_vector(req.question, top_k=req.top_k)
             fallback_used = True
     else:  # hybrid
@@ -309,7 +311,11 @@ def query_endpoint(
         debug_graph_paths = [gp.model_dump() for gp in graph_paths]
         debug_passages = [vp.model_dump() for vp in vector_passages]
 
-    citation_passed = outcome.resolution_rate >= 1.0 if outcome.citations else (outcome.status in ("refusal", "needs_clarification"))
+    citation_passed = (
+        outcome.resolution_rate >= 1.0
+        if outcome.citations
+        else (outcome.status in ("refusal", "needs_clarification"))
+    )
 
     return QueryResponse(
         answer=outcome.answer,
@@ -433,7 +439,11 @@ def baseline_query_endpoint(
     if req.debug:
         debug_passages = [vp.model_dump() for vp in vector_passages]
 
-    citation_passed = outcome.resolution_rate >= 1.0 if outcome.citations else (outcome.status in ("refusal", "needs_clarification"))
+    citation_passed = (
+        outcome.resolution_rate >= 1.0
+        if outcome.citations
+        else (outcome.status in ("refusal", "needs_clarification"))
+    )
 
     return QueryResponse(
         answer=outcome.answer,
@@ -461,7 +471,9 @@ def baseline_query_endpoint(
 def get_entity_detail(entity_id: str) -> EntityDetailResponse:
     """Retrieve canonical entity metadata, merge provenance, and connected graph relationships (PRD §8)."""
     # 1. Query PostgreSQL entities table
-    ent_sql = "SELECT entity_id, canonical_name, type, aliases FROM entities WHERE entity_id = %(eid)s;"
+    ent_sql = (
+        "SELECT entity_id, canonical_name, type, aliases FROM entities WHERE entity_id = %(eid)s;"
+    )
     entity_row = None
     with pg_db.get_connection() as conn:
         with conn.cursor() as cur:

@@ -11,6 +11,7 @@ Implements strict evidence-grounded answer generation:
 import logging
 import time
 from typing import Any, Literal
+
 from pydantic import BaseModel, Field
 
 from kgrag.answer.context import EvidenceRegistry
@@ -19,7 +20,6 @@ from kgrag.answer.validator import (
     ResolvedCitation,
     validate_citations,
 )
-from kgrag.config import get_settings
 from kgrag.llm.client import get_llm_client
 
 logger = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ CRITICAL RULES FOR CITATION AND EVIDENCE GROUNDING:
 
 class GenerationOutcome(BaseModel):
     """Structured result of grounded generation and citation validation."""
+
     question: str
     answer: str
     status: Literal["answered", "refusal", "validation_failed"]

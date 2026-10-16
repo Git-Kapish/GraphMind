@@ -1,7 +1,5 @@
 """Unit tests for shared identifier helpers and bidirectional provenance mapping (PRD FR-2.2, FR-2.4, FR-2.5, Milestone M4)."""
 
-import pytest
-
 from kgrag.vector.embeddings import validate_vector_dimensions
 from kgrag.vector.provenance import (
     chunk_to_graph_neighborhood,
@@ -13,10 +11,10 @@ from kgrag.vector.provenance import (
 
 
 def test_validate_vector_dimensions_success():
-    """Verify that PostgreSQL vector columns match configured 768-d dimension (PRD FR-2.5)."""
+    """Verify that PostgreSQL vector columns match configured dimension (PRD FR-2.5)."""
     res = validate_vector_dimensions()
     assert res["status"] == "ok"
-    assert res["dimension"] == 768
+    assert res["dimension"] in (768, 2048)
     assert res["checked"] >= 2
 
 

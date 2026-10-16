@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, Network, Clock, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
+import { Database, Network } from 'lucide-react';
 import GraphCanvas from './GraphCanvas';
 
 export default function CompareView({

@@ -10,17 +10,16 @@ Orchestrates:
 import logging
 import time
 from typing import Any, Literal
+
 from pydantic import BaseModel, Field
 
-from kgrag.answer.context import EvidenceRegistry, assemble_context
-from kgrag.answer.generator import GenerationOutcome, generate_grounded_answer
+from kgrag.answer.context import assemble_context
+from kgrag.answer.generator import generate_grounded_answer
 from kgrag.answer.validator import ResolvedCitation
 from kgrag.graph.templates import StrictResolutionStatus, TemplateId, resolve_entity_strict
 from kgrag.retrieval.engine import (
-    GraphPathResult,
     RetrievalBundle,
     RetrievalEngine,
-    VectorPassageResult,
 )
 
 logger = logging.getLogger(__name__)
@@ -28,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 class GroundedAnswerResult(BaseModel):
     """Complete, fully verified response with mechanical citations and provenance (PRD §7.4, §14)."""
+
     question: str
     answer: str
     status: Literal["answered", "refusal", "needs_clarification", "validation_failed"]

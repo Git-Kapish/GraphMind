@@ -3,9 +3,8 @@
 import logging
 import re
 from typing import Any
-from neo4j import Session
 
-from kgrag.config import get_ontology
+from neo4j import Session
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,9 @@ ALLOWED_RELATIONS: set[str] = {
 SYMMETRIC_RELATIONS: set[str] = {"PARTNERS_WITH", "COMPETES_WITH"}
 
 
-def upsert_entities_batch(session: Session, entities: list[dict[str, Any]], batch_size: int = 500) -> int:
+def upsert_entities_batch(
+    session: Session, entities: list[dict[str, Any]], batch_size: int = 500
+) -> int:
     """Batch upsert :Entity nodes into Neo4j."""
     query = """
     UNWIND $batch AS item

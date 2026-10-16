@@ -1,19 +1,19 @@
 {
   "total_questions": 40,
-  "recall_at_3": 0.525,
-  "recall_at_5": 0.65,
-  "recall_at_10": 0.75,
-  "mrr": 0.52,
-  "avg_latency_ms": 80.2,
-  "hits_at_3": 21,
-  "hits_at_5": 26,
-  "hits_at_10": 30,
+  "recall_at_3": 0.7,
+  "recall_at_5": 0.725,
+  "recall_at_10": 0.85,
+  "mrr": 0.6258,
+  "avg_latency_ms": 1539.0,
+  "hits_at_3": 28,
+  "hits_at_5": 29,
+  "hits_at_10": 34,
   "ticker_breakdown": {
     "AMD": {
       "total": 7,
-      "hit_3": 4,
+      "hit_3": 6,
       "hit_5": 6,
-      "hit_10": 6
+      "hit_10": 7
     },
     "NVDA": {
       "total": 7,
@@ -23,26 +23,26 @@
     },
     "AVGO": {
       "total": 7,
-      "hit_3": 2,
-      "hit_5": 2,
-      "hit_10": 2
+      "hit_3": 3,
+      "hit_5": 4,
+      "hit_10": 5
     },
     "INTC": {
       "total": 7,
       "hit_3": 4,
-      "hit_5": 6,
-      "hit_10": 6
+      "hit_5": 4,
+      "hit_10": 5
     },
     "MU": {
       "total": 6,
-      "hit_3": 2,
-      "hit_5": 2,
-      "hit_10": 4
+      "hit_3": 3,
+      "hit_5": 3,
+      "hit_10": 5
     },
     "MSFT": {
       "total": 6,
-      "hit_3": 3,
-      "hit_5": 4,
+      "hit_3": 6,
+      "hit_5": 6,
       "hit_10": 6
     }
   },
@@ -57,14 +57,14 @@
       ],
       "retrieved_top3": [
         "0000002488-26-000018:item1:0011",
-        "0001045810-26-000021:item1:0008",
-        "wiki:14617:wiki_major_competitors:0025"
+        "0000002488-26-000018:item1:0007",
+        "0001045810-26-000021:item1:0008"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 72.1
+      "latency_ms": 623.1
     },
     {
       "id": "RET_02",
@@ -76,14 +76,14 @@
       ],
       "retrieved_top3": [
         "wiki:72536161:wiki_fabrication:0012",
-        "wiki:39120:wiki_fabrication:0020",
-        "0000723125-26-000023:item1:0007"
+        "0000002488-26-000018:item1a:0049",
+        "0000002488-26-000018:item1:0012"
       ],
-      "first_gold_rank": 4,
-      "hit_3": false,
+      "first_gold_rank": 3,
+      "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 87.4
+      "latency_ms": 607.4
     },
     {
       "id": "RET_03",
@@ -95,14 +95,14 @@
       ],
       "retrieved_top3": [
         "0000002488-26-000018:item1:0005",
-        "0000002488-26-000018:item1:0004",
-        "wiki:72536161:wiki_cpu_hardware:0009"
+        "0000002488-26-000018:item1:0006",
+        "0000002488-26-000018:item1:0004"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 89.9
+      "latency_ms": 658.5
     },
     {
       "id": "RET_04",
@@ -113,15 +113,15 @@
         "0000002488-26-000018:item1:0006"
       ],
       "retrieved_top3": [
-        "0000002488-26-000018:item1:0006",
         "0000002488-26-000018:item1:0005",
-        "wiki:72536161:wiki_graphics_hardware:0010"
+        "0000002488-26-000018:item1:0006",
+        "0001045810-26-000021:item1:0004"
       ],
-      "first_gold_rank": 1,
+      "first_gold_rank": 2,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 93.1
+      "latency_ms": 648.9
     },
     {
       "id": "RET_05",
@@ -132,15 +132,15 @@
         "0000002488-26-000018:item1:0003"
       ],
       "retrieved_top3": [
-        "0000002488-26-000018:item1:0001",
-        "wiki:72536161:wiki_partnerships:0015",
-        "wiki:72536161:wiki_semi-custom_and_game_console_products:0008"
+        "0000002488-26-000018:item7:0000",
+        "0000002488-26-000018:item1:0003",
+        "0000002488-26-000018:item7:0007"
       ],
-      "first_gold_rank": 4,
-      "hit_3": false,
+      "first_gold_rank": 2,
+      "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 68.3
+      "latency_ms": 663.0
     },
     {
       "id": "RET_06",
@@ -153,13 +153,13 @@
       "retrieved_top3": [
         "0000002488-26-000018:exhibit21:0000",
         "wiki:487445:wiki_subsidiaries:0006",
-        "0000723125-26-000023:exhibit21:0000"
+        "0000050863-26-000011:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 84.9
+      "latency_ms": 644.8
     },
     {
       "id": "RET_07",
@@ -170,15 +170,15 @@
         "0000002488-26-000018:item1a:0001"
       ],
       "retrieved_top3": [
-        "0000723125-26-000023:item1a:0031",
-        "0000002488-26-000018:item1a:0028",
-        "0000002488-26-000018:item1a:0031"
+        "0000002488-26-000018:item1:0014",
+        "0000723125-26-000023:item1:0016",
+        "0000002488-26-000018:item1a:0028"
       ],
-      "first_gold_rank": null,
+      "first_gold_rank": 9,
       "hit_3": false,
       "hit_5": false,
-      "hit_10": false,
-      "latency_ms": 76.3
+      "hit_10": true,
+      "latency_ms": 615.4
     },
     {
       "id": "RET_08",
@@ -191,14 +191,14 @@
       ],
       "retrieved_top3": [
         "0001045810-26-000021:item1:0001",
-        "wiki:39120:wiki_products_and_development:0004",
-        "0001045810-26-000021:item1:0000"
+        "0001045810-26-000021:item1:0000",
+        "0001045810-26-000021:item1:0005"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 75.9
+      "latency_ms": 654.7
     },
     {
       "id": "RET_09",
@@ -206,19 +206,19 @@
       "question": "What networking architectures and interconnect technologies does NVIDIA offer for AI data centers?",
       "category": "products",
       "gold_chunk_ids": [
-        "0001045810-26-000021:item1:0003",
-        "0001045810-26-000021:item1:0002"
+        "0001045810-26-000021:item1:0002",
+        "0001045810-26-000021:item1:0003"
       ],
       "retrieved_top3": [
         "0001045810-26-000021:item1:0003",
-        "0001045810-26-000021:item1:0001",
-        "0001045810-26-000021:item1:0005"
+        "0001045810-26-000021:item1:0000",
+        "0001730168-25-000121:item1:0001"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 75.8
+      "latency_ms": 642.0
     },
     {
       "id": "RET_10",
@@ -230,14 +230,14 @@
       ],
       "retrieved_top3": [
         "0001045810-26-000021:exhibit21:0000",
-        "0000804328-25-000085:exhibit21:0000",
+        "wiki:39120:wiki_founding:0001",
         "0000723125-26-000023:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 77.6
+      "latency_ms": 663.7
     },
     {
       "id": "RET_11",
@@ -248,15 +248,15 @@
         "0001045810-26-000021:item1a:0002"
       ],
       "retrieved_top3": [
-        "wiki:39120:wiki_products_and_development:0004",
         "0001045810-26-000021:item1a:0002",
-        "0001045810-26-000021:item1:0001"
+        "wiki:39120:wiki_founding:0001",
+        "0001045810-26-000021:item1a:0004"
       ],
-      "first_gold_rank": 2,
+      "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 68.9
+      "latency_ms": 660.1
     },
     {
       "id": "RET_12",
@@ -267,15 +267,15 @@
         "0001045810-26-000021:item1a:0015"
       ],
       "retrieved_top3": [
-        "0000320193-25-000079:item1a:0003",
         "0001045810-26-000021:item1a:0015",
-        "0001045810-26-000021:item1a:0014"
+        "wiki:39120:wiki_founding:0001",
+        "0001045810-26-000021:item7:0000"
       ],
-      "first_gold_rank": 2,
+      "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 79.9
+      "latency_ms": 672.2
     },
     {
       "id": "RET_13",
@@ -287,14 +287,14 @@
       ],
       "retrieved_top3": [
         "0001045810-26-000021:item1:0001",
-        "wiki:39120:wiki_products_and_development:0004",
-        "wiki:39120:wiki_open-source_software_support:0023"
+        "wiki:39120:wiki_open-source_software_support:0023",
+        "0001045810-26-000021:item1:0000"
       ],
       "first_gold_rank": null,
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 80.9
+      "latency_ms": 694.3
     },
     {
       "id": "RET_14",
@@ -306,14 +306,14 @@
       ],
       "retrieved_top3": [
         "0001045810-26-000021:exhibit21:0000",
-        "0001193125-26-323660:exhibit21:0000",
-        "0001730168-25-000121:exhibit21:0000"
+        "0000050863-26-000011:exhibit21:0000",
+        "0001652044-26-000018:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 95.3
+      "latency_ms": 622.7
     },
     {
       "id": "RET_15",
@@ -326,13 +326,13 @@
       "retrieved_top3": [
         "wiki:6896005:wiki_software:0013",
         "wiki:6896005:wiki_products:0009",
-        "wiki:6896005:wiki_origin_in_hewlett-packard:0000"
+        "wiki:6896005:wiki_move_into_software:0004"
       ],
       "first_gold_rank": null,
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 75.0
+      "latency_ms": 19594.8
     },
     {
       "id": "RET_16",
@@ -347,11 +347,11 @@
         "wiki:6896005:wiki_software:0013",
         "wiki:6896005:wiki_products:0009"
       ],
-      "first_gold_rank": null,
+      "first_gold_rank": 5,
       "hit_3": false,
-      "hit_5": false,
-      "hit_10": false,
-      "latency_ms": 76.2
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 679.6
     },
     {
       "id": "RET_17",
@@ -363,14 +363,14 @@
       ],
       "retrieved_top3": [
         "0001730168-25-000121:exhibit21:0000",
-        "0001652044-26-000018:exhibit21:0000",
-        "0000804328-25-000085:exhibit21:0000"
+        "0000804328-25-000085:exhibit21:0000",
+        "0000320193-25-000079:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 68.5
+      "latency_ms": 665.0
     },
     {
       "id": "RET_18",
@@ -383,13 +383,13 @@
       "retrieved_top3": [
         "wiki:6896005:wiki_products:0009",
         "wiki:6896005:wiki_software:0013",
-        "wiki:6896005:wiki_move_into_software:0004"
+        "0001730168-25-000121:item1:0000"
       ],
-      "first_gold_rank": null,
-      "hit_3": false,
-      "hit_5": false,
-      "hit_10": false,
-      "latency_ms": 64.8
+      "first_gold_rank": 3,
+      "hit_3": true,
+      "hit_5": true,
+      "hit_10": true,
+      "latency_ms": 795.8
     },
     {
       "id": "RET_19",
@@ -397,19 +397,19 @@
       "question": "What dependencies does Broadcom have on third-party foundries and outsourced manufacturing?",
       "category": "supply_chain_risks",
       "gold_chunk_ids": [
-        "0001730168-25-000121:item1a:0000",
-        "0001730168-25-000121:item1a:0001"
+        "0001730168-25-000121:item1a:0001",
+        "0001730168-25-000121:item1a:0000"
       ],
       "retrieved_top3": [
-        "wiki:6896005:wiki_software:0013",
-        "wiki:6896005:wiki_products:0009",
-        "wiki:6896005:wiki_origin_in_hewlett-packard:0000"
+        "0001730168-25-000121:item1:0008",
+        "0000050863-26-000011:item1a:0008",
+        "wiki:6896005:wiki_xpu:0014"
       ],
       "first_gold_rank": null,
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 78.4
+      "latency_ms": 632.8
     },
     {
       "id": "RET_20",
@@ -422,13 +422,13 @@
       "retrieved_top3": [
         "0001730168-25-000121:exhibit21:0000",
         "wiki:6896005:wiki_acquisition_of_and_change_of_name_to_broadcom_limited:0002",
-        "wiki:6896005:EX-infobox:0015"
+        "wiki:6896005:wiki_origin_in_hewlett-packard:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 80.3
+      "latency_ms": 577.4
     },
     {
       "id": "RET_21",
@@ -436,19 +436,19 @@
       "question": "How does Broadcom manage post-acquisition integration of acquired companies like VMware?",
       "category": "integration_risks",
       "gold_chunk_ids": [
-        "0001730168-25-000121:item1a:0000",
-        "0001730168-25-000121:item1:0000"
+        "0001730168-25-000121:item1:0000",
+        "0001730168-25-000121:item1a:0000"
       ],
       "retrieved_top3": [
         "wiki:6896005:wiki_2020s:0007",
-        "wiki:6896005:wiki_move_into_software:0004",
-        "wiki:6896005:wiki_software:0013"
+        "wiki:6896005:wiki_software:0013",
+        "0001730168-25-000121:exhibit21:0000"
       ],
-      "first_gold_rank": null,
+      "first_gold_rank": 10,
       "hit_3": false,
       "hit_5": false,
-      "hit_10": false,
-      "latency_ms": 71.8
+      "hit_10": true,
+      "latency_ms": 645.5
     },
     {
       "id": "RET_22",
@@ -460,14 +460,14 @@
       ],
       "retrieved_top3": [
         "0000050863-26-000011:item1a:0002",
-        "wiki:14617:wiki_major_competitors:0025",
-        "0000002488-26-000018:item1a:0002"
+        "0000804328-25-000085:item1a:0032",
+        "wiki:14617:wiki_renewed_competition_and_other_developments_(2018\u2013present):0007"
       ],
-      "first_gold_rank": 4,
+      "first_gold_rank": 6,
       "hit_3": false,
-      "hit_5": true,
+      "hit_5": false,
       "hit_10": true,
-      "latency_ms": 85.4
+      "latency_ms": 708.5
     },
     {
       "id": "RET_23",
@@ -480,13 +480,13 @@
       "retrieved_top3": [
         "0000050863-26-000011:item1a:0002",
         "wiki:14617:wiki_renewed_competition_and_other_developments_(2018\u2013present):0007",
-        "wiki:14617:wiki_major_competitors:0025"
+        "0000050863-26-000011:item1a:0003"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 76.8
+      "latency_ms": 638.3
     },
     {
       "id": "RET_24",
@@ -498,14 +498,14 @@
       ],
       "retrieved_top3": [
         "0000050863-26-000011:exhibit21:0000",
-        "0000723125-26-000023:exhibit21:0000",
-        "0000320193-25-000079:exhibit21:0000"
+        "0001045810-26-000021:exhibit21:0000",
+        "0001193125-26-323660:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 95.5
+      "latency_ms": 673.1
     },
     {
       "id": "RET_25",
@@ -516,15 +516,15 @@
         "0000050863-26-000011:item1a:0000"
       ],
       "retrieved_top3": [
-        "0000804328-25-000085:item1a:0015",
-        "0000050863-26-000011:item1a:0008",
-        "0000050863-26-000011:item1a:0010"
+        "0000050863-26-000011:item1a:0002",
+        "0000050863-26-000011:item1a:0003",
+        "0000050863-26-000011:item1a:0008"
       ],
-      "first_gold_rank": 4,
+      "first_gold_rank": null,
       "hit_3": false,
-      "hit_5": true,
-      "hit_10": true,
-      "latency_ms": 82.9
+      "hit_5": false,
+      "hit_10": false,
+      "latency_ms": 691.5
     },
     {
       "id": "RET_26",
@@ -535,15 +535,15 @@
         "0000050863-26-000011:exhibit21:0000"
       ],
       "retrieved_top3": [
-        "wiki:14617:wiki_intel_israel:0033",
         "0000050863-26-000011:exhibit21:0000",
-        "wiki:14617:wiki_manufacturing:0026"
+        "wiki:14617:wiki_manufacturing:0026",
+        "wiki:14617:wiki_employment:0031"
       ],
-      "first_gold_rank": 2,
+      "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 83.1
+      "latency_ms": 1111.2
     },
     {
       "id": "RET_27",
@@ -555,15 +555,15 @@
         "0000050863-26-000011:item1a:0001"
       ],
       "retrieved_top3": [
-        "wiki:14617:wiki_u.s._government_stake_(2025):0008",
-        "0000723125-26-000023:item7:0006",
-        "0000050863-26-000011:item1a:0013"
+        "wiki:14617:wiki_leadership_and_corporate_structure:0029",
+        "0000050863-26-000011:item1a:0011",
+        "0000050863-26-000011:item1a:0012"
       ],
       "first_gold_rank": null,
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 71.6
+      "latency_ms": 703.9
     },
     {
       "id": "RET_28",
@@ -575,14 +575,14 @@
       ],
       "retrieved_top3": [
         "0000050863-26-000011:exhibit21:0000",
-        "0000320193-25-000079:exhibit21:0000",
-        "0001045810-26-000021:exhibit21:0000"
+        "0001045810-26-000021:exhibit21:0000",
+        "0001730168-25-000121:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 71.9
+      "latency_ms": 655.2
     },
     {
       "id": "RET_29",
@@ -593,15 +593,15 @@
         "0000723125-26-000023:item1:0000"
       ],
       "retrieved_top3": [
+        "wiki:487445:wiki_subsidiaries:0006",
         "wiki:487445:EX-infobox:0009",
-        "0000723125-26-000023:item1:0005",
-        "0000723125-26-000023:exhibit21:0000"
+        "wiki:487445:wiki_since_2000:0002"
       ],
       "first_gold_rank": 7,
       "hit_3": false,
       "hit_5": false,
       "hit_10": true,
-      "latency_ms": 87.2
+      "latency_ms": 646.0
     },
     {
       "id": "RET_30",
@@ -614,13 +614,13 @@
       "retrieved_top3": [
         "wiki:487445:wiki_subsidiaries:0006",
         "0000723125-26-000023:exhibit21:0000",
-        "0000320193-25-000079:exhibit21:0000"
+        "wiki:487445:wiki_crucial_brand_disestablishment_(2025\u20132026):0004"
       ],
       "first_gold_rank": 2,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 91.0
+      "latency_ms": 644.5
     },
     {
       "id": "RET_31",
@@ -632,14 +632,14 @@
       ],
       "retrieved_top3": [
         "0000723125-26-000023:exhibit21:0000",
-        "0000002488-26-000018:exhibit21:0000",
+        "0001193125-26-323660:exhibit21:0000",
         "0001045810-26-000021:exhibit21:0000"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 89.8
+      "latency_ms": 631.2
     },
     {
       "id": "RET_32",
@@ -650,15 +650,15 @@
         "0000723125-26-000023:item1:0000"
       ],
       "retrieved_top3": [
-        "0000723125-26-000023:item1:0001",
-        "0000723125-26-000023:item1a:0007",
-        "0000723125-26-000023:item1:0002"
+        "0000723125-26-000023:item1:0005",
+        "wiki:487445:wiki_since_2000:0002",
+        "0000723125-26-000023:item1:0001"
       ],
-      "first_gold_rank": null,
+      "first_gold_rank": 7,
       "hit_3": false,
       "hit_5": false,
-      "hit_10": false,
-      "latency_ms": 97.6
+      "hit_10": true,
+      "latency_ms": 553.6
     },
     {
       "id": "RET_33",
@@ -666,19 +666,19 @@
       "question": "What primary risks does Micron face regarding semiconductor memory price volatility and cyclical downturns?",
       "category": "risk_factors",
       "gold_chunk_ids": [
-        "0000723125-26-000023:item1a:0000",
-        "0000723125-26-000023:item1a:0001"
+        "0000723125-26-000023:item1a:0001",
+        "0000723125-26-000023:item1a:0000"
       ],
       "retrieved_top3": [
         "0000804328-25-000085:item1a:0042",
-        "0001045810-26-000021:item1a:0010",
-        "0000002488-26-000018:item1a:0000"
+        "0000002488-26-000018:item1a:0008",
+        "wiki:487445:wiki_since_2000:0002"
       ],
       "first_gold_rank": null,
       "hit_3": false,
       "hit_5": false,
       "hit_10": false,
-      "latency_ms": 75.1
+      "latency_ms": 561.5
     },
     {
       "id": "RET_34",
@@ -689,15 +689,15 @@
         "0000723125-26-000023:exhibit21:0000"
       ],
       "retrieved_top3": [
-        "wiki:487445:wiki_1978\u20131999:0000",
-        "0000723125-26-000023:item7:0006",
-        "wiki:487445:wiki_subsidiaries:0006"
+        "wiki:487445:wiki_subsidiaries:0006",
+        "0000723125-26-000023:exhibit21:0000",
+        "0000723125-26-000023:item7:0006"
       ],
-      "first_gold_rank": 6,
-      "hit_3": false,
-      "hit_5": false,
+      "first_gold_rank": 2,
+      "hit_3": true,
+      "hit_5": true,
       "hit_10": true,
-      "latency_ms": 96.9
+      "latency_ms": 583.6
     },
     {
       "id": "RET_35",
@@ -708,15 +708,15 @@
         "0001193125-26-323660:item1:0000"
       ],
       "retrieved_top3": [
-        "0001193125-26-323660:item7:0000",
-        "wiki:19001:wiki_subsidiaries:0016",
-        "0001193125-26-323660:item7:0002"
+        "0001193125-26-323660:item1:0000",
+        "0001193125-26-323660:item1:0002",
+        "0001193125-26-323660:item7:0004"
       ],
-      "first_gold_rank": 5,
-      "hit_3": false,
+      "first_gold_rank": 1,
+      "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 73.5
+      "latency_ms": 785.1
     },
     {
       "id": "RET_36",
@@ -728,14 +728,14 @@
       ],
       "retrieved_top3": [
         "0001193125-26-323660:item1:0003",
-        "0001193125-26-323660:item1:0002",
-        "0001193125-26-323660:item1:0004"
+        "0001193125-26-323660:item1:0000",
+        "0001193125-26-323660:item1:0002"
       ],
-      "first_gold_rank": 6,
-      "hit_3": false,
-      "hit_5": false,
+      "first_gold_rank": 2,
+      "hit_3": true,
+      "hit_5": true,
       "hit_10": true,
-      "latency_ms": 92.1
+      "latency_ms": 16654.0
     },
     {
       "id": "RET_37",
@@ -747,14 +747,14 @@
       ],
       "retrieved_top3": [
         "0001193125-26-323660:item1:0003",
-        "0001193125-26-323660:item1:0006",
-        "0001045810-26-000021:item1:0008"
+        "wiki:19001:wiki_1985\u20131994:_windows_and_office:0001",
+        "0001193125-26-323660:item1:0002"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 70.2
+      "latency_ms": 708.1
     },
     {
       "id": "RET_38",
@@ -766,14 +766,14 @@
       ],
       "retrieved_top3": [
         "0001193125-26-323660:exhibit21:0000",
-        "wiki:19001:wiki_subsidiaries:0016",
-        "wiki:19001:wiki_headquarters:0025"
+        "0000723125-26-000023:exhibit21:0000",
+        "wiki:19001:EX-infobox:0033"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 68.1
+      "latency_ms": 598.2
     },
     {
       "id": "RET_39",
@@ -786,13 +786,13 @@
       "retrieved_top3": [
         "0001193125-26-323660:exhibit21:0000",
         "wiki:19001:wiki_subsidiaries:0016",
-        "wiki:19001:wiki_headquarters:0025"
+        "wiki:19001:wiki_controversies:0031"
       ],
       "first_gold_rank": 1,
       "hit_3": true,
       "hit_5": true,
       "hit_10": true,
-      "latency_ms": 76.9
+      "latency_ms": 672.6
     },
     {
       "id": "RET_40",
@@ -803,15 +803,15 @@
         "0001193125-26-323660:item1:0000"
       ],
       "retrieved_top3": [
+        "0001193125-26-323660:item1:0000",
         "0001193125-26-323660:item1:0001",
-        "0001193125-26-323660:item1:0004",
-        "0001193125-26-323660:item1:0003"
+        "0001193125-26-323660:item1:0004"
       ],
-      "first_gold_rank": 8,
-      "hit_3": false,
-      "hit_5": false,
+      "first_gold_rank": 1,
+      "hit_3": true,
+      "hit_5": true,
       "hit_10": true,
-      "latency_ms": 82.6
+      "latency_ms": 678.9
     }
   ]
 }

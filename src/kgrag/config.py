@@ -14,18 +14,45 @@ load_dotenv()
 
 
 class LLMSettings(BaseModel):
-    runtime: str = "ollama"
-    endpoint: str = "http://127.0.0.1:11434"
-    model: str = "llama3.2:latest"
+    runtime: str = "openrouter"  # "openrouter" | "ollama"
+    provider: str = "openrouter"
+    endpoint: str = "https://openrouter.ai/api/v1"
+    model: str = "nvidia/nemotron-3.5-super-vl:free"
     temperature: float = 0.0
-    timeout_seconds: float = 60.0
+    timeout_seconds: float = 90.0
     max_retries: int = 2
+    api_key_env: str = "OPENROUTER_API_KEY"
+
+    @property
+    def api_key(self) -> str:
+        return os.getenv(self.api_key_env, "").strip()
 
 
 class EmbeddingSettings(BaseModel):
-    model: str = "nomic-embed-text:latest"
-    dimension: int = 768
+    runtime: str = "openrouter"  # "openrouter" | "ollama"
+    provider: str = "openrouter"
+    endpoint: str = "https://openrouter.ai/api/v1"
+    model: str = "nvidia/nemotron-3-embed-1b:free"
+    dimension: int = 2048
     batch_size: int = 16
+    api_key_env: str = "OPENROUTER_API_KEY"
+
+    @property
+    def api_key(self) -> str:
+        return os.getenv(self.api_key_env, "").strip()
+
+
+class SystemOneSettings(BaseModel):
+    runtime: str = "openrouter"
+    provider: str = "openrouter"
+    endpoint: str = "https://openrouter.ai/api/alpha/decisions"
+    model: str = "inception/mercury-decide:free"
+    timeout_seconds: float = 30.0
+    api_key_env: str = "OPENROUTER_API_KEY"
+
+    @property
+    def api_key(self) -> str:
+        return os.getenv(self.api_key_env, "").strip()
 
 
 class RerankerSettings(BaseModel):
@@ -156,6 +183,7 @@ class StatisticsSettings(BaseModel):
 class Settings(BaseModel):
     llm: LLMSettings = Field(default_factory=LLMSettings)
     embedding: EmbeddingSettings = Field(default_factory=EmbeddingSettings)
+    system_one: SystemOneSettings = Field(default_factory=SystemOneSettings)
     reranker: RerankerSettings = Field(default_factory=RerankerSettings)
     versions: VersionSettings = Field(default_factory=VersionSettings)
     chunking: ChunkingSettings = Field(default_factory=ChunkingSettings)
@@ -190,6 +218,19 @@ def get_settings() -> Settings:
     config_dir = find_config_dir()
     settings_file = config_dir / "settings.yaml"
     data = load_yaml(settings_file)
+
+    # Environment variable overrides
+    if "LLM_RUNTIME" in os.environ:
+        data.setdefault("llm", {})["runtime"] = os.environ["LLM_RUNTIME"]
+    if "LLM_MODEL" in os.environ:
+        data.setdefault("llm", {})["model"] = os.environ["LLM_MODEL"]
+    if "EMBEDDING_MODEL" in os.environ:
+        data.setdefault("embedding", {})["model"] = os.environ["EMBEDDING_MODEL"]
+    if "EMBEDDING_DIMENSION" in os.environ:
+        data.setdefault("embedding", {})["dimension"] = int(os.environ["EMBEDDING_DIMENSION"])
+    if "SYSTEM_ONE_MODEL" in os.environ:
+        data.setdefault("system_one", {})["model"] = os.environ["SYSTEM_ONE_MODEL"]
+
     return Settings(**data)
 
 

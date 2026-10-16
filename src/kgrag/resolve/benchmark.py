@@ -52,7 +52,7 @@ def run_resolution_benchmark(
     review_thresh = settings.resolution.review_band_lower
 
     pairs = []
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             if line.strip():
                 pairs.append(json.loads(line))
@@ -77,7 +77,7 @@ def run_resolution_benchmark(
             surf_a, surf_b, ent_type, auto_thresh=auto_thresh, review_thresh=review_thresh
         )
 
-        is_pred_merge = (decision == "auto_merged")
+        is_pred_merge = decision == "auto_merged"
 
         if is_pred_merge and ground_truth:
             tp += 1
@@ -156,7 +156,9 @@ def run_resolution_benchmark(
     print("-" * 68)
     print(f"- True Merges (TP):                    {tp}")
     print(f"- True Distinct (TN):                  {tn}")
-    print(f"- False Merges (FP):                   {fp}  {'[PERFECT: 0 FALSE MERGES]' if fp == 0 else '[WARNING]'}")
+    print(
+        f"- False Merges (FP):                   {fp}  {'[PERFECT: 0 FALSE MERGES]' if fp == 0 else '[WARNING]'}"
+    )
     print(f"- Missed Merges (FN):                  {fn}")
     print(f"- Ambiguous in Review Queue:           {review_count}")
     print("-" * 68)
@@ -169,12 +171,16 @@ def run_resolution_benchmark(
     if false_merges:
         print("\n[!] FALSE MERGES DETECTED:")
         for fm in false_merges:
-            print(f"  - '{fm['surface_a']}' == '{fm['surface_b']}' (score: {fm['score']}, method: {fm['method']})")
+            print(
+                f"  - '{fm['surface_a']}' == '{fm['surface_b']}' (score: {fm['score']}, method: {fm['method']})"
+            )
 
     if missed_merges:
         print("\n[-] MISSED MERGES (FN):")
         for mm in missed_merges:
-            print(f"  - '{mm['surface_a']}' != '{mm['surface_b']}' (score: {mm['score']}, method: {mm['method']})")
+            print(
+                f"  - '{mm['surface_a']}' != '{mm['surface_b']}' (score: {mm['score']}, method: {mm['method']})"
+            )
 
     print(f"\nBenchmark results saved to: {out}\n")
     return results

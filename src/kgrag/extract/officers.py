@@ -3,6 +3,7 @@
 import hashlib
 import logging
 import re
+
 from kgrag.extract.exhibit21 import ParserObservation
 
 logger = logging.getLogger(__name__)

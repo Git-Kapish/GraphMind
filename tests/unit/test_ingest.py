@@ -1,7 +1,6 @@
 """Unit tests for Scale Ingestion, Dry-Run, and Checkpoint Recovery (PRD §5.7, FR-1.6, M9)."""
 
 import pytest
-from unittest.mock import MagicMock, patch
 
 from kgrag.ingest import (
     DEV_TICKERS,

@@ -6,14 +6,13 @@ Verifies that:
 3. Only safe, pre-written templates in TemplateId enum can be requested (zero free-form LLM Cypher).
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from kgrag.graph.templates import (
     TemplateId,
-    query_count_by_relation,
     query_neighbors,
-    query_path_between,
     validate_relation_type,
 )
 
@@ -48,7 +47,7 @@ def test_entity_id_parameter_binding_neutralizes_injection():
         mock_get_session.return_value.__enter__.return_value = mock_session
 
         # Execute query_neighbors with malicious entity input
-        res = query_neighbors(
+        query_neighbors(
             entity_id_or_name=malicious_eid,
             relation_type="SUBSIDIARY_OF",
             limit=5,

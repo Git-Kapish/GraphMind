@@ -19,17 +19,13 @@ Usage:
 import argparse
 import json
 import logging
-import math
-import os
 import re
-import sys
 import time
 from pathlib import Path
 from typing import Any
 
 from fastapi.testclient import TestClient
 
-from kgrag.answer.pipeline import GroundedAnswerPipeline
 from kgrag.api.app import app
 from kgrag.benchmarks.statistics import (
     mcnemar_exact_test,
@@ -39,21 +35,42 @@ from kgrag.benchmarks.statistics import (
 from kgrag.retrieval.engine import (
     GraphEvidenceItem,
     GraphPathResult,
-    RetrievalBundle,
-    RetrievalEngine,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-BENCHMARK_FILE = Path(__file__).resolve().parent.parent.parent.parent / "benchmarks" / "questions" / "benchmark_questions.jsonl"
-RESULTS_FILE = Path(__file__).resolve().parent.parent.parent.parent / "benchmarks" / "results" / "full_benchmark_results.json"
-REPORT_FILE = Path(__file__).resolve().parent.parent.parent.parent / "docs" / "full_evaluation_benchmark.md"
+BENCHMARK_FILE = (
+    Path(__file__).resolve().parent.parent.parent.parent
+    / "benchmarks"
+    / "questions"
+    / "benchmark_questions.jsonl"
+)
+RESULTS_FILE = (
+    Path(__file__).resolve().parent.parent.parent.parent
+    / "benchmarks"
+    / "results"
+    / "full_benchmark_results.json"
+)
+REPORT_FILE = (
+    Path(__file__).resolve().parent.parent.parent.parent / "docs" / "full_evaluation_benchmark.md"
+)
 
 REFUSAL_KEYWORDS = [
-    "not contain", "does not contain", "do not contain", "insufficient evidence",
-    "cannot answer", "unable to", "not mentioned", "not available", "out of scope",
-    "not included", "no information", "refusal", "not part of", "absent from"
+    "not contain",
+    "does not contain",
+    "do not contain",
+    "insufficient evidence",
+    "cannot answer",
+    "unable to",
+    "not mentioned",
+    "not available",
+    "out of scope",
+    "not included",
+    "no information",
+    "refusal",
+    "not part of",
+    "absent from",
 ]
 
 
@@ -63,7 +80,7 @@ def load_benchmark_questions(split: str = "all") -> list[dict[str, Any]]:
         raise FileNotFoundError(f"Benchmark questions file not found: {BENCHMARK_FILE}")
 
     questions = []
-    with open(BENCHMARK_FILE, "r", encoding="utf-8") as f:
+    with open(BENCHMARK_FILE, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line:
@@ -99,7 +116,22 @@ def score_answer_correctness(
     ans_lower = answer_text.lower()
 
     # Extract key tokens from gold answer (ignoring stop words)
-    stop_words = {"the", "and", "or", "of", "in", "a", "an", "is", "are", "to", "for", "with", "its", "by"}
+    stop_words = {
+        "the",
+        "and",
+        "or",
+        "of",
+        "in",
+        "a",
+        "an",
+        "is",
+        "are",
+        "to",
+        "for",
+        "with",
+        "its",
+        "by",
+    }
     gold_tokens = [
         t.strip(".,;:()[]\"'")
         for t in re.split(r"[\s,/]+", gold_answer)
@@ -114,8 +146,10 @@ def score_answer_correctness(
     entity_hits = []
     for e in gold_entities:
         content_words = [
-            w for w in re.split(r"[\s,()./\-]+", e)
-            if len(w) > 2 and w not in {"inc", "corp", "llc", "ltd", "pte", "plc", "the", "and", "gmbh"}
+            w
+            for w in re.split(r"[\s,()./\-]+", e)
+            if len(w) > 2
+            and w not in {"inc", "corp", "llc", "ltd", "pte", "plc", "the", "and", "gmbh"}
         ]
         if content_words:
             if any(w in ans_lower for w in content_words):
@@ -197,7 +231,6 @@ def execute_oracle_diagnostic(
     }
 
 
-
 def run_benchmark(
     systems_to_run: list[str] = ["A", "C"],
     split: str = "test",
@@ -220,9 +253,8 @@ def run_benchmark(
     if limit:
         questions = questions[:limit]
 
-
     print("\n" + "=" * 80)
-    print(f"  KNOWLEDGE GRAPH RAG: 5-WAY ABLATION BENCHMARK (MILESTONE M10)")
+    print("  KNOWLEDGE GRAPH RAG: 5-WAY ABLATION BENCHMARK (MILESTONE M10)")
     print(f"  Dataset: {BENCHMARK_FILE.name} | Split: {split.upper()} ({len(questions)} Questions)")
     print(f"  Systems Evaluated: {', '.join(sorted(systems_to_run))}")
     print("=" * 80 + "\n")
@@ -239,39 +271,72 @@ def run_benchmark(
         query_text = q["question"]
         gold_chunks = q.get("gold_chunk_ids", [])
 
-        print(f"\n[{idx}/{len(questions)}] {qid} ({category}, hop={hop}): {query_text[:60]}...", flush=True)
+        print(
+            f"\n[{idx}/{len(questions)}] {qid} ({category}, hop={hop}): {query_text[:60]}...",
+            flush=True,
+        )
 
         # -------------------------------------------------------------
         # SYSTEM A: Plain Vector Baseline
         # -------------------------------------------------------------
         if "A" in systems_to_run:
             t0 = time.perf_counter()
-            resp = client.post("/query/baseline", json={"question": query_text, "top_k": 5, "debug": True})
+            resp = client.post(
+                "/query/baseline", json={"question": query_text, "top_k": 5, "debug": True}
+            )
             lat = int((time.perf_counter() - t0) * 1000)
-            data = resp.json() if resp.status_code == 200 else {"answer": "", "status": "error", "citations": []}
+            data = (
+                resp.json()
+                if resp.status_code == 200
+                else {"answer": "", "status": "error", "citations": []}
+            )
             correct, fail = score_answer_correctness(q, data)
-            retrieved = [p["chunk_id"] for p in data.get("passages", [])] + [c["chunk_id"] for c in data.get("citations", [])]
-            recall = any(gc in retrieved for gc in gold_chunks) if gold_chunks else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+            retrieved = [p["chunk_id"] for p in data.get("passages", [])] + [
+                c["chunk_id"] for c in data.get("citations", [])
+            ]
+            recall = (
+                any(gc in retrieved for gc in gold_chunks)
+                if gold_chunks
+                else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+            )
 
             entry = {
-                "id": qid, "category": category, "hop_count": hop, "system": "System A (Vector Baseline)",
-                "correct": correct, "failure_category": fail, "retrieval_recall": recall,
-                "status": data.get("status"), "route": "vector",
+                "id": qid,
+                "category": category,
+                "hop_count": hop,
+                "system": "System A (Vector Baseline)",
+                "correct": correct,
+                "failure_category": fail,
+                "retrieval_recall": recall,
+                "status": data.get("status"),
+                "route": "vector",
                 "citations_count": len(data.get("citations", [])),
-                "citation_resolution_passed": data.get("validation", {}).get("citation_resolution_passed", False),
-                "latency_ms": lat, "answer": data.get("answer", "")[:180],
+                "citation_resolution_passed": data.get("validation", {}).get(
+                    "citation_resolution_passed", False
+                ),
+                "latency_ms": lat,
+                "answer": data.get("answer", "")[:180],
             }
             results_by_system["A"].append(entry)
-            print(f"   [System A: Vector Base] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Fail: {fail}", flush=True)
+            print(
+                f"   [System A: Vector Base] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Fail: {fail}",
+                flush=True,
+            )
 
         # -------------------------------------------------------------
         # SYSTEM B: Graph-Only (Refuses if no path)
         # -------------------------------------------------------------
         if "B" in systems_to_run:
             t0 = time.perf_counter()
-            resp = client.post("/query", json={"question": query_text, "mode": "graph", "top_k": 5, "debug": True})
+            resp = client.post(
+                "/query", json={"question": query_text, "mode": "graph", "top_k": 5, "debug": True}
+            )
             lat = int((time.perf_counter() - t0) * 1000)
-            data = resp.json() if resp.status_code == 200 else {"answer": "", "status": "error", "citations": []}
+            data = (
+                resp.json()
+                if resp.status_code == 200
+                else {"answer": "", "status": "error", "citations": []}
+            )
             # Per FR-5.2: Refuse if no path
             has_paths = len(data.get("graph_paths", [])) > 0
             if not has_paths and q.get("answerable", True):
@@ -280,73 +345,145 @@ def run_benchmark(
                 recall = False
             else:
                 correct, fail = score_answer_correctness(q, data)
-                retrieved_ev = [ev["chunk_id"] for gp in data.get("graph_paths", []) for ev in gp.get("evidence", [])]
-                recall = any(gc in retrieved_ev for gc in gold_chunks) if gold_chunks else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+                retrieved_ev = [
+                    ev["chunk_id"]
+                    for gp in data.get("graph_paths", [])
+                    for ev in gp.get("evidence", [])
+                ]
+                recall = (
+                    any(gc in retrieved_ev for gc in gold_chunks)
+                    if gold_chunks
+                    else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+                )
 
             entry = {
-                "id": qid, "category": category, "hop_count": hop, "system": "System B (Graph-Only)",
-                "correct": correct, "failure_category": fail, "retrieval_recall": recall,
-                "status": data.get("status"), "route": "graph",
+                "id": qid,
+                "category": category,
+                "hop_count": hop,
+                "system": "System B (Graph-Only)",
+                "correct": correct,
+                "failure_category": fail,
+                "retrieval_recall": recall,
+                "status": data.get("status"),
+                "route": "graph",
                 "citations_count": len(data.get("citations", [])),
-                "citation_resolution_passed": data.get("validation", {}).get("citation_resolution_passed", False),
-                "latency_ms": lat, "answer": data.get("answer", "")[:180],
+                "citation_resolution_passed": data.get("validation", {}).get(
+                    "citation_resolution_passed", False
+                ),
+                "latency_ms": lat,
+                "answer": data.get("answer", "")[:180],
             }
             results_by_system["B"].append(entry)
-            print(f"   [System B: Graph-Only ] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Fail: {fail}", flush=True)
+            print(
+                f"   [System B: Graph-Only ] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Fail: {fail}",
+                flush=True,
+            )
 
         # -------------------------------------------------------------
         # SYSTEM C: Hybrid Auto-Routed (The Primary Product)
         # -------------------------------------------------------------
         if "C" in systems_to_run:
             t0 = time.perf_counter()
-            resp = client.post("/query", json={"question": query_text, "mode": "auto", "top_k": 5, "debug": True})
+            resp = client.post(
+                "/query", json={"question": query_text, "mode": "auto", "top_k": 5, "debug": True}
+            )
             lat = int((time.perf_counter() - t0) * 1000)
-            data = resp.json() if resp.status_code == 200 else {"answer": "", "status": "error", "citations": []}
+            data = (
+                resp.json()
+                if resp.status_code == 200
+                else {"answer": "", "status": "error", "citations": []}
+            )
             correct, fail = score_answer_correctness(q, data)
             retrieved = (
                 [p["chunk_id"] for p in data.get("passages", [])]
-                + [ev["chunk_id"] for gp in data.get("graph_paths", []) for ev in gp.get("evidence", [])]
+                + [
+                    ev["chunk_id"]
+                    for gp in data.get("graph_paths", [])
+                    for ev in gp.get("evidence", [])
+                ]
                 + [c["chunk_id"] for c in data.get("citations", [])]
             )
-            recall = any(gc in retrieved for gc in gold_chunks) if gold_chunks else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+            recall = (
+                any(gc in retrieved for gc in gold_chunks)
+                if gold_chunks
+                else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+            )
 
             entry = {
-                "id": qid, "category": category, "hop_count": hop, "system": "System C (Hybrid Auto-Routed)",
-                "correct": correct, "failure_category": fail, "retrieval_recall": recall,
-                "status": data.get("status"), "route": data.get("route", {}).get("chosen", "unknown"),
+                "id": qid,
+                "category": category,
+                "hop_count": hop,
+                "system": "System C (Hybrid Auto-Routed)",
+                "correct": correct,
+                "failure_category": fail,
+                "retrieval_recall": recall,
+                "status": data.get("status"),
+                "route": data.get("route", {}).get("chosen", "unknown"),
                 "citations_count": len(data.get("citations", [])),
-                "citation_resolution_passed": data.get("validation", {}).get("citation_resolution_passed", False),
-                "latency_ms": lat, "answer": data.get("answer", "")[:180],
+                "citation_resolution_passed": data.get("validation", {}).get(
+                    "citation_resolution_passed", False
+                ),
+                "latency_ms": lat,
+                "answer": data.get("answer", "")[:180],
             }
             results_by_system["C"].append(entry)
-            print(f"   [System C: Hybrid Auto] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Route: {entry['route']}", flush=True)
+            print(
+                f"   [System C: Hybrid Auto] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Route: {entry['route']}",
+                flush=True,
+            )
 
         # -------------------------------------------------------------
         # SYSTEM D: Hybrid-Always (Isolates Router Classification)
         # -------------------------------------------------------------
         if "D" in systems_to_run:
             t0 = time.perf_counter()
-            resp = client.post("/query", json={"question": query_text, "mode": "hybrid", "top_k": 5, "debug": True})
+            resp = client.post(
+                "/query", json={"question": query_text, "mode": "hybrid", "top_k": 5, "debug": True}
+            )
             lat = int((time.perf_counter() - t0) * 1000)
-            data = resp.json() if resp.status_code == 200 else {"answer": "", "status": "error", "citations": []}
+            data = (
+                resp.json()
+                if resp.status_code == 200
+                else {"answer": "", "status": "error", "citations": []}
+            )
             correct, fail = score_answer_correctness(q, data)
             retrieved = (
                 [p["chunk_id"] for p in data.get("passages", [])]
-                + [ev["chunk_id"] for gp in data.get("graph_paths", []) for ev in gp.get("evidence", [])]
+                + [
+                    ev["chunk_id"]
+                    for gp in data.get("graph_paths", [])
+                    for ev in gp.get("evidence", [])
+                ]
                 + [c["chunk_id"] for c in data.get("citations", [])]
             )
-            recall = any(gc in retrieved for gc in gold_chunks) if gold_chunks else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+            recall = (
+                any(gc in retrieved for gc in gold_chunks)
+                if gold_chunks
+                else (data.get("status") == "refused" or check_refusal(data.get("answer", "")))
+            )
 
             entry = {
-                "id": qid, "category": category, "hop_count": hop, "system": "System D (Hybrid-Always)",
-                "correct": correct, "failure_category": fail, "retrieval_recall": recall,
-                "status": data.get("status"), "route": "hybrid_forced",
+                "id": qid,
+                "category": category,
+                "hop_count": hop,
+                "system": "System D (Hybrid-Always)",
+                "correct": correct,
+                "failure_category": fail,
+                "retrieval_recall": recall,
+                "status": data.get("status"),
+                "route": "hybrid_forced",
                 "citations_count": len(data.get("citations", [])),
-                "citation_resolution_passed": data.get("validation", {}).get("citation_resolution_passed", False),
-                "latency_ms": lat, "answer": data.get("answer", "")[:180],
+                "citation_resolution_passed": data.get("validation", {}).get(
+                    "citation_resolution_passed", False
+                ),
+                "latency_ms": lat,
+                "answer": data.get("answer", "")[:180],
             }
             results_by_system["D"].append(entry)
-            print(f"   [System D: Hybrid-Alw ] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Fail: {fail}", flush=True)
+            print(
+                f"   [System D: Hybrid-Alw ] Correct: {correct} | Recall: {recall} | Latency: {lat}ms | Fail: {fail}",
+                flush=True,
+            )
 
         # -------------------------------------------------------------
         # SYSTEM E: Oracle-Graph Diagnostic
@@ -354,7 +491,12 @@ def run_benchmark(
         if "E" in systems_to_run:
             if not q.get("answerable", True):
                 # Out-of-scope has no oracle graph facts; should refuse
-                data_e = {"answer": "REFUSAL: Out of scope.", "status": "refused", "citations": [], "latency_ms": 0}
+                data_e = {
+                    "answer": "REFUSAL: Out of scope.",
+                    "status": "refused",
+                    "citations": [],
+                    "latency_ms": 0,
+                }
                 correct, fail = True, "none"
                 recall = True
             else:
@@ -364,15 +506,25 @@ def run_benchmark(
                 recall = True  # Gold facts guaranteed in context
 
             entry = {
-                "id": qid, "category": category, "hop_count": hop, "system": "System E (Oracle Diagnostic)",
-                "correct": correct, "failure_category": fail, "retrieval_recall": recall,
-                "status": data_e.get("status"), "route": "oracle_facts",
+                "id": qid,
+                "category": category,
+                "hop_count": hop,
+                "system": "System E (Oracle Diagnostic)",
+                "correct": correct,
+                "failure_category": fail,
+                "retrieval_recall": recall,
+                "status": data_e.get("status"),
+                "route": "oracle_facts",
                 "citations_count": len(data_e.get("citations", [])),
                 "citation_resolution_passed": True,
-                "latency_ms": data_e.get("latency_ms", 0), "answer": data_e.get("answer", "")[:180],
+                "latency_ms": data_e.get("latency_ms", 0),
+                "answer": data_e.get("answer", "")[:180],
             }
             results_by_system["E"].append(entry)
-            print(f"   [System E: Oracle Fact] Correct: {correct} | Recall: {recall} | Latency: {entry['latency_ms']}ms | Fail: {fail}", flush=True)
+            print(
+                f"   [System E: Oracle Fact] Correct: {correct} | Recall: {recall} | Latency: {entry['latency_ms']}ms | Fail: {fail}",
+                flush=True,
+            )
 
     total_time = time.perf_counter() - t_start
     total_q = len(questions)
@@ -391,7 +543,11 @@ def run_benchmark(
         lats = sorted([r["latency_ms"] for r in res_list])
         p50 = lats[len(lats) // 2] if lats else 0
         p95 = lats[int(len(lats) * 0.95)] if lats else 0
-        cit_rate = sum(1 for r in res_list if r.get("citation_resolution_passed", False)) / total_q if total_q > 0 else 0.0
+        cit_rate = (
+            sum(1 for r in res_list if r.get("citation_resolution_passed", False)) / total_q
+            if total_q > 0
+            else 0.0
+        )
 
         system_summaries[sys_id] = {
             "accuracy": round(acc, 4),
@@ -429,7 +585,9 @@ def run_benchmark(
         cat_summary: dict[str, Any] = {
             "count": cat_n,
             "is_exploratory": is_exploratory,
-            "status_label": "[Exploratory: N < 15]" if is_exploratory else "[Confirmatory: N >= 15]",
+            "status_label": "[Exploratory: N < 15]"
+            if is_exploratory
+            else "[Confirmatory: N >= 15]",
             "systems": {},
         }
 
@@ -521,14 +679,24 @@ def generate_markdown_report(payload: dict[str, Any]) -> None:
     lines.append("# Full 5-Way Ablation Benchmark Report (Milestone M10)")
     lines.append("\n## Executive Summary (PRD §2, §7.5, FR-5.1–FR-5.4)")
     lines.append(f"- **Evaluation Date:** {meta['timestamp']}")
-    lines.append(f"- **Evaluated Split:** `{meta['split'].upper()}` ({meta['total_questions']} hand-verified questions)")
+    lines.append(
+        f"- **Evaluated Split:** `{meta['split'].upper()}` ({meta['total_questions']} hand-verified questions)"
+    )
     lines.append(f"- **Target Model:** `{meta['model']}` ($0 spend local inference via Ollama)")
-    lines.append(f"- **Dense Vector Store:** `{meta['pgvector_table']}` (`{meta['embedding_model']}`)")
-    lines.append(f"- **Knowledge Graph Store:** Neo4j 5.26 ({meta['neo4j_nodes']} nodes, {meta['neo4j_edges']} relationships)")
-    lines.append(f"- **Total Benchmark Runtime:** {meta['elapsed_seconds']:.2f}s ({meta['elapsed_seconds'] / 60.0:.2f} min)")
+    lines.append(
+        f"- **Dense Vector Store:** `{meta['pgvector_table']}` (`{meta['embedding_model']}`)"
+    )
+    lines.append(
+        f"- **Knowledge Graph Store:** Neo4j 5.26 ({meta['neo4j_nodes']} nodes, {meta['neo4j_edges']} relationships)"
+    )
+    lines.append(
+        f"- **Total Benchmark Runtime:** {meta['elapsed_seconds']:.2f}s ({meta['elapsed_seconds'] / 60.0:.2f} min)"
+    )
 
     lines.append("\n## 1. Overall System Performance & Wilson 95% Confidence Intervals")
-    lines.append("\n| System ID | System Name | Accuracy | Wilson 95% CI | Citation Resolution | Latency (p50 / p95) |")
+    lines.append(
+        "\n| System ID | System Name | Accuracy | Wilson 95% CI | Citation Resolution | Latency (p50 / p95) |"
+    )
     lines.append("|---|---|---|---|---|---|")
 
     system_labels = {
@@ -546,21 +714,31 @@ def generate_markdown_report(payload: dict[str, Any]) -> None:
             ci_str = f"[{s['wilson_ci_95'][0] * 100:.1f}%, {s['wilson_ci_95'][1] * 100:.1f}%]"
             cit_str = f"{s['citation_resolution_rate'] * 100:.1f}%"
             lat_str = f"{s['latency_p50']} ms / {s['latency_p95']} ms"
-            lines.append(f"| **{sys_id}** | {label} | {acc_str} | {ci_str} | {cit_str} | {lat_str} |")
+            lines.append(
+                f"| **{sys_id}** | {label} | {acc_str} | {ci_str} | {cit_str} | {lat_str} |"
+            )
 
     # Paired Statistics Section
     if "C" in paired:
         p_c = paired["C"]
         mcn = p_c["mcnemar"]
-        lines.append("\n## 2. Paired Statistical Comparison: System C (Hybrid) vs System A (Vector Baseline)")
+        lines.append(
+            "\n## 2. Paired Statistical Comparison: System C (Hybrid) vs System A (Vector Baseline)"
+        )
         lines.append(f"- **Measured Accuracy Gap:** **+{p_c['paired_accuracy_delta'] * 100:.1f}%**")
-        lines.append(f"- **Paired Bootstrap 95% CI (2,000 iterations):** `[{p_c['bootstrap_ci_95'][0] * 100:.1f}%, {p_c['bootstrap_ci_95'][1] * 100:.1f}%]`")
-        lines.append(f"- **Discordant Pairs:** {mcn['n10_system_wins']} Hybrid Wins vs {mcn['n01_baseline_wins']} Baseline Wins (Win Ratio: `{mcn['system_win_ratio']}`)")
+        lines.append(
+            f"- **Paired Bootstrap 95% CI (2,000 iterations):** `[{p_c['bootstrap_ci_95'][0] * 100:.1f}%, {p_c['bootstrap_ci_95'][1] * 100:.1f}%]`"
+        )
+        lines.append(
+            f"- **Discordant Pairs:** {mcn['n10_system_wins']} Hybrid Wins vs {mcn['n01_baseline_wins']} Baseline Wins (Win Ratio: `{mcn['system_win_ratio']}`)"
+        )
         lines.append(f"- **Exact McNemar Two-Sided Test:** p-value = **{mcn['p_value']:.4f}**")
 
     # Category Breakdown Table
     lines.append("\n## 3. Performance by Question Category & Hop Count (PRD §2.2, FR-5.1)")
-    lines.append("\n| Category | Sample Size (N) | Evaluation Status | Vector Baseline (A) | Hybrid KG-RAG (C) | Delta (C - A) | Bootstrap 95% CI | McNemar p-value |")
+    lines.append(
+        "\n| Category | Sample Size (N) | Evaluation Status | Vector Baseline (A) | Hybrid KG-RAG (C) | Delta (C - A) | Bootstrap 95% CI | McNemar p-value |"
+    )
     lines.append("|---|---|---|---|---|---|---|---|")
 
     for cat_name, cat in categories.items():
@@ -580,7 +758,9 @@ def generate_markdown_report(payload: dict[str, Any]) -> None:
 
     # Failure Taxonomy
     lines.append("\n## 4. Failure Taxonomy & Root Cause Analysis (PRD FR-5.2)")
-    lines.append("\n| System | Retrieval Miss | Generation / Hallucination | Refusal Error | Router Error | Total Errors |")
+    lines.append(
+        "\n| System | Retrieval Miss | Generation / Hallucination | Refusal Error | Router Error | Total Errors |"
+    )
     lines.append("|---|---|---|---|---|---|")
 
     for sys_id, label in system_labels.items():
@@ -591,7 +771,9 @@ def generate_markdown_report(payload: dict[str, Any]) -> None:
             ref_err = f_map.get("refusal_error", 0)
             rout_err = f_map.get("router_error", 0)
             tot = sum(f_map.values())
-            lines.append(f"| **{sys_id}** ({label}) | {r_miss} | {g_err} | {ref_err} | {rout_err} | {tot} |")
+            lines.append(
+                f"| **{sys_id}** ({label}) | {r_miss} | {g_err} | {ref_err} | {rout_err} | {tot} |"
+            )
 
     # Oracle Diagnostic
     if "E" in summaries:
@@ -613,12 +795,31 @@ def generate_markdown_report(payload: dict[str, Any]) -> None:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Full 5-Way Ablation Benchmark Harness (Milestone M10)")
-    parser.add_argument("--systems", type=str, default="A,C", help="Comma-separated systems to evaluate: A,B,C,D,E (default: A,C)")
-    parser.add_argument("--split", choices=["test", "dev", "all"], default="test", help="Evaluation split (default: test)")
-    parser.add_argument("--limit", type=int, default=None, help="Limit number of questions to evaluate")
+    parser = argparse.ArgumentParser(
+        description="Full 5-Way Ablation Benchmark Harness (Milestone M10)"
+    )
+    parser.add_argument(
+        "--systems",
+        type=str,
+        default="A,C",
+        help="Comma-separated systems to evaluate: A,B,C,D,E (default: A,C)",
+    )
+    parser.add_argument(
+        "--split",
+        choices=["test", "dev", "all"],
+        default="test",
+        help="Evaluation split (default: test)",
+    )
+    parser.add_argument(
+        "--limit", type=int, default=None, help="Limit number of questions to evaluate"
+    )
     parser.add_argument("--category", type=str, default=None, help="Filter by specific category")
-    parser.add_argument("--sample-per-category", type=int, default=None, help="Sample N questions per category for balanced ablation")
+    parser.add_argument(
+        "--sample-per-category",
+        type=int,
+        default=None,
+        help="Sample N questions per category for balanced ablation",
+    )
 
     args = parser.parse_args()
     systems = [s.strip().upper() for s in args.systems.split(",") if s.strip()]
@@ -630,7 +831,6 @@ def main():
         category_filter=args.category,
         sample_per_category=args.sample_per_category,
     )
-
 
 
 if __name__ == "__main__":

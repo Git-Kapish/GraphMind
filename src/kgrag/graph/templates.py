@@ -1,23 +1,22 @@
 """Safe, Parameterized Cypher Query Templates and Evidence Attachment (PRD §7.3, FR-3.2, Milestone M5)."""
 
-from enum import Enum
 import logging
 import re
+from enum import Enum
 from typing import Any
 
-from neo4j import Session
+from pydantic import BaseModel, Field
 
-from kgrag.config import get_ontology, get_settings
+from kgrag.config import get_settings
 from kgrag.db.neo4j import get_session
 from kgrag.db.postgres import get_connection
-
-from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
 
 class TemplateId(str, Enum):
     """Closed enumeration of safe, pre-written parameterized Cypher query templates (PRD FR-3.2)."""
+
     NEIGHBORS = "neighbors"
     TWO_HOP = "two_hop"
     PATH_BETWEEN = "path_between"
@@ -29,6 +28,7 @@ class TemplateId(str, Enum):
 
 class StrictResolutionStatus(str, Enum):
     """Status outcomes for entity mention linking policy (PRD FR-3.2)."""
+
     RESOLVED = "resolved"
     NOT_FOUND = "not_found"
     NEEDS_CLARIFICATION = "needs_clarification"
@@ -36,6 +36,7 @@ class StrictResolutionStatus(str, Enum):
 
 class EntityResolutionResult(BaseModel):
     """Structured result of linking an entity mention to the knowledge graph (PRD FR-3.2)."""
+
     status: StrictResolutionStatus
     entity_id: str | None = None
     canonical_name: str | None = None
@@ -75,7 +76,9 @@ def validate_relation_type(relation_type: str | None) -> str | None:
         coerced = re.sub(r"[^A-Z0-9_]", "_", cleaned)
         if coerced in ALLOWED_RELATIONS:
             return coerced
-        raise ValueError(f"Invalid relation type '{relation_type}'. Must be one of: {sorted(ALLOWED_RELATIONS)}")
+        raise ValueError(
+            f"Invalid relation type '{relation_type}'. Must be one of: {sorted(ALLOWED_RELATIONS)}"
+        )
     return cleaned
 
 
@@ -239,6 +242,7 @@ def resolve_anchor_entity_id(entity_id_or_name: str) -> tuple[str, str]:
 
     # Fallback to deterministic ID if not yet in database
     from kgrag.resolve.resolver import normalize_name
+
     canon, eid = normalize_name(entity_id_or_name)
     cid, cname = map_to_canonical_entity_id(eid)
     return cid, cname or canon
@@ -465,14 +469,18 @@ def query_count_by_relation(
             timeout=settings.query.graph_path_timeout_seconds,
         )
         record = res.single()
-        return record.data() if record else {
-            "entity": canon_name,
-            "entity_id": eid,
-            "relation": rel,
-            "entity_count": 0,
-            "sample_entities": [],
-            "observation_ids": [],
-        }
+        return (
+            record.data()
+            if record
+            else {
+                "entity": canon_name,
+                "entity_id": eid,
+                "relation": rel,
+                "entity_count": 0,
+                "sample_entities": [],
+                "observation_ids": [],
+            }
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -584,8 +592,7 @@ def attach_evidence_to_paths(paths: list[dict[str, Any]]) -> list[dict[str, Any]
             all_obs_ids.extend(obs_ids)
 
     evidence_by_id = {
-        row["observation_id"]: row
-        for row in fetch_evidence_for_observations(all_obs_ids)
+        row["observation_id"]: row for row in fetch_evidence_for_observations(all_obs_ids)
     }
 
     enriched_paths = []
@@ -603,7 +610,9 @@ def explain_template_query(cypher: str, params: dict[str, Any]) -> dict[str, Any
     with get_session() as session:
         res = session.run(f"EXPLAIN {cypher}", **params)
         summary = res.consume()
-        plan_str = summary.plan.get("args", {}).get("string-representation", "") if summary.plan else ""
+        plan_str = (
+            summary.plan.get("args", {}).get("string-representation", "") if summary.plan else ""
+        )
         return {
             "plan": summary.plan,
             "plan_string": plan_str,

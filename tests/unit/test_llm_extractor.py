@@ -1,7 +1,8 @@
 """Unit tests for structured LLMExtractor pipeline (PRD FR-1.3, FR-1.4)."""
 
 import pytest
-from unittest.mock import MagicMock
+
+from kgrag.db.postgres import get_connection
 from kgrag.extract.llm_extractor import LLMExtractor
 from kgrag.extract.schemas import (
     EntityType,
@@ -27,7 +28,9 @@ def test_extractor_prefilter_skip():
     extractor = LLMExtractor(llm_client=mock_client)
 
     # Generic text that triggers no cues
-    generic_text = "Operating expenses increased slightly in the current fiscal year due to office leases."
+    generic_text = (
+        "Operating expenses increased slightly in the current fiscal year due to office leases."
+    )
     results = extractor.extract_chunk(
         chunk_id="test_chunk_skip",
         chunk_text=generic_text,
@@ -39,9 +42,6 @@ def test_extractor_prefilter_skip():
     assert results == []
     # LLM should not have been invoked
     assert mock_client.call_count == 0
-
-
-from kgrag.db.postgres import get_connection
 
 
 @pytest.fixture
@@ -114,7 +114,9 @@ def test_extractor_quote_verification_and_resolution(db_chunk_id):
 
 
 def test_extractor_caching_behavior(db_chunk_id):
-    chunk_text = "We supply advanced networking silicon to Cisco Systems Inc. under long-term contract."
+    chunk_text = (
+        "We supply advanced networking silicon to Cisco Systems Inc. under long-term contract."
+    )
     mock_relations = [
         ExtractedRelation(
             head_name="Test Corp",

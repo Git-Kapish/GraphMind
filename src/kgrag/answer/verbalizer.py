@@ -4,7 +4,6 @@ Translates structured GraphPathResult objects into precise, human-readable natur
 statements, retaining 100% provenance linkage to observation IDs and source chunk IDs.
 """
 
-from typing import Any
 from pydantic import BaseModel, Field
 
 from kgrag.retrieval.engine import GraphEvidenceItem, GraphPathResult
@@ -34,6 +33,7 @@ def _phrase(rel: str) -> str:
 
 class VerbalizedFact(BaseModel):
     """A natural language statement derived from a graph traversal with attached evidence."""
+
     statement: str
     template_id: str
     nodes: list[str] = Field(default_factory=list)
@@ -79,7 +79,11 @@ def verbalize_graph_path(path: GraphPathResult) -> VerbalizedFact:
                 v = path_nodes[i + 1]
                 r = path_rels[i]
                 steps.append(f"{u} {_phrase(r)} {v}")
-            statement = f"Path between {path_nodes[0]} and {path_nodes[-1]} ({len(path_rels)} hops): " + "; then ".join(steps) + "."
+            statement = (
+                f"Path between {path_nodes[0]} and {path_nodes[-1]} ({len(path_rels)} hops): "
+                + "; then ".join(steps)
+                + "."
+            )
         else:
             statement = f"Connection exists between {' and '.join(nodes)}."
 

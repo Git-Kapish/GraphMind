@@ -60,11 +60,11 @@ def rebuild_graph_from_postgres() -> dict[str, Any]:
 
         # Upsert entities
         logger.info("Upserting :Entity nodes...")
-        num_nodes = upsert_entities_batch(session, entities)
+        upsert_entities_batch(session, entities)
 
         # Upsert relationships
         logger.info("Upserting relationships...")
-        num_edges = upsert_edges_batch(session, edges)
+        upsert_edges_batch(session, edges)
 
         # Read back Neo4j verification counts
         neo4j_nodes = session.run("MATCH (n:Entity) RETURN count(n) AS cnt").single()["cnt"]

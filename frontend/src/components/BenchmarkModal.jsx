@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, BarChart3, ShieldCheck, CheckCircle2, TrendingUp, AlertCircle } from 'lucide-react';
+import { X, BarChart3 } from 'lucide-react';
 
 export default function BenchmarkModal({ isOpen, onClose }) {
   if (!isOpen) return null;

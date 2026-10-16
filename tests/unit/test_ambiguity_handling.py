@@ -7,9 +7,7 @@ Verifies that:
 4. Ambiguous queries with low routing confidence trigger fallback_used=True.
 """
 
-import pytest
-from kgrag.resolve.candidates import find_best_candidate, token_similarity
-from kgrag.resolve.resolver import normalize_name
+from kgrag.resolve.candidates import find_best_candidate
 from kgrag.retrieval.router import route_query
 
 

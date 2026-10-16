@@ -1,6 +1,7 @@
 """API Request and Response Models (PRD §8)."""
 
 from typing import Any, Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -65,6 +66,7 @@ class QueryResponse(BaseModel):
 
 class EntityDetailResponse(BaseModel):
     """Canonical entity detail and graph relationship overview (PRD §8)."""
+
     entity_id: str
     canonical_name: str
     type: str
@@ -86,6 +88,7 @@ class ChunkObservationItem(BaseModel):
 
 class ChunkDetailResponse(BaseModel):
     """Authoritative chunk text, document provenance, and extraction observations (PRD §8)."""
+
     chunk_id: str
     doc_id: str
     company: str

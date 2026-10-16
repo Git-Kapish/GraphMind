@@ -10,6 +10,7 @@ chunk ID, observation IDs, document metadata, and quotes. Enforces context token
 
 import logging
 from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from kgrag.answer.verbalizer import verbalize_graph_paths
@@ -22,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 class EvidenceItem(BaseModel):
     """Metadata and provenance for a single cited evidence item in the registry."""
+
     label: str  # e.g., "[G1]", "[P1]"
     chunk_id: str
     doc_id: str = ""
@@ -86,7 +88,11 @@ def assemble_context(
         verbalized = verbalize_graph_paths(graph_paths)
         for idx, fact in enumerate(verbalized, 1):
             label = f"[G{idx}]"
-            primary_chunk = fact.source_chunks[0] if fact.source_chunks else (fact.evidence[0].chunk_id if fact.evidence else "unknown_chunk")
+            primary_chunk = (
+                fact.source_chunks[0]
+                if fact.source_chunks
+                else (fact.evidence[0].chunk_id if fact.evidence else "unknown_chunk")
+            )
             primary_quote = fact.evidence[0].evidence_quote if fact.evidence else ""
             primary_company = fact.evidence[0].filing_company or "" if fact.evidence else ""
             primary_ticker = fact.evidence[0].filing_ticker or "" if fact.evidence else ""
@@ -104,7 +110,7 @@ def assemble_context(
                 )
             )
 
-            quote_clause = f" (Filing evidence: \"{primary_quote}\")" if primary_quote else ""
+            quote_clause = f' (Filing evidence: "{primary_quote}")' if primary_quote else ""
             graph_sections.append(f"{label} {fact.statement}{quote_clause}")
 
     # 2. Assemble Retrieved Passages ([P1], [P2], ...) with Deduplication
@@ -133,8 +139,10 @@ def assemble_context(
                 )
             )
 
-            header = f"{label} ({vp.company}, Ticker: {vp.ticker or 'N/A'}, Section: {vp.section_path}):"
-            passage_block = f"{header}\n\"{clean_text}\""
+            header = (
+                f"{label} ({vp.company}, Ticker: {vp.ticker or 'N/A'}, Section: {vp.section_path}):"
+            )
+            passage_block = f'{header}\n"{clean_text}"'
             vector_sections.append(passage_block)
             p_idx += 1
 
@@ -153,10 +161,16 @@ def assemble_context(
 
     # Respect Context Budget
     if estimate_tokens(full_context) > budget:
-        logger.warning("Context exceeded budget (%d > %d tokens). Truncating passages.", estimate_tokens(full_context), budget)
+        logger.warning(
+            "Context exceeded budget (%d > %d tokens). Truncating passages.",
+            estimate_tokens(full_context),
+            budget,
+        )
         # Keep graph facts intact, truncate vector passages to fit budget
         kept_passages: list[str] = []
-        base_tokens = estimate_tokens("\n\n".join(["### GRAPH FACTS", "\n".join(graph_sections), "### RETRIEVED PASSAGES"]))
+        base_tokens = estimate_tokens(
+            "\n\n".join(["### GRAPH FACTS", "\n".join(graph_sections), "### RETRIEVED PASSAGES"])
+        )
         current_tokens = base_tokens
         for p in vector_sections:
             p_tok = estimate_tokens(p)

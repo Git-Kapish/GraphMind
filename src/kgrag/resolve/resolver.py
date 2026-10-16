@@ -2,7 +2,6 @@
 
 import hashlib
 import logging
-import time
 from typing import Any
 
 from kgrag.config import get_settings
@@ -56,7 +55,9 @@ def embed_unembedded_entities(batch_size: int = 32) -> int:
         return 0
 
     total_entities = len(rows)
-    logger.info("Generating embeddings for %d entities in batches of %d...", total_entities, batch_size)
+    logger.info(
+        "Generating embeddings for %d entities in batches of %d...", total_entities, batch_size
+    )
     updated = 0
 
     update_sql = """
@@ -91,7 +92,6 @@ def embed_unembedded_entities(batch_size: int = 32) -> int:
 def resolve_all_observations(force: bool = False) -> dict[str, int]:
     """Execute hardened entity resolution across observations with merge history auditing."""
     settings = get_settings()
-    exact_thresh = settings.resolution.exact_match_threshold
     sim_thresh = settings.resolution.embedding_similarity_threshold
     review_lower = settings.resolution.review_band_lower
     review_upper = settings.resolution.review_band_upper
@@ -292,8 +292,12 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Entity Resolution CLI (PRD §8, Milestone M3)")
-    parser.add_argument("--force", action="store_true", help="Force re-resolution across all observations")
-    parser.add_argument("--no-embed", action="store_true", help="Skip embedding generation for new entities")
+    parser.add_argument(
+        "--force", action="store_true", help="Force re-resolution across all observations"
+    )
+    parser.add_argument(
+        "--no-embed", action="store_true", help="Skip embedding generation for new entities"
+    )
     args = parser.parse_args()
 
     resolve_all_observations(force=args.force)

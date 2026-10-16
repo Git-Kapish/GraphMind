@@ -1,7 +1,5 @@
 """Unit tests for Pydantic extraction schemas and coercion rules (PRD FR-1.1, FR-1.3)."""
 
-import pytest
-from pydantic import ValidationError
 from kgrag.extract.schemas import (
     EntityType,
     ExtractedRelation,

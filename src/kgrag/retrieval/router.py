@@ -11,36 +11,94 @@ import logging
 import re
 import time
 from typing import Any, Literal
+
 from pydantic import BaseModel, Field
 
+from kgrag.config import get_settings
 from kgrag.db.postgres import get_connection
 from kgrag.graph.templates import TemplateId
+from kgrag.llm.decisions import get_decision_client
 
 logger = logging.getLogger(__name__)
 
 # Keywords indicating relational / graph traversals
 RELATIONAL_KEYWORDS = [
-    "subsidiary", "subsidiaries", "own", "owns", "owned", "ownership",
-    "parent", "affiliate", "exhibit 21", "officer", "officers", "ceo",
-    "cfo", "executive", "executives", "director", "directors", "management",
-    "leadership", "connect", "connected", "connection", "between",
-    "path", "relate", "relationship", "how is", "how are", "shared",
-    "both", "in common", "supplier", "customer", "partner", "acquire",
-    "acquired", "merger", "how many", "count", "number of"
+    "subsidiary",
+    "subsidiaries",
+    "own",
+    "owns",
+    "owned",
+    "ownership",
+    "parent",
+    "affiliate",
+    "exhibit 21",
+    "officer",
+    "officers",
+    "ceo",
+    "cfo",
+    "executive",
+    "executives",
+    "director",
+    "directors",
+    "management",
+    "leadership",
+    "connect",
+    "connected",
+    "connection",
+    "between",
+    "path",
+    "relate",
+    "relationship",
+    "how is",
+    "how are",
+    "shared",
+    "both",
+    "in common",
+    "supplier",
+    "customer",
+    "partner",
+    "acquire",
+    "acquired",
+    "merger",
+    "how many",
+    "count",
+    "number of",
 ]
 
 # Keywords indicating narrative / unstructured text search
 NARRATIVE_KEYWORDS = [
-    "risk", "risks", "item 1a", "competition", "competitive", "trends",
-    "md&a", "item 7", "liquidity", "capital resources", "policy", "policies",
-    "accounting", "discuss", "explain", "describe", "strategy", "factors",
-    "overview", "business model", "outlook", "guidance", "inflation",
-    "cybersecurity", "revenue recognition", "credit risk"
+    "risk",
+    "risks",
+    "item 1a",
+    "competition",
+    "competitive",
+    "trends",
+    "md&a",
+    "item 7",
+    "liquidity",
+    "capital resources",
+    "policy",
+    "policies",
+    "accounting",
+    "discuss",
+    "explain",
+    "describe",
+    "strategy",
+    "factors",
+    "overview",
+    "business model",
+    "outlook",
+    "guidance",
+    "inflation",
+    "cybersecurity",
+    "revenue recognition",
+    "credit risk",
 ]
 
 
 class RouteDecision(BaseModel):
     """Routing decision outcome with detected template and entities (PRD FR-3.1)."""
+
     chosen: Literal["vector", "graph", "hybrid"]
     confidence: float
     fallback_used: bool = False
@@ -106,7 +164,7 @@ def extract_entities_from_text(text: str) -> list[str]:
         cname = e["canonical_name"]
         if len(cname) > 3 and cname.lower() in text_lower:
             matched.add(cname)
-        for alias in (e["aliases"] or []):
+        for alias in e["aliases"] or []:
             if len(alias) > 3 and alias.lower() in text_lower:
                 matched.add(cname)
 
@@ -128,22 +186,51 @@ def infer_template_and_params(
 
     # Prioritize specific entities over generic filers if multiple entities are detected
     PARENT_FILERS = {
-        "nvidia", "nvidia corp", "nvidia corporation", "intel", "intel corp",
-        "intel corporation", "broadcom", "broadcom inc.", "microsoft",
-        "microsoft corp", "microsoft corporation", "micron", "micron technology",
-        "micron technology inc", "advanced micro devices", "advanced micro devices inc",
-        "amd", "advanced micro devices sdn. bhd"
+        "nvidia",
+        "nvidia corp",
+        "nvidia corporation",
+        "intel",
+        "intel corp",
+        "intel corporation",
+        "broadcom",
+        "broadcom inc.",
+        "microsoft",
+        "microsoft corp",
+        "microsoft corporation",
+        "micron",
+        "micron technology",
+        "micron technology inc",
+        "advanced micro devices",
+        "advanced micro devices inc",
+        "amd",
+        "advanced micro devices sdn. bhd",
     }
     ordered_entities = list(entities)
     if len(ordered_entities) >= 2:
-        if ordered_entities[0].lower() in PARENT_FILERS and ordered_entities[1].lower() not in PARENT_FILERS:
+        if (
+            ordered_entities[0].lower() in PARENT_FILERS
+            and ordered_entities[1].lower() not in PARENT_FILERS
+        ):
             ordered_entities = [ordered_entities[1], ordered_entities[0]] + ordered_entities[2:]
 
     e1 = ordered_entities[0] if len(ordered_entities) >= 1 else None
     e2 = ordered_entities[1] if len(ordered_entities) >= 2 else None
 
     # Officers query pattern
-    if any(k in q_lower for k in ["officer", "officers", "ceo", "cfo", "executive", "executives", "directors", "management", "leadership"]):
+    if any(
+        k in q_lower
+        for k in [
+            "officer",
+            "officers",
+            "ceo",
+            "cfo",
+            "executive",
+            "executives",
+            "directors",
+            "management",
+            "leadership",
+        ]
+    ):
         if e1:
             return TemplateId.OFFICERS_OF, e1, None, None
 
@@ -155,16 +242,35 @@ def infer_template_and_params(
             return TemplateId.NEIGHBORS, e1, None, None
 
     # Path between two entities
-    if any(k in q_lower for k in ["path", "connected", "connection", "between", "relate", "relationship", "how is", "how are"]):
+    if any(
+        k in q_lower
+        for k in [
+            "path",
+            "connected",
+            "connection",
+            "between",
+            "relate",
+            "relationship",
+            "how is",
+            "how are",
+        ]
+    ):
         if e1 and e2:
             return TemplateId.PATH_BETWEEN, e1, e2, None
         if e1:
             return TemplateId.NEIGHBORS, e1, None, None
 
     # Count of relationships (use word boundaries to avoid matching 'country')
-    if any(re.search(r"\b" + re.escape(k) + r"\b", q_lower) for k in ["how many", "count", "number of", "total count"]):
+    if any(
+        re.search(r"\b" + re.escape(k) + r"\b", q_lower)
+        for k in ["how many", "count", "number of", "total count"]
+    ):
         if e1:
-            rel = "SUBSIDIARY_OF" if any(s in q_lower for s in ["subsidiary", "subsidiaries", "company", "companies"]) else "EXECUTIVE_OFFICER_OF"
+            rel = (
+                "SUBSIDIARY_OF"
+                if any(s in q_lower for s in ["subsidiary", "subsidiaries", "company", "companies"])
+                else "EXECUTIVE_OFFICER_OF"
+            )
             return TemplateId.COUNT_BY_RELATION, e1, None, rel
 
     # Top connected / hubs
@@ -172,7 +278,20 @@ def infer_template_and_params(
         return TemplateId.TOP_CONNECTED, None, None, None
 
     # Subsidiaries / jurisdiction / ownership
-    if any(k in q_lower for k in ["subsidiary", "subsidiaries", "own", "owns", "owned", "parent", "jurisdiction", "operate", "operates"]):
+    if any(
+        k in q_lower
+        for k in [
+            "subsidiary",
+            "subsidiaries",
+            "own",
+            "owns",
+            "owned",
+            "parent",
+            "jurisdiction",
+            "operate",
+            "operates",
+        ]
+    ):
         if e1:
             return TemplateId.NEIGHBORS, e1, None, None
 
@@ -189,7 +308,9 @@ def route_query(
 ) -> RouteDecision:
     """Analyze query and route to vector, graph, or hybrid retrieval path (PRD FR-3.1)."""
     detected_entities = extract_entities_from_text(question)
-    template_id, entity_1, entity_2, relation_type = infer_template_and_params(question, detected_entities)
+    template_id, entity_1, entity_2, relation_type = infer_template_and_params(
+        question, detected_entities
+    )
 
     q_lower = question.lower()
     has_relational = any(k in q_lower for k in RELATIONAL_KEYWORDS)
@@ -230,14 +351,50 @@ def route_query(
         )
 
     # 2. Automated routing (mode == "auto")
+    settings = get_settings()
+    fallback_active = False
+
+    if settings.system_one.runtime == "openrouter" and settings.system_one.api_key:
+        try:
+            decision_client = get_decision_client()
+            chosen_route, confidence, prob_dict = decision_client.decide_route(question)
+            if confidence >= settings.router.confidence_threshold:
+                return RouteDecision(
+                    chosen=chosen_route,
+                    confidence=confidence,
+                    fallback_used=False,
+                    template_id=template_id if chosen_route in ("graph", "hybrid") else None,
+                    entity_1=entity_1 if chosen_route in ("graph", "hybrid") else None,
+                    entity_2=entity_2 if chosen_route in ("graph", "hybrid") else None,
+                    relation_type=relation_type if chosen_route in ("graph", "hybrid") else None,
+                    detected_entities=detected_entities,
+                    reasoning=f"System One decision ({chosen_route}, confidence={confidence:.2f}) using inception/mercury-decide:free.",
+                )
+            logger.info(
+                "System One confidence %.2f below threshold %.2f; applying rule fallback.",
+                confidence,
+                settings.router.confidence_threshold,
+            )
+            fallback_active = True
+        except Exception as e:
+            logger.warning(
+                "System One decision unavailable; falling back to rule-based routing: %s", e
+            )
+            fallback_active = True
+
     # Case A: Clear relational query with matched entity
     if has_relational and detected_entities and not has_narrative:
         # If pure structure (e.g. officers, path, count)
-        if template_id in (TemplateId.OFFICERS_OF, TemplateId.PATH_BETWEEN, TemplateId.COUNT_BY_RELATION, TemplateId.SHARED_NEIGHBORS):
+        if template_id in (
+            TemplateId.OFFICERS_OF,
+            TemplateId.PATH_BETWEEN,
+            TemplateId.COUNT_BY_RELATION,
+            TemplateId.SHARED_NEIGHBORS,
+        ):
             return RouteDecision(
                 chosen="graph",
                 confidence=0.88,
-                fallback_used=False,
+                fallback_used=fallback_active,
                 template_id=template_id,
                 entity_1=entity_1,
                 entity_2=entity_2,
@@ -249,7 +406,7 @@ def route_query(
         return RouteDecision(
             chosen="hybrid",
             confidence=0.85,
-            fallback_used=False,
+            fallback_used=fallback_active,
             template_id=template_id,
             entity_1=entity_1,
             entity_2=entity_2,
@@ -263,7 +420,7 @@ def route_query(
         return RouteDecision(
             chosen="vector",
             confidence=0.88,
-            fallback_used=False,
+            fallback_used=fallback_active,
             detected_entities=detected_entities,
             reasoning="Narrative disclosure / risk factor query routed to vector semantic search.",
         )
@@ -273,7 +430,7 @@ def route_query(
         return RouteDecision(
             chosen="hybrid",
             confidence=0.82,
-            fallback_used=False,
+            fallback_used=fallback_active,
             template_id=template_id,
             entity_1=entity_1,
             entity_2=entity_2,
@@ -287,7 +444,7 @@ def route_query(
         return RouteDecision(
             chosen="hybrid",
             confidence=0.75,
-            fallback_used=False,
+            fallback_used=fallback_active,
             template_id=template_id,
             entity_1=entity_1,
             entity_2=entity_2,

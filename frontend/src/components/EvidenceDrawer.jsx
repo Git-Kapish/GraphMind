@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, ShieldCheck, ExternalLink, X, BookOpen, Layers } from 'lucide-react';
+import { ShieldCheck, X, BookOpen, Layers } from 'lucide-react';
 
 export default function EvidenceDrawer({ activeCitation, onClose }) {
   if (!activeCitation) return null;

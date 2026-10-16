@@ -1,7 +1,6 @@
 """Unit tests for Graph Path Verbalization (PRD §7.4, FR-4.1, Milestone M6)."""
 
-import pytest
-from kgrag.answer.verbalizer import verbalize_graph_path, verbalize_graph_paths
+from kgrag.answer.verbalizer import verbalize_graph_path
 from kgrag.retrieval.engine import GraphEvidenceItem, GraphPathResult
 
 
@@ -63,7 +62,10 @@ def test_verbalize_shared_neighbors():
         },
     )
     fact = verbalize_graph_path(path)
-    assert "both nvidia and microsoft competes in market sector computer hardware companies." in fact.statement.lower()
+    assert (
+        "both nvidia and microsoft competes in market sector computer hardware companies."
+        in fact.statement.lower()
+    )
 
 
 def test_verbalize_count_by_relation():
@@ -80,7 +82,10 @@ def test_verbalize_count_by_relation():
         },
     )
     fact = verbalize_graph_path(path)
-    assert "broadcom has 10 distinct canonical operates as a subsidiary of relationships" in fact.statement.lower()
+    assert (
+        "broadcom has 10 distinct canonical operates as a subsidiary of relationships"
+        in fact.statement.lower()
+    )
     assert "vmware" in fact.statement.lower()
 
 
@@ -93,4 +98,6 @@ def test_verbalize_officers_of():
         metadata={"officer_name": "Jensen Huang", "company_name": "NVIDIA"},
     )
     fact = verbalize_graph_path(path)
-    assert "jensen huang serves as an evidenced executive officer of nvidia." in fact.statement.lower()
+    assert (
+        "jensen huang serves as an evidenced executive officer of nvidia." in fact.statement.lower()
+    )

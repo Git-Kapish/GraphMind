@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, ShieldCheck, Clock, Route, FileText, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
+import { Sparkles, ShieldCheck, Clock, Route, FileText, CheckCircle2, Layers } from 'lucide-react';
 import GraphCanvas from './GraphCanvas';
 
 export default function ResponseView({
@@ -38,7 +38,6 @@ export default function ResponseView({
     graph_paths = [],
     passages = [],
     latency = {},
-    validation = {},
   } = response;
 
   const isRefusal = status === 'refused' || answer.toLowerCase().includes('do not contain sufficient evidence');

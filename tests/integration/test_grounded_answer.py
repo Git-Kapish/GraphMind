@@ -44,7 +44,9 @@ def test_grounded_answer_with_valid_citations(pipeline):
 
     for cit in res.citations:
         assert cit.label.startswith("[G") or cit.label.startswith("[P")
-        assert cit.chunk_id in retrieved_chunk_ids, f"Citation chunk_id {cit.chunk_id} was not in retrieved chunks!"
+        assert cit.chunk_id in retrieved_chunk_ids, (
+            f"Citation chunk_id {cit.chunk_id} was not in retrieved chunks!"
+        )
         assert cit.text_snippet or cit.evidence_quote, "Citation missing quote/snippet."
 
 
@@ -84,8 +86,6 @@ def test_citation_resolution_rejects_hallucinations_with_retries():
 
 def test_failed_resolution_never_silent():
     """Invariant: Failed citation resolution does not silently return a confident answer (PRD §14)."""
-    from kgrag.answer.generator import GenerationOutcome
-    from kgrag.answer.validator import CitationValidationResult
 
     # Verify that an outcome with invalid citations is marked 'validation_failed'
     registry = EvidenceRegistry()

@@ -7,10 +7,9 @@ Verifies that:
 4. Secret extraction or ungrounded instruction hijacking is blocked or rejected.
 """
 
-import pytest
 from unittest.mock import MagicMock
 
-from kgrag.answer.context import assemble_context, EvidenceRegistry, EvidenceItem
+from kgrag.answer.context import EvidenceItem, EvidenceRegistry, assemble_context
 from kgrag.answer.generator import generate_grounded_answer
 from kgrag.answer.validator import validate_citations
 from kgrag.retrieval.engine import VectorPassageResult

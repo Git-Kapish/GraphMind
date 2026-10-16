@@ -1,7 +1,6 @@
 """Entity name normalizer and string tokenization (PRD §8, Milestone M3)."""
 
 import re
-from typing import Any
 
 # Legal and corporate suffix regex pattern (PRD §8 rule 1)
 LEGAL_SUFFIXES = [

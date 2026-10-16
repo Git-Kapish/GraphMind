@@ -1,7 +1,6 @@
 """Unit tests for entity candidate matching and similarity scoring (PRD FR-1.4, Milestone M3)."""
 
 import pytest
-import numpy as np
 
 from kgrag.resolve.candidates import (
     cosine_similarity,
@@ -89,5 +88,7 @@ def test_find_best_candidate_hard_negatives_rejected():
         }
     ]
 
-    cand = find_best_candidate("Applied Optoelectronics", "Company", existing, review_band_lower=0.70)
+    cand = find_best_candidate(
+        "Applied Optoelectronics", "Company", existing, review_band_lower=0.70
+    )
     assert cand is None  # Below review threshold, correctly treated as distinct new

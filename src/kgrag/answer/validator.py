@@ -8,11 +8,16 @@ Enforces the mechanical citation resolution invariant on every request:
 5. Produces actionable feedback for model regeneration if unresolved.
 """
 
+import logging
 import re
-from typing import Any
+
 from pydantic import BaseModel, Field
 
 from kgrag.answer.context import EvidenceItem, EvidenceRegistry
+from kgrag.config import get_settings
+from kgrag.llm.decisions import get_decision_client
+
+logger = logging.getLogger(__name__)
 
 CITATION_REGEX = re.compile(r"\[([GP]\d+)\]")
 
@@ -33,6 +38,7 @@ REFUSAL_CUES = [
 
 class ResolvedCitation(BaseModel):
     """A verified, fully-resolved citation mapped to an actual retrieved chunk."""
+
     label: str
     chunk_id: str
     doc_id: str = ""
@@ -43,10 +49,13 @@ class ResolvedCitation(BaseModel):
     evidence_quote: str = ""
     observation_ids: list[str] = Field(default_factory=list)
     source_type: str = "vector"
+    supports_claim: str = "unknown"
+    claim_support_confidence: float = 0.0
 
 
 class CitationValidationResult(BaseModel):
     """Outcome of mechanical citation resolution validation."""
+
     is_valid: bool
     is_refusal: bool = False
     extracted_labels: list[str] = Field(default_factory=list)
@@ -169,3 +178,35 @@ def validate_citations(
         resolution_rate=1.0,
         feedback_message="All citations successfully resolved to retrieved chunks.",
     )
+
+
+def verify_claim_support(
+    answer_text: str,
+    resolved_citations: list[ResolvedCitation],
+) -> list[ResolvedCitation]:
+    """Verify claim support for each resolved citation using System One Mercury Decide (PRD §7.4)."""
+    settings = get_settings()
+    if not (settings.system_one.runtime == "openrouter" and settings.system_one.api_key):
+        return resolved_citations
+
+    decision_client = get_decision_client()
+    for citation in resolved_citations:
+        evidence = citation.evidence_quote or citation.text_snippet
+        if not evidence:
+            citation.supports_claim = "unsupported"
+            citation.claim_support_confidence = 0.5
+            continue
+        try:
+            decision, conf = decision_client.decide_claim_support(
+                claim=answer_text, evidence=evidence
+            )
+            citation.supports_claim = decision
+            citation.claim_support_confidence = conf
+        except Exception as e:
+            logger.warning(
+                "System One claim support check failed for citation %s: %s", citation.label, e
+            )
+            citation.supports_claim = "unknown"
+            citation.claim_support_confidence = 0.5
+
+    return resolved_citations

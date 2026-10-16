@@ -9,6 +9,7 @@ Implements:
 
 import math
 from typing import Any
+
 import numpy as np
 from scipy.stats import binomtest
 

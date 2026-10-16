@@ -4,10 +4,8 @@ import pytest
 
 from kgrag.graph.templates import (
     StrictResolutionStatus,
-    TemplateId,
     attach_evidence_to_paths,
     explain_template_query,
-    fetch_evidence_for_observations,
     query_count_by_relation,
     query_neighbors,
     query_officers_of,
@@ -36,7 +34,9 @@ def test_anchor_node_query_plan_index_seek():
     cypher = "MATCH (a:Entity {entity_id: $a_id})-[r:COMPETES_WITH]-(b:Entity) RETURN a, r, b"
     plan_info = explain_template_query(cypher, {"a_id": "ent_99ee45010f6a"})
 
-    assert plan_info["has_index_seek"] is True, f"Expected NodeUniqueIndexSeek in plan: {plan_info['plan_string']}"
+    assert plan_info["has_index_seek"] is True, (
+        f"Expected NodeUniqueIndexSeek in plan: {plan_info['plan_string']}"
+    )
 
 
 def test_template_1_neighbors():
@@ -117,7 +117,6 @@ def test_template_7_officers_of():
 
 def test_symmetric_relation_undirected_matching():
     """Verify that symmetric relations (e.g. COMPETES_WITH) match regardless of endpoint order (PRD FR-3.2)."""
-    from kgrag.graph.templates import resolve_anchor_entity_id
 
     # Whether querying from NVIDIA or AMD, symmetric relation is discoverable
     res_nvda = query_neighbors("nvidia", relation_type="COMPETES_WITH")
@@ -152,11 +151,15 @@ def test_directed_relation_not_matched_in_reverse():
     # NVIDIA is the company (target of OFFICER_OF).
     # An outgoing query for OFFICER_OF from NVIDIA must match 0 records (NVIDIA is not an officer).
     out_results = query_neighbors("nvidia", relation_type="OFFICER_OF", direction="out", limit=5)
-    assert len(out_results) == 0, "Directed OFFICER_OF was erroneously matched in outgoing direction from company!"
+    assert len(out_results) == 0, (
+        "Directed OFFICER_OF was erroneously matched in outgoing direction from company!"
+    )
 
     # An incoming query must match the evidenced officer(s)
     in_results = query_neighbors("nvidia", relation_type="OFFICER_OF", direction="in", limit=5)
-    assert len(in_results) > 0, "Directed OFFICER_OF failed to match in incoming direction to company!"
+    assert len(in_results) > 0, (
+        "Directed OFFICER_OF failed to match in incoming direction to company!"
+    )
     assert in_results[0]["relation"] == "OFFICER_OF"
 
 
@@ -193,4 +196,3 @@ def test_resolve_entity_strict_empty():
     res = resolve_entity_strict("")
     assert res.status == StrictResolutionStatus.NOT_FOUND
     assert "empty" in res.message.lower()
-

@@ -1,6 +1,5 @@
 """Unit tests for deterministic executive officer parser (PRD FR-1.1)."""
 
-import pytest
 from kgrag.extract.officers import parse_officer_text
 
 

@@ -23,7 +23,7 @@ def evaluate_retrieval(
         raise FileNotFoundError(f"Retrieval dataset not found: {dataset_path}")
 
     pairs = []
-    with open(data_file, "r", encoding="utf-8") as f:
+    with open(data_file, encoding="utf-8") as f:
         for line in f:
             if line.strip():
                 pairs.append(json.loads(line))
@@ -141,11 +141,13 @@ def evaluate_retrieval(
     print("  PRE-ROUTING RETRIEVAL EVALUATION REPORT (PRD FR-2.3, M4)")
     print("=" * 70)
     print(f"- Total Evaluated Questions:          {total}")
-    print(f"- Target Recall:                      High coverage before router development")
+    print("- Target Recall:                      High coverage before router development")
     print("-" * 70)
     print(f"- Hits @ 3:                           {hits_at_3} / {total} ({recall_at_3 * 100:.2f}%)")
     print(f"- Hits @ 5:                           {hits_at_5} / {total} ({recall_at_5 * 100:.2f}%)")
-    print(f"- Hits @ 10:                          {hits_at_10} / {total} ({recall_at_10 * 100:.2f}%)")
+    print(
+        f"- Hits @ 10:                          {hits_at_10} / {total} ({recall_at_10 * 100:.2f}%)"
+    )
     print(f"- Mean Reciprocal Rank (MRR):         {mrr:.4f}")
     print(f"- Average Query Latency:              {avg_latency:.1f} ms")
     print("-" * 70)
@@ -171,7 +173,7 @@ def generate_markdown_report(summary: dict[str, Any], doc_path: Path):
         "",
         "- **Evaluation Date:** 2026-10-15",
         "- **Milestone:** M4 (Vector Index & Pre-Routing Retrieval Evaluation)",
-        f"- **Corpus:** 592 SEC 10-K chunks across 6 filers (`NVDA`, `AMD`, `AVGO`, `INTC`, `MU`, `MSFT`)",
+        "- **Corpus:** 592 SEC 10-K chunks across 6 filers (`NVDA`, `AMD`, `AVGO`, `INTC`, `MU`, `MSFT`)",
         "- **Embedding Model:** `nomic-embed-text:latest` (768-d pgvector, HNSW index with cosine distance)",
         "- **Test Dataset:** 40 hand-verified `(question, gold_chunk_ids)` pairs (`benchmarks/questions/retrieval_eval_pairs.jsonl`)",
         "",
@@ -201,31 +203,40 @@ def generate_markdown_report(summary: dict[str, Any], doc_path: Path):
         r3 = (stats["hit_3"] / tot * 100) if tot else 0.0
         r5 = (stats["hit_5"] / tot * 100) if tot else 0.0
         r10 = (stats["hit_10"] / tot * 100) if tot else 0.0
-        lines.append(f"| `{ticker}` | {tot} | {r3:.1f}% ({stats['hit_3']}/{tot}) | {r5:.1f}% ({stats['hit_5']}/{tot}) | {r10:.1f}% ({stats['hit_10']}/{tot}) |")
+        lines.append(
+            f"| `{ticker}` | {tot} | {r3:.1f}% ({stats['hit_3']}/{tot}) | {r5:.1f}% ({stats['hit_5']}/{tot}) | {r10:.1f}% ({stats['hit_10']}/{tot}) |"
+        )
 
-    lines.extend([
-        "",
-        "## Detailed Query Log (Sample)",
-        "",
-        "| ID | Ticker | Category | First Gold Rank | Hit@5 | Hit@10 | Latency |",
-        "|---|---|---|---|---|---|---|",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Detailed Query Log (Sample)",
+            "",
+            "| ID | Ticker | Category | First Gold Rank | Hit@5 | Hit@10 | Latency |",
+            "|---|---|---|---|---|---|---|",
+        ]
+    )
 
     for q in summary["per_query_results"][:20]:
         rank_str = str(q["first_gold_rank"]) if q["first_gold_rank"] else "MISS (>10)"
         h5_str = "YES" if q["hit_5"] else "NO"
         h10_str = "YES" if q["hit_10"] else "NO"
-        lines.append(f"| {q['id']} | {q['ticker']} | {q['category']} | {rank_str} | {h5_str} | {h10_str} | {q['latency_ms']} ms |")
+        lines.append(
+            f"| {q['id']} | {q['ticker']} | {q['category']} | {rank_str} | {h5_str} | {h10_str} | {q['latency_ms']} ms |"
+        )
 
-    lines.extend([
-        "",
-        "## Key Observations & Router Implications",
-        "",
-        "1. **High Single-Fact Recall:** Pure vector retrieval performs strongly on descriptive, topical questions (e.g. business overview, product specifications, risk factors).",
-        "2. **Exhibit 21 Entity List Degradation:** Questions seeking specific cross-border subsidiary jurisdictions or multi-entity links show lower rank in pure vector retrieval due to tabular token density, reinforcing the necessity of graph-guided traversal for entity relationship questions.",
-        "3. **Router Gate Unlocked:** With measured Recall@5 at " + f"{summary['recall_at_5']*100:.1f}% and Recall@10 at {summary['recall_at_10']*100:.1f}%, the vector retrieval foundation is certified for hybrid routing integration.",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "## Key Observations & Router Implications",
+            "",
+            "1. **High Single-Fact Recall:** Pure vector retrieval performs strongly on descriptive, topical questions (e.g. business overview, product specifications, risk factors).",
+            "2. **Exhibit 21 Entity List Degradation:** Questions seeking specific cross-border subsidiary jurisdictions or multi-entity links show lower rank in pure vector retrieval due to tabular token density, reinforcing the necessity of graph-guided traversal for entity relationship questions.",
+            "3. **Router Gate Unlocked:** With measured Recall@5 at "
+            + f"{summary['recall_at_5'] * 100:.1f}% and Recall@10 at {summary['recall_at_10'] * 100:.1f}%, the vector retrieval foundation is certified for hybrid routing integration.",
+            "",
+        ]
+    )
 
     with open(doc_path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
