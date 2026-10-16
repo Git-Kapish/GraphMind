@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 def get_connection(autocommit: bool = True) -> psycopg.Connection:
     """Get a direct psycopg connection to PostgreSQL with vector registration."""
     settings = get_settings().database.postgres
-    conn = psycopg.connect(settings.dsn, autocommit=autocommit, row_factory=dict_row)
+    conn = psycopg.connect(
+        settings.dsn, autocommit=autocommit, row_factory=dict_row, connect_timeout=5
+    )
     try:
         register_vector(conn)
     except Exception as e:
