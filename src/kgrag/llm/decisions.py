@@ -95,6 +95,13 @@ class MercuryDecideClient:
                 "model": self.model,
                 "error": "OPENROUTER_API_KEY is not configured.",
             }
+        if self.api_key.startswith("mock"):
+            return {
+                "status": "healthy",
+                "endpoint": self.endpoint,
+                "model": self.model,
+                "provider": "Inception Labs (OpenRouter Decisions Mock)",
+            }
         try:
             # Send a minimal dry-run decision query to verify reachability
             res = self.decide(

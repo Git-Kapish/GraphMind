@@ -258,6 +258,27 @@ class OllamaClient:
         return embeddings
 
 
+def generate_deterministic_embedding(text: str, dim: int = 2048) -> list[float]:
+    """Generate normalized deterministic pseudo-random unit vector for offline mock/CI testing."""
+    import hashlib
+    import math
+
+    h = hashlib.sha256(text.encode("utf-8")).digest()
+    vec = []
+    seed = int.from_bytes(h[:8], "big")
+    a = 6364136223846793005
+    c = 1442695040888963407
+    m = 2**64
+    norm_sq = 0.0
+    for _ in range(dim):
+        seed = (a * seed + c) % m
+        val = (seed / m) - 0.5
+        vec.append(val)
+        norm_sq += val * val
+    norm = math.sqrt(norm_sq) or 1.0
+    return [v / norm for v in vec]
+
+
 class OpenRouterEmbeddingClient:
     """OpenRouter implementation for dense vector embeddings using nvidia/nemotron-3-embed-1b:free."""
 
@@ -311,6 +332,13 @@ class OpenRouterEmbeddingClient:
         """Check reachability and API key for OpenRouter embeddings."""
         if not self.api_key:
             return {"status": "unconfigured", "error": "OPENROUTER_API_KEY not configured"}
+        if self.api_key.startswith("mock"):
+            return {
+                "status": "healthy",
+                "model": self.model,
+                "dimension": self.dimension or 2048,
+                "endpoint": self.endpoint,
+            }
         try:
             embs = self.embed(["test reachability"])
             dim = len(embs[0]) if embs else 0
@@ -327,6 +355,10 @@ class OpenRouterEmbeddingClient:
         """Generate 2048-d vector embeddings using OpenRouter /embeddings endpoint with in-memory caching."""
         if not texts:
             return []
+
+        if self.api_key.startswith("mock"):
+            dim = self.dimension or 2048
+            return [generate_deterministic_embedding(t, dim=dim) for t in texts]
 
         # 1. Check in-memory cache for existing embeddings
         needed_indices = []
@@ -483,6 +515,15 @@ class OpenRouterClient:
                 "status": "unconfigured",
                 "model": self.model,
                 "error": "OPENROUTER_API_KEY is not configured.",
+            }
+        if self.api_key.startswith("mock"):
+            return {
+                "status": "healthy",
+                "provider": "OpenRouter (Mock)",
+                "target_model": self.model,
+                "model_available": True,
+                "label": "mock_ci",
+                "limit": None,
             }
         try:
             resp = self.client.get(
