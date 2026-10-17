@@ -14,15 +14,31 @@ MOCK_EMBEDDING_2048 = [0.0] * 2048
 MOCK_EMBEDDING_2048[0] = 1.0
 
 
+def _is_reachable(host: str, port: int, timeout: float = 0.5) -> bool:
+    import socket
+
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
 @pytest.fixture(scope="session", autouse=True)
 def ensure_test_database_seeded():
     """Seed minimal test fixtures into PostgreSQL and Neo4j (idempotent for CI & local test runs)."""
+    from kgrag.config import get_settings
+
+    settings = get_settings()
+
     # 1. Ensure PostgreSQL test fixtures exist
     try:
-        from kgrag.db.postgres import get_connection
+        if not _is_reachable(settings.database.postgres.host, settings.database.postgres.port):
+            logger.info("PostgreSQL is not reachable; skipping test database fixture seeding.")
+        else:
+            from kgrag.db.postgres import get_connection
 
-        with get_connection(autocommit=True) as conn:
-            with conn.cursor() as cur:
+            with get_connection(autocommit=True) as conn, conn.cursor() as cur:
                 # Insert test documents
                 docs = [
                     (
@@ -291,11 +307,19 @@ def ensure_test_database_seeded():
 
     # 2. Ensure Neo4j test fixtures exist
     try:
-        from kgrag.db.neo4j import get_session
+        import urllib.parse
 
-        with get_session() as session:
-            cypher = """
-            MERGE (nvda:Entity {entity_id: 'ent_4e47c272d2b7'})
+        parsed = urllib.parse.urlparse(settings.database.neo4j.uri)
+        neo4j_host = parsed.hostname or "127.0.0.1"
+        neo4j_port = parsed.port or 7687
+        if not _is_reachable(neo4j_host, neo4j_port):
+            logger.info("Neo4j is not reachable; skipping Neo4j test fixture seeding.")
+        else:
+            from kgrag.db.neo4j import get_session
+
+            with get_session() as session:
+                cypher = """
+                MERGE (nvda:Entity {entity_id: 'ent_4e47c272d2b7'})
             SET nvda.canonical_name = 'nvidia', nvda.type = 'Company', nvda.aliases = ['NVIDIA Corporation', 'NVDA']
 
             MERGE (amd:Entity {entity_id: 'ent_99ee45010f6a'})
@@ -332,3 +356,46 @@ def ensure_test_database_seeded():
             session.run(cypher)
     except Exception as e:
         logger.warning("Neo4j test fixture seeding skipped or failed: %s", e)
+
+
+def pytest_collection_modifyitems(config, items):
+    """Automatically skip database-dependent tests if PostgreSQL or Neo4j are not reachable locally."""
+    import urllib.parse
+
+    from kgrag.config import get_settings
+
+    settings = get_settings()
+
+    pg_reachable = _is_reachable(
+        settings.database.postgres.host, settings.database.postgres.port, timeout=0.2
+    )
+
+    parsed = urllib.parse.urlparse(settings.database.neo4j.uri)
+    neo4j_host = parsed.hostname or "127.0.0.1"
+    neo4j_port = parsed.port or 7687
+    neo4j_reachable = _is_reachable(neo4j_host, neo4j_port, timeout=0.2)
+
+    skip_pg = pytest.mark.skip(reason="PostgreSQL not reachable in current test environment")
+    skip_neo4j = pytest.mark.skip(reason="Neo4j not reachable in current test environment")
+
+    pg_files = {
+        "test_ingest.py",
+        "test_llm_extractor.py",
+        "test_provenance.py",
+        "test_resolver.py",
+        "test_retrieval_engine.py",
+        "test_officers.py",
+        "test_verbalizer.py",
+        "test_verifier.py",
+    }
+    neo4j_files = {
+        "test_graph_templates.py",
+    }
+
+    for item in items:
+        file_name = getattr(item, "path", None)
+        name_str = file_name.name if file_name else str(getattr(item, "fspath", ""))
+        if not pg_reachable and name_str in pg_files:
+            item.add_marker(skip_pg)
+        if not neo4j_reachable and name_str in neo4j_files:
+            item.add_marker(skip_neo4j)

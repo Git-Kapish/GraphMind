@@ -64,7 +64,7 @@ GraphMind extracts a knowledge graph from SEC 10-K filings, indexes the same sou
 | `single_hop` Relational | 6 | 66.7% | **83.3%** | **+16.7%** | 1 Hybrid win vs 0 Baseline |
 | `two_hop` Traversal | 8 | 87.5% | **100.0%** | **+12.5%** | 1 Hybrid win vs 0 Baseline |
 | `out_of_scope` (Refusal) | 5 | 80.0% | **80.0%** | +0.0% | 0 Discordant (clean refusal) |
-| **Total / Overall** | **25** | **72.0%** | **88.0%** | **+16.0%** | **4 Hybrid wins vs 0 Baseline (p < 0.05)** |
+| **Total / Overall** | **25** | **72.0%** | **88.0%** | **+16.0%** | **4 Hybrid wins vs 0 Baseline (p = 0.125, exploratory)** |
 
 **Enforced invariant:** every citation in a returned answer resolves to a chunk or graph fact retrieved for that request. This is a mechanical check, separate from the model-based claim-support check described below.
 

@@ -84,12 +84,23 @@ def mcnemar_exact_test(y_system: list[bool], y_baseline: list[bool]) -> dict[str
             n00 += 1
 
     discordant_total = n10 + n01
+    is_underpowered = discordant_total < 10 or len(y_system) < 15
+    power_caveat = ""
+
     if discordant_total == 0:
         p_val = 1.0
+        power_caveat = (
+            "Zero discordant pairs observed (all outcomes were ties). Test is non-informative."
+        )
     else:
         # Two-sided exact binomial test on discordant pairs
         res = binomtest(min(n10, n01), discordant_total, 0.5, alternative="two-sided")
         p_val = float(res.pvalue)
+        if is_underpowered:
+            power_caveat = (
+                f"Sample size ({len(y_system)}) or discordant pairs ({discordant_total}) is below recommended threshold "
+                f"(discordant >= 10, N >= 15). Minimum 6 discordant wins with 0 losses required for p < 0.05."
+            )
 
     return {
         "n10_system_wins": n10,
@@ -99,4 +110,7 @@ def mcnemar_exact_test(y_system: list[bool], y_baseline: list[bool]) -> dict[str
         "discordant_total": discordant_total,
         "p_value": p_val,
         "system_win_ratio": f"{n10} to {n01}",
+        "is_underpowered": is_underpowered,
+        "statistically_significant_05": p_val < 0.05 and not is_underpowered,
+        "power_caveat": power_caveat,
     }

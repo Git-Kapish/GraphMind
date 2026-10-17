@@ -43,7 +43,13 @@ def test_entity_id_parameter_binding_neutralizes_injection():
     mock_result.__iter__.return_value = []
     mock_session.run.return_value = mock_result
 
-    with patch("kgrag.graph.templates.get_session") as mock_get_session:
+    with (
+        patch("kgrag.graph.templates.get_session") as mock_get_session,
+        patch(
+            "kgrag.graph.templates.resolve_anchor_entity_id",
+            return_value=(malicious_eid, "malicious_entity"),
+        ),
+    ):
         mock_get_session.return_value.__enter__.return_value = mock_session
 
         # Execute query_neighbors with malicious entity input
@@ -62,7 +68,7 @@ def test_entity_id_parameter_binding_neutralizes_injection():
         assert "$a_id" in cypher_query
         assert "DETACH DELETE" not in cypher_query
         # The malicious string must be safely contained inside parameters
-        assert call_kwargs["a_id"] == malicious_eid or call_kwargs.get("a_id") is not None
+        assert call_kwargs["a_id"] == malicious_eid
 
 
 def test_template_enumeration_strictly_closed():

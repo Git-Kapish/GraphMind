@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import QueryHero from './components/QueryHero';
 import ResponseView from './components/ResponseView';
 import CompareView from './components/CompareView';
 import EvidenceDrawer from './components/EvidenceDrawer';
-import BenchmarkModal from './components/BenchmarkModal';
+import BenchmarkPage from './components/BenchmarkPage';
+import ProjectInfoPage from './components/ProjectInfoPage';
 
 export default function App() {
   const [query, setQuery] = useState('');
@@ -96,57 +98,42 @@ export default function App() {
   };
 
   return (
-    <div className="app-layout">
-      {/* Top Navigation */}
-      <Navbar
-        health={health}
-        onOpenBenchmark={() => setIsBenchmarkOpen(true)}
-      />
-
-      {/* Main Content Area */}
-      <main className="main-content">
-        <QueryHero
-          query={query}
-          setQuery={setQuery}
-          mode={mode}
-          setMode={setMode}
-          onSearch={handleSearch}
-          loading={loading}
+    <Router>
+      <div className="app-layout">
+        {/* Top Navigation with Links */}
+        <Navbar
+          health={health}
+          onOpenBenchmark={() => setIsBenchmarkOpen(false)}
         />
 
-        {error && (
-          <div className="error-banner glass-panel fade-in">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
+        {/* Routes */}
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<QueryHero
+              query={query}
+              setQuery={setQuery}
+              mode={mode}
+              setMode={setMode}
+              onSearch={handleSearch}
+              loading={loading}
+            />} />
+            <Route path="/benchmark" element={<BenchmarkPage />} />
+            <Route path="/project" element={<ProjectInfoPage />} />
+          </Routes>
+        </main>
 
-        {mode === 'compare' ? (
-          <CompareView
-            baselineData={compareData?.baseline}
-            hybridData={compareData?.hybrid}
-            loading={loading}
-            onSelectCitation={setActiveCitation}
-          />
-        ) : (
-          <ResponseView
-            response={response}
-            loading={loading}
-            onSelectCitation={setActiveCitation}
-          />
-        )}
-      </main>
+        {/* Slide-in Evidence Drawer */}
+        <EvidenceDrawer
+          activeCitation={activeCitation}
+          onClose={() => setActiveCitation(null)}
+        />
 
-      {/* Slide-in Evidence Drawer */}
-      <EvidenceDrawer
-        activeCitation={activeCitation}
-        onClose={() => setActiveCitation(null)}
-      />
-
-      {/* Benchmark Summary Modal */}
-      <BenchmarkModal
-        isOpen={isBenchmarkOpen}
-        onClose={() => setIsBenchmarkOpen(false)}
-      />
-    </div>
+        {/* Benchmark Summary Modal - hidden, navigation goes to page instead */}
+        {/* <BenchmarkModal
+          isOpen={isBenchmarkOpen}
+          onClose={() => setIsBenchmarkOpen(false)}
+        /> */}
+      </div>
+    </Router>
   );
 }

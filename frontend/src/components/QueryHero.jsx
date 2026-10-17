@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Sparkles, SlidersHorizontal, CornerDownLeft, SplitSquareVertical } from 'lucide-react';
+import { Search, Sparkles, SlidersHorizontal, SlidersVertical, CornerDownLeft, SplitSquareVertical } from 'lucide-react';
 
 const EXAMPLE_CATEGORIES = [
   {
@@ -104,41 +104,46 @@ export default function QueryHero({
         </div>
       </div>
 
-      {/* Main Search Bar Form */}
+      {/* Main Search Bar Form - centered using flexbox */}
       <form onSubmit={handleSubmit} className="search-form">
-        <div className="search-input-wrapper">
+        <div className="search-input-wrapper" style={{ textAlign: 'center' }}>
           <Search className="search-icon" size={20} />
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Ask a relational or multi-hop financial question across 10 enterprise SEC 10-K filings..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            disabled={loading}
-          />
-          {query && !loading && (
-            <button
-              type="button"
-              className="clear-btn"
-              onClick={() => setQuery('')}
-            >
-              ×
-            </button>
-          )}
-          <button
-            type="submit"
-            className={`search-submit-btn ${loading ? 'loading' : ''}`}
-            disabled={!query.trim() || loading}
-          >
-            {loading ? (
-              <span className="spinner"></span>
-            ) : (
-              <>
-                <span>Execute</span>
-                <CornerDownLeft size={16} />
-              </>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Ask a relational or multi-hop financial question across 10 enterprise SEC 10-K filings..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              disabled={loading}
+              style={{ minWidth: '400px', padding: '8px 16px', borderRadius: '6px', border: '1px solid var(--border-subtle)', background: 'rgba(11, 17, 30, 0.85)', color: '#F8FAFC' }}
+            />
+            {query && !loading && (
+              <button
+                type="button"
+                className="clear-btn"
+                onClick={() => setQuery('')}
+                style={{ padding: '0 12px', borderRadius: '6px', background: 'none', border: '1px solid var(--border-subtle)', color: '#94A3B8' }}
+              >
+                ×
+              </button>
             )}
-          </button>
+            <button
+              type="submit"
+              className={`search-submit-btn ${loading ? 'loading' : ''}`}
+              disabled={!query.trim() || loading}
+              style={{ padding: '8px 16px', borderRadius: '6px', background: 'none', border: '1px solid var(--accent-primary)', color: '#6366F1' }}
+            >
+              {loading ? (
+                <span className="spinner" style={{ marginRight: '4px' }} />
+              ) : (
+                <>
+                  <span>Execute</span>
+                  <CornerDownLeft size={16} />
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </form>
 
@@ -149,27 +154,31 @@ export default function QueryHero({
           <span>Curated Benchmark Questions:</span>
         </div>
         <div className="examples-groups">
-          {EXAMPLE_CATEGORIES.map((cat) => (
-            <div key={cat.tag} className="example-group">
-              <span className={`example-cat-tag ${cat.tag}`}>{cat.name}</span>
-              <div className="example-buttons">
-                {cat.questions.map((q, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className="example-pill-btn"
-                    onClick={() => {
-                      setQuery(q);
-                      onSearch(q);
-                    }}
-                    disabled={loading}
-                  >
-                    {q}
-                  </button>
-                ))}
+          {EXAMPLE_CATEGORIES.map((cat) => {
+            // Handle both old format (with tag) and new format (tag might be missing)
+            const tag = cat.tag || cat.name.toLowerCase().replace(/\s+/g, '_');
+            return (
+              <div key={tag} className="example-group">
+                <span className={`example-cat-tag ${tag}`}>{cat.name}</span>
+                <div className="example-buttons">
+                  {cat.questions.map((q, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      className="example-pill-btn"
+                      onClick={() => {
+                        setQuery(q);
+                        onSearch(q);
+                      }}
+                      disabled={loading}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

@@ -176,7 +176,235 @@ button {
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
-/* Citation Badges in Answer */
+/* Page Layout Styles */
+
+/* Benchmark Page */
+.benchmark-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.benchmark-breadcrumb {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  margin: -16px -16px 24px;
+}
+
+.breadcrumb-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--accent-primary);
+}
+
+.breadcrumb-separator {
+  color: var(--border-subtle);
+  margin: 0 8px;
+}
+
+.breadcrumb-active {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.page-header {
+  padding: 0 24px 24px;
+  margin: -16px -16px 32px;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.page-header .page-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Benchmark Section */
+.benchmark-section {
+  padding: 0 24px 24px;
+}
+
+.benchmark-section h2 {
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Project Info Page */
+.project-info-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.project-breadcrumb {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  margin: -16px -16px 24px;
+}
+
+.project-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 24px;
+}
+
+.project-overview {
+  margin-bottom: 40px;
+}
+
+.project-overview h2 {
+  margin-bottom: 16px;
+}
+
+.project-overview p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.problem-statement {
+  margin-bottom: 40px;
+}
+
+.problem-statement h2 {
+  margin-bottom: 16px;
+}
+
+.problem-statement ul {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.dataset-used {
+  margin-bottom: 40px;
+}
+
+.dataset-used h2 {
+  margin-bottom: 16px;
+}
+
+.dataset-used ul {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.key-metrics {
+  margin-top: 32px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+}
+
+.metric-card .metric-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.metric-card .metric-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Navbar Nav Links */
+.navbar-right .nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: 32px;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.nav-link.active {
+  color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.15);
+}
+
+/* Search Form Center Fix */
+.search-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-input-wrapper div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Example Buttons */
+.example-pill-btn {
+  padding: 6px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.example-pill-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* Breadcrumb active state */
+.breadcrumb-active {
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+/* Ensure main content doesn't scroll behind fixed elements */
+.main-content {
+  width: 100%;
+  padding: 0 24px;
+}
+
 .citation-badge {
   display: inline-flex;
   align-items: center;

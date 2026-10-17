@@ -32,6 +32,7 @@ from kgrag.benchmarks.statistics import (
     paired_bootstrap_ci,
     wilson_ci,
 )
+from kgrag.config import get_settings
 from kgrag.retrieval.engine import (
     GraphEvidenceItem,
     GraphPathResult,
@@ -40,7 +41,13 @@ from kgrag.retrieval.engine import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-BENCHMARK_FILE = (
+DEFAULT_BENCHMARK_FILE = (
+    Path(__file__).resolve().parent.parent.parent.parent
+    / "benchmarks"
+    / "questions"
+    / "benchmark_questions_v2.jsonl"
+)
+LEGACY_BENCHMARK_FILE = (
     Path(__file__).resolve().parent.parent.parent.parent
     / "benchmarks"
     / "questions"
@@ -74,13 +81,20 @@ REFUSAL_KEYWORDS = [
 ]
 
 
-def load_benchmark_questions(split: str = "all") -> list[dict[str, Any]]:
+def load_benchmark_questions(
+    dataset_path: Path | str | None = None, split: str = "all"
+) -> list[dict[str, Any]]:
     """Load hand-verified benchmark questions from JSONL file with optional split filtering."""
-    if not BENCHMARK_FILE.exists():
-        raise FileNotFoundError(f"Benchmark questions file not found: {BENCHMARK_FILE}")
+    file_path = (
+        Path(dataset_path)
+        if dataset_path
+        else (DEFAULT_BENCHMARK_FILE if DEFAULT_BENCHMARK_FILE.exists() else LEGACY_BENCHMARK_FILE)
+    )
+    if not file_path.exists():
+        raise FileNotFoundError(f"Benchmark questions file not found: {file_path}")
 
     questions = []
-    with open(BENCHMARK_FILE, encoding="utf-8") as f:
+    with open(file_path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line:
@@ -237,9 +251,12 @@ def run_benchmark(
     limit: int | None = None,
     category_filter: str | None = None,
     sample_per_category: int | None = None,
+    dataset_path: Path | str | None = None,
+    update_latest: bool = False,
+    output_run_dir: Path | str | None = None,
 ) -> dict[str, Any]:
     """Execute benchmark across requested systems (PRD §2, §7.5, FR-5.2)."""
-    questions = load_benchmark_questions(split=split)
+    questions = load_benchmark_questions(dataset_path=dataset_path, split=split)
     if category_filter:
         questions = [q for q in questions if q.get("category") == category_filter]
     if sample_per_category:
@@ -253,9 +270,10 @@ def run_benchmark(
     if limit:
         questions = questions[:limit]
 
+    d_name = Path(dataset_path).name if dataset_path else DEFAULT_BENCHMARK_FILE.name
     print("\n" + "=" * 80)
     print("  KNOWLEDGE GRAPH RAG: 5-WAY ABLATION BENCHMARK (MILESTONE M10)")
-    print(f"  Dataset: {BENCHMARK_FILE.name} | Split: {split.upper()} ({len(questions)} Questions)")
+    print(f"  Dataset: {d_name} | Split: {split.upper()} ({len(questions)} Questions)")
     print(f"  Systems Evaluated: {', '.join(sorted(systems_to_run))}")
     print("=" * 80 + "\n")
 
@@ -627,15 +645,19 @@ def run_benchmark(
         failure_breakdown[sys_id] = counts
 
     # Full Payload Assembly
+    settings = get_settings()
     benchmark_payload = {
         "metadata": {
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "dataset_version": "2.0.0",
+            "dataset_path": str(dataset_path or DEFAULT_BENCHMARK_FILE.name),
             "split": split,
             "total_questions": total_q,
             "systems_evaluated": systems_to_run,
             "elapsed_seconds": round(total_time, 2),
-            "model": "qwen2.5:3b",
-            "embedding_model": "nomic-embed-text:768d",
+            "model": f"{settings.llm.model} ({settings.llm.runtime})",
+            "embedding_model": f"{settings.embedding.model} ({settings.embedding.runtime}, dim={settings.embedding.dimension})",
+            "decision_model": f"{settings.system_one.model} ({settings.system_one.runtime})",
             "pgvector_table": "chunks (789 rows)",
             "neo4j_nodes": 331,
             "neo4j_edges": 481,
@@ -656,14 +678,23 @@ def run_benchmark(
         ],
     }
 
-    # Save to JSON
-    RESULTS_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(RESULTS_FILE, "w", encoding="utf-8") as f:
+    # Save timestamped non-overwriting run artifact
+    runs_dir = Path(output_run_dir) if output_run_dir else (RESULTS_FILE.parent / "runs")
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    ts = time.strftime("%Y%m%d_%H%M%S", time.gmtime())
+    run_file = runs_dir / f"benchmark_run_{ts}_{split}.json"
+    with open(run_file, "w", encoding="utf-8") as f:
         json.dump(benchmark_payload, f, indent=2)
-    logger.info("Saved raw benchmark results to %s", RESULTS_FILE)
+    logger.info("Saved timestamped benchmark run artifact to %s", run_file)
 
-    # Generate Markdown Report
-    generate_markdown_report(benchmark_payload)
+    # Update latest benchmark files only if explicitly requested
+    if update_latest:
+        RESULTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(RESULTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(benchmark_payload, f, indent=2)
+        logger.info("Updated latest raw benchmark results in %s", RESULTS_FILE)
+        generate_markdown_report(benchmark_payload)
+
     return benchmark_payload
 
 
@@ -733,6 +764,14 @@ def generate_markdown_report(payload: dict[str, Any]) -> None:
             f"- **Discordant Pairs:** {mcn['n10_system_wins']} Hybrid Wins vs {mcn['n01_baseline_wins']} Baseline Wins (Win Ratio: `{mcn['system_win_ratio']}`)"
         )
         lines.append(f"- **Exact McNemar Two-Sided Test:** p-value = **{mcn['p_value']:.4f}**")
+        if mcn.get("is_underpowered"):
+            lines.append(
+                f"- **Statistical Power Caveat:** {mcn.get('power_caveat')} Results should be interpreted as exploratory."
+            )
+        elif mcn.get("statistically_significant_05"):
+            lines.append(
+                "- **Statistical Significance:** Confirmed (p < 0.05, adequate sample size)."
+            )
 
     # Category Breakdown Table
     lines.append("\n## 3. Performance by Question Category & Hop Count (PRD §2.2, FR-5.1)")
@@ -811,14 +850,22 @@ def main():
         help="Evaluation split (default: test)",
     )
     parser.add_argument(
-        "--limit", type=int, default=None, help="Limit number of questions to evaluate"
-    )
-    parser.add_argument("--category", type=str, default=None, help="Filter by specific category")
-    parser.add_argument(
-        "--sample-per-category",
-        type=int,
+        "--dataset",
+        type=str,
         default=None,
-        help="Sample N questions per category for balanced ablation",
+        help="Path to benchmark questions JSONL file (default: benchmark_questions_v2.jsonl)",
+    )
+    parser.add_argument(
+        "--output-run-dir",
+        type=str,
+        default=None,
+        help="Directory to save timestamped JSON run artifacts (default: benchmarks/results/runs)",
+    )
+    parser.add_argument(
+        "--update-latest",
+        action="store_true",
+        default=False,
+        help="Update full_benchmark_results.json and docs/full_evaluation_benchmark.md",
     )
 
     args = parser.parse_args()
@@ -830,6 +877,9 @@ def main():
         limit=args.limit,
         category_filter=args.category,
         sample_per_category=args.sample_per_category,
+        dataset_path=args.dataset,
+        update_latest=args.update_latest,
+        output_run_dir=args.output_run_dir,
     )
 
 

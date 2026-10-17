@@ -1,7 +1,12 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Database, Network, Cpu, BarChart3 } from 'lucide-react';
 
-export default function Navbar({ onOpenBenchmark }) {
+export default function Navbar({ health }) {
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path || (location.pathname.startsWith(path) && location.pathname !== '/');
+
   return (
     <header className="navbar-container">
       <div className="navbar-left">
@@ -39,11 +44,12 @@ export default function Navbar({ onOpenBenchmark }) {
           </div>
         </div>
 
-        {/* Benchmark Button */}
-        <button className="benchmark-trigger-btn" onClick={onOpenBenchmark}>
-          <BarChart3 size={16} />
-          <span>M10 Benchmark</span>
-        </button>
+        {/* Navigation Links */}
+        <div className="nav-links">
+          <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>Search</Link>
+          <Link to="/benchmark" className={`nav-link ${isActive('/benchmark') ? 'active' : ''}`}>Benchmark</Link>
+          <Link to="/project" className={`nav-link ${isActive('/project') ? 'active' : ''}`}>Project Info</Link>
+        </div>
       </div>
     </header>
   );

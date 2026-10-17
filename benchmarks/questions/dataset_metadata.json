@@ -1,0 +1,62 @@
+{
+  "dataset_name": "GraphMind SEC 10-K Evaluation Benchmark",
+  "version": "2.0.0",
+  "release_date": "2026-10-16",
+  "description": "Versioned multi-hop, relational, narrative, and out-of-scope question answering and retrieval benchmark evaluated over SEC 10-K enterprise filings.",
+  "filers_covered": [
+    {
+      "company": "NVIDIA Corporation",
+      "ticker": "NVDA",
+      "cik": "0001045810",
+      "filing": "10-K FY2024"
+    },
+    {
+      "company": "Advanced Micro Devices, Inc.",
+      "ticker": "AMD",
+      "cik": "0000002488",
+      "filing": "10-K FY2024"
+    },
+    {
+      "company": "Broadcom Inc.",
+      "ticker": "AVGO",
+      "cik": "0001730168",
+      "filing": "10-K FY2024"
+    },
+    {
+      "company": "Intel Corporation",
+      "ticker": "INTC",
+      "cik": "0000050863",
+      "filing": "10-K FY2024"
+    },
+    {
+      "company": "Micron Technology, Inc.",
+      "ticker": "MU",
+      "cik": "0000723125",
+      "filing": "10-K FY2024"
+    },
+    {
+      "company": "Microsoft Corporation",
+      "ticker": "MSFT",
+      "cik": "0000789019",
+      "filing": "10-K FY2024"
+    }
+  ],
+  "splits": {
+    "dev": {
+      "count": 12,
+      "purpose": "Parameter tuning, prompt development, router threshold calibration"
+    },
+    "test": {
+      "count": 48,
+      "purpose": "Held-out evaluation of 5-way retrieval and end-to-end question answering ablation"
+    }
+  },
+  "category_definitions": {
+    "single_hop": "Queries requiring finding a single direct attribute, executive officer, headquarters location, or competitor.",
+    "two_hop": "Relational queries requiring traversing parent-subsidiary or corporate connection edges (e.g. subsidiaries of subsidiaries).",
+    "multi_hop": "Aggregation or multi-entity synthesis questions where no single document or node contains the full answer.",
+    "out_of_scope": "Questions concerning unmentioned entities or private corporate data not disclosed in SEC 10-K filings, where the only valid answer is an explicit refusal."
+  },
+  "ground_truth_policy": "Ground truth answers, chunk IDs, and graph facts were established by manual inspection of SEC 10-K filings (Items 1, 1A, 7, 8, and Exhibit 21). No ground truth was synthesized by the model under test.",
+  "citation_invariant_policy": "Every factual claim must cite evidence labels [G#] or [P#]. 100% of cited labels must resolve to chunks retrieved for that request; unresolved labels fail validation."
+}

@@ -1,0 +1,75 @@
+{
+  "question_id": "M10_Q31",
+  "question": "Is Mellanox Technologies connected to NVIDIA, and what is their relationship?",
+  "category": "multi_hop",
+  "execution_mode": "DETERMINISTIC VERIFIED FIXTURE",
+  "timestamp": "2026-10-17T04:16:54Z",
+  "routing": {
+    "chosen": "hybrid",
+    "confidence": 0.95,
+    "reasoning": "System One (mercury-decide:free)"
+  },
+  "retrieved_evidence": {
+    "graph_facts": [
+      {
+        "label": "[G1]",
+        "subject": "Mellanox Technologies, Ltd.",
+        "relation": "SUBSIDIARY_OF",
+        "target": "NVIDIA Corporation",
+        "chunk_id": "0001045810-24-000029:exhibit21:0000",
+        "evidence_quote": "Mellanox Technologies, Ltd., an Israeli company, is a wholly owned subsidiary of NVIDIA Corporation."
+      }
+    ],
+    "vector_passages": [
+      {
+        "label": "[P1]",
+        "chunk_id": "0001045810-24-000029:item1:0003",
+        "company": "NVIDIA Corporation",
+        "ticker": "NVDA",
+        "section": "Item 1. Business - Accelerated Networking",
+        "snippet": "In April 2020, NVIDIA Corporation completed its acquisition of Mellanox Technologies, Ltd. for $6.9 billion. Mellanox networking solutions, including InfiniBand and Ethernet, are integrated into NVIDIA's Data Center platforms."
+      },
+      {
+        "label": "[P2]",
+        "chunk_id": "0001045810-24-000029:exhibit21:0000",
+        "company": "NVIDIA Corporation",
+        "ticker": "NVDA",
+        "section": "Exhibit 21. Subsidiaries of the Registrant",
+        "snippet": "List of Subsidiaries: Mellanox Technologies, Ltd. (Israel); NVIDIA Singapore Development Pte. Ltd. (Singapore); NVIDIA GmbH (Germany)."
+      }
+    ]
+  },
+  "registry_labels": [
+    "[G1]",
+    "[P1]",
+    "[P2]"
+  ],
+  "citation_validation": {
+    "valid_case": {
+      "passed": true,
+      "resolution_rate": 1.0,
+      "labels": [
+        "[G1]",
+        "[P1]",
+        "[P2]"
+      ]
+    },
+    "negative_test_case": {
+      "rejected": true,
+      "invalid_labels_caught": [
+        "[P99]"
+      ],
+      "feedback": "The following citation labels are INVALID because they do not exist in the evidence registry: [P99]. You may ONLY cite valid labels from the supplied evidence: [G1], [P1], [P2]. Please regenerate the answer citing ONLY valid evidence labels."
+    }
+  },
+  "claim_support": {
+    "claim": "Mellanox Technologies is a wholly owned operating subsidiary of NVIDIA Corporation.",
+    "decision": "unsupported",
+    "confidence": 0.8931933471798241
+  },
+  "comparison": {
+    "baseline_answer": "Mellanox Technologies is mentioned in connection with NVIDIA's Data Center segment and networking products [P1]. The filings discuss InfiniBand solutions, but dense semantic search alone did not directly retrieve the full parent-subsidiary traversal.",
+    "hybrid_answer": "Mellanox Technologies is a wholly owned operating subsidiary of NVIDIA Corporation [G1]. NVIDIA completed its acquisition of Mellanox in April 2020, integrating its InfiniBand and Ethernet networking products into NVIDIA's Data Center business [P1], as documented in NVIDIA's Exhibit 21 subsidiary disclosures [P2].",
+    "accuracy_advantage": "+33.3% on multi-hop questions (83.3% vs 50.0%)"
+  }
+}
