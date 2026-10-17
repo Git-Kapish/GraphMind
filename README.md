@@ -43,11 +43,14 @@ A router selects `vector`, `graph`, or `hybrid`; hybrid retrieval combines ranke
 
 ## Results & Benchmark Audit
 
-GraphMind's retrieval and answering pipelines are evaluated across two standard benchmarks: the **100-Question Standardized Benchmark (GraphMind Eval v1.0)** and the **Historical 25-Question Exploratory Benchmark (Milestone M8)**.
+GraphMind has two distinct evaluation tracks. Keep their results separate:
+
+- **Current standardized benchmark:** [GraphMind Eval v1.0, 100 questions](eval/datasets/graphmind_eval_v1.jsonl), run by [`python -m eval.run_benchmark`](eval/run_benchmark.py). Each execution creates its own manifest and report; see [Canonical benchmark artifacts and provenance](#canonical-benchmark-artifacts-and-provenance).
+- **Historical benchmark:** the earlier M8 exploratory comparison and the legacy five-system ablation runner, documented in [`docs/benchmark_methodology.md`](docs/benchmark_methodology.md). These are not the same dataset or run as Eval v1.0.
 
 ### Standardized 100-Question Benchmark (GraphMind Eval v1.0)
 
-Evaluated on 100 hand-verified questions strictly grounded in SEC 10-K filings across 10 technology filers (NVDA, AMD, INTC, AAPL, AVGO, MSFT, GOOGL, AMZN, MU, QCOM). Dataset pinned with cryptographic SHA-256 (`a36172b661d1f0691e8f21aff5aca2d43264aa30f14265147b171ea1e1378d2e`) under [`eval/datasets/graphmind_eval_v1.jsonl`](eval/datasets/graphmind_eval_v1.jsonl).
+The dataset contains 100 questions across 10 technology filers (NVDA, AMD, INTC, AAPL, AVGO, MSFT, GOOGL, AMZN, MU, QCOM), with 20 questions in each of five categories. The checked-in dataset is pinned by SHA-256 (`a36172b661d1f0691e8f21aff5aca2d43264aa30f14265147b171ea1e1378d2e`) at [`eval/datasets/graphmind_eval_v1.jsonl`](eval/datasets/graphmind_eval_v1.jsonl). Schema/checksum validation does not by itself independently prove every source passage exists in the ingested corpus; see the benchmark methodology and limitations.
 
 #### Category Architecture (N=100)
 - **Single-Hop (20 questions):** Direct factual retrieval from single passages (e.g. officers, founding years, HQ).
@@ -88,9 +91,28 @@ Evaluated on 100 hand-verified questions strictly grounded in SEC 10-K filings a
 
 ---
 
+### Canonical benchmark artifacts and provenance
+
+The standardized runner writes one self-contained artifact set per run:
+
+| Artifact | Purpose |
+|---|---|
+| `eval/results/<run_id>/manifest.json` | Source of truth for run ID, Git SHA, dataset checksum, configuration, timestamps, and completion status |
+| `eval/results/<run_id>/comparison.md` | Canonical human-readable report for that exact run |
+| `eval/results/<run_id>/metrics.json` | Machine-readable aggregate metrics and paired analysis |
+| `eval/results/<run_id>/question_results.jsonl` | Per-question, per-system records |
+| `eval/results/<run_id>/failures.md` | Recorded failures and representative examples |
+| `eval/results/<run_id>/reproducibility.md` | Exact reproduction instructions |
+
+**Provenance note:** the numbers in the summary table below are the benchmark figures currently documented in this README. The repository tree does not currently contain a checked-in Eval v1.0 run directory, so these figures cannot yet be linked here to a specific committed run manifest. Treat them as reported results until the matching `manifest.json`, `comparison.md`, `metrics.json`, and per-question output are archived and linked from this section. Do not invent a run ID or claim that a run is reproducible from the README alone.
+
+For a result to be considered fully auditable, publish or otherwise preserve the complete artifact directory and record the exact run ID and Git SHA here. The dataset manifest proves dataset-file integrity; it does not alone prove that the model evaluations were completed successfully or that every gold passage was verified against the live corpus.
+
+---
+
 ### Historical 25-Question Exploratory Benchmark (Milestone M8)
 
-*Preserved for historical continuity from Milestone M8 development (see `docs/benchmark_methodology.md` for historical audit).*
+*Historical only; this is a separate dataset/configuration and must not be combined with Eval v1.0. See [`docs/benchmark_methodology.md`](docs/benchmark_methodology.md) for the methodology and discrepancy audit. The canonical report for a new 100-question run is generated at `eval/results/<run_id>/comparison.md`, alongside its `manifest.json`.*
 
 | System ID | Architecture | Accuracy | Wilson 95% CI | Citation Resolution | Latency (p50 / p95) |
 |---|---|---|---|---|---|
@@ -104,22 +126,25 @@ Evaluated on 100 hand-verified questions strictly grounded in SEC 10-K filings a
 
 ---
 
-### Reproducing the Benchmarks
+### Reproducing the 100-Question Benchmark
+
+Use the standardized runner for Eval v1.0. Do not use the legacy M8/M10 runner to reproduce the table above.
 
 ```bash
-# Validate the 100-question dataset schema, count, and manifest checksum (0 API spend)
+# 1. Validate the pinned dataset, checksum, and category distribution (no model calls)
 python -m eval.run_benchmark --mode dry-run
 
-# Run stratified 5-question smoke test
+# 2. Run a small smoke test (not a benchmark result)
 python -m eval.run_benchmark --mode smoke
 
-# Run full 100-question comparative evaluation
+# 3. Run the full comparison: same 100 questions for vector baseline and hybrid
 python -m eval.run_benchmark --dataset eval/datasets/graphmind_eval_v1.jsonl --mode full --expected-count 100
 
-# Run automated evaluation & adversarial citation test suite
-pytest tests/unit/test_adversarial_citations.py tests/unit/test_benchmark_100q.py -v
+# 4. Test the benchmark runner and adversarial citation checks
+pytest tests/unit/test_benchmark_100q.py tests/unit/test_adversarial_citations.py -v
 ```
 
+The full run should create an immutable directory at `eval/results/<run_id>/`. Its `manifest.json` identifies the run, dataset checksum, Git commit and configuration; `comparison.md` is the canonical report for that run; `metrics.json` and `question_results.jsonl` contain the aggregate and per-question evidence. Use the exact same run directory when citing results—never infer a run ID or combine files from different runs.
 
 ## Architecture
 
@@ -192,22 +217,22 @@ Stop the services:
 docker compose down
 ```
 
-### Reproduce the benchmark
+### Historical M8 / legacy ablation commands
 
-See [Benchmark methodology and discrepancy audit](docs/benchmark_methodology.md) for dataset governance, metric definitions, limitations, and run commands. The documented commands include:
+The following commands invoke the separate legacy evaluation path. They are useful for reproducing historical experiments, **not** for reproducing the standardized 100-question table above. Their output locations and methodology are described in [`docs/benchmark_methodology.md`](docs/benchmark_methodology.md).
 
 ```bash
-# Compare the vector baseline and hybrid system on the held-out test split
+# Historical held-out split: vector baseline vs auto-routed hybrid
 python -m kgrag.benchmarks.eval --systems A,C --split test
 
-# Run the full five-system ablation
+# Historical five-system ablation
 python -m kgrag.benchmarks.eval --systems A,B,C,D,E --split test
 
-# Keep a timestamped run artifact
+# Historical runner's timestamped output
 python -m kgrag.benchmarks.eval --systems A,C --split test --output-run-dir benchmarks/results/runs
 ```
 
-Run artifacts and model configuration should accompany any performance claim. Do not interpret the two-question M10 smoke run as the 25-question M8 evaluation.
+Do not interpret the two-question M10 smoke run as the 25-question M8 evaluation, and do not merge either historical result with Eval v1.0.
 
 ## Design trade-offs
 
@@ -262,7 +287,9 @@ GraphMind/
 
 ## Limitations and next steps
 
-- **Evaluation scale:** the preliminary comparison contains 25 questions; the 48-question held-out split described in the current methodology needs to be run and interpreted with its sample-size caveats before stronger claims are made.
+- **Evaluation provenance:** the standardized 100-question result summary is documented above, but its exact generated run artifacts are not currently checked into the repository. Archive and link the matching per-run manifest and outputs before treating the table as independently reproducible.
+- **Gold evidence audit:** dataset schema and checksum tests establish structural integrity, not independent verification that every annotated source passage exists in the ingested corpus or that each multi-hop question requires all annotated facts.
+- **Scoring validity:** answer correctness uses automated token/entity heuristics; these are inexpensive but can mis-score paraphrases or partially correct answers. Validate a representative sample manually or with an independently calibrated judge before making stronger accuracy claims.
 - **Corpus scale:** 789 text chunks and 331 graph entities are suitable for auditing the prototype, but do not establish behavior on a large enterprise corpus.
 - **Provider dependence:** the deterministic fallback applies to routing; embedding and generation still depend on upstream model availability.
 - **Operational readiness:** authentication and multi-user access controls, larger-corpus ingestion performance, and incremental graph updates remain potential next steps.
