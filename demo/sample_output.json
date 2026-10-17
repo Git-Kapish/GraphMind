@@ -3,7 +3,7 @@
   "question": "Is Mellanox Technologies connected to NVIDIA, and what is their relationship?",
   "category": "multi_hop",
   "execution_mode": "DETERMINISTIC VERIFIED FIXTURE",
-  "timestamp": "2026-10-17T04:16:54Z",
+  "timestamp": "2026-10-17T04:26:24Z",
   "routing": {
     "chosen": "hybrid",
     "confidence": 0.95,

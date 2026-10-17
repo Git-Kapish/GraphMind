@@ -19,32 +19,39 @@ Usage:
 import argparse
 import json
 import logging
-import sys
 import time
 from pathlib import Path
 from typing import Any
-
-# Ensure project root is in sys.path
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-from demo.fixtures import (
-    BASELINE_DEMO_ANSWER,
-    DEMO_CATEGORY,
-    DEMO_HOP_COUNT,
-    DEMO_QUESTION_ID,
-    DEMO_QUESTION_TEXT,
-    HYBRID_DEMO_ANSWER,
-    INTENTIONAL_INVALID_CITATION_ANSWER,
-    VERIFIED_GRAPH_FACTS,
-    VERIFIED_VECTOR_PASSAGES,
-)
 
 from kgrag.answer.context import EvidenceItem, EvidenceRegistry
 from kgrag.answer.validator import validate_citations
 from kgrag.config import get_settings
 from kgrag.llm.decisions import MercuryDecideClient
+
+try:
+    from demo.fixtures import (
+        BASELINE_DEMO_ANSWER,
+        DEMO_CATEGORY,
+        DEMO_HOP_COUNT,
+        DEMO_QUESTION_ID,
+        DEMO_QUESTION_TEXT,
+        HYBRID_DEMO_ANSWER,
+        INTENTIONAL_INVALID_CITATION_ANSWER,
+        VERIFIED_GRAPH_FACTS,
+        VERIFIED_VECTOR_PASSAGES,
+    )
+except ImportError:
+    from fixtures import (  # type: ignore[no-redef]
+        BASELINE_DEMO_ANSWER,
+        DEMO_CATEGORY,
+        DEMO_HOP_COUNT,
+        DEMO_QUESTION_ID,
+        DEMO_QUESTION_TEXT,
+        HYBRID_DEMO_ANSWER,
+        INTENTIONAL_INVALID_CITATION_ANSWER,
+        VERIFIED_GRAPH_FACTS,
+        VERIFIED_VECTOR_PASSAGES,
+    )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
