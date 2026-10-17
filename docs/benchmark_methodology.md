@@ -92,3 +92,63 @@ python -m kgrag.benchmarks.eval --systems A,C --split test --output-run-dir benc
 ```
 
 Every run outputs a timestamped artifact in `benchmarks/results/runs/` ensuring full reproducibility and historical traceability.
+
+---
+
+## 6. The 100-Question Standardized Benchmark (GraphMind Eval v1.0)
+
+To resolve sample size underpowering and comprehensively test multi-hop reasoning, aggregation synthesis, and refusal grounding, GraphMind Eval v1.0 was established.
+
+### A. Target Distribution & Category Architecture (N=100)
+
+| Category | Count | Reasoning Depth | Purpose & Design Contract |
+|---|---|---|---|
+| `single_hop` | 20 | 1 retrieval step | Direct factual grounding (executives, founding dates, headquarters, business segments). |
+| `two_hop` | 20 | 2 connected facts | Relationship traversals (acquisitions, shared foundries, corporate customer deployments). |
+| `three_hop` | 20 | 3 sequential facts | Extended supply chain, multi-step career paths, and multi-entity competitive ecosystems. |
+| `aggregation` | 20 | Multi-filer synthesis | Cross-company headcount sums, fabless vs foundry comparisons, TSMC concentration risk. |
+| `out_of_scope` | 20 | Refusal / Abstention | Unindexed companies (Tesla, SpaceX, Disney), future projections, confidential credentials. |
+| **Total** | **100** | — | **Balanced, versioned, hand-verified SEC 10-K benchmark.** |
+
+### B. Cryptographic Dataset Pinning
+- **Primary Path:** `eval/datasets/graphmind_eval_v1.jsonl`
+- **Secondary Mirror:** `benchmarks/questions/graphmind_eval_100q_v1.jsonl`
+- **Manifest:** `eval/datasets/dataset_manifest.json`
+- **Dataset SHA-256 Checksum:** `d19fa5f4d0cfc4e92c85b1c34ad90d9e92fe65bf38be946da45b9f90ac4cbba9`
+- **Corpus Filers Covered:** 10 technology filers (NVDA, AMD, INTC, AAPL, AVGO, MSFT, GOOGL, AMZN, MU, QCOM).
+
+### C. Extended Metric Formulations
+
+In addition to Recall@k and MRR, GraphMind Eval v1 measures:
+1. **Evidence Coverage (Multi-Fact Completeness):**
+   $$\text{Coverage} = \frac{1}{N_{\text{answerable}}} \sum_{i=1}^{N_{\text{answerable}}} \frac{|G_i \cap R_i@5|}{|G_i|}$$
+   where $G_i$ is the set of required gold passages/facts for question $i$, and $R_i@5$ is the top-5 retrieved evidence set. A 3-hop question recovering only 1 of 3 facts scores $33.3\%$, not $100\%$.
+2. **Retrieval Failure Rate:** Fraction of answerable queries where zero gold passages appear in top-5 ($|G_i \cap R_i@5| = 0$).
+3. **Retrieved Evidence Citation Membership:** Fraction of cited evidence labels resolving to chunks that were actually retrieved for that specific query.
+4. **Unsupported Factual Claim Rate:** Proportion of material factual assertions lacking citation support.
+
+### D. Reproduction Commands
+```bash
+# 1. Dry-run validation (verifies 100 questions, schema, and manifest SHA-256)
+python -m eval.run_benchmark --mode dry-run
+
+# 2. Stratified smoke test (evaluates 5 questions, 1 per category, across System A and B)
+python -m eval.run_benchmark --mode smoke
+
+# 3. Full 100-Question comparative benchmark
+python -m eval.run_benchmark --dataset eval/datasets/graphmind_eval_v1.jsonl --mode full --expected-count 100
+
+# 4. Resume an interrupted run without duplicating completed records
+python -m eval.run_benchmark --resume --run-id <run_id>
+```
+
+---
+
+## 7. Empirical Findings & Engineering Realities
+
+Evaluating the system on real multi-hop queries revealed several critical engineering insights:
+
+1. **The Graph Traversal Trap:** When the retrieval router selects `graph` based on officer or acquisition keywords, returning a partial or unhelpful graph fact (e.g. Founder instead of CEO) prevents the system from triggering vector fallback if the graph path is non-empty. This starves the generator of rich descriptive text available in vector passages.
+2. **Ambiguity Roadblocks:** Entity ambiguity checks (e.g. asking for clarification on "Mellanox Technologies") can stall automated answer generation, whereas dense vector retrieval directly surfaces relevant acquisition chunks without blocking.
+3. **Vector Baseline Strengths:** On focused 10-K corpora, dense embeddings (`nomic-embed-text`) provide strong lexical-semantic alignment. Hybrid retrieval only provides an advantage when multi-hop relationships span non-contiguous sections where dense vector search fails to bridge the intermediate hop.
+

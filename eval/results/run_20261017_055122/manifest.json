@@ -1,0 +1,23 @@
+{
+  "run_id": "run_20261017_055122",
+  "git_commit_sha": "ba6e25670924da812902bb8bbe663562dab40e39",
+  "dataset_name": "graphmind_eval_v1.jsonl",
+  "dataset_sha256": "d19fa5f4d0cfc4e92c85b1c34ad90d9e92fe65bf38be946da45b9f90ac4cbba9",
+  "start_time_utc": "2026-10-17T05:51:22.371499+00:00",
+  "end_time_utc": "2026-10-17T05:53:48.136115+00:00",
+  "elapsed_seconds": 145.76,
+  "completion_status": "complete",
+  "interruption_reason": null,
+  "systems_evaluated": [
+    "System A (Vector Baseline)",
+    "System B (GraphMind Hybrid)"
+  ],
+  "total_questions": 5,
+  "total_evaluations_completed": 10,
+  "model_configuration": {
+    "llm_model": "nvidia/nemotron-3.5-super-vl:free (openrouter)",
+    "embedding_model": "nvidia/nemotron-3-embed-1b:free (openrouter)",
+    "decision_model": "inception/mercury-decide:free (openrouter)"
+  },
+  "total_measured_cost_usd": 0.0
+}

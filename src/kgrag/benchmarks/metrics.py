@@ -182,3 +182,90 @@ def compute_percentiles(latencies_ms: Sequence[float]) -> dict[str, int]:
         "max": int(np.max(arr)),
         "mean": int(np.mean(arr)),
     }
+
+
+def compute_evidence_coverage(
+    retrieved_chunk_ids_per_query: Sequence[Sequence[str]],
+    gold_chunk_ids_per_query: Sequence[Sequence[str]],
+    k: int = 5,
+) -> float:
+    """Calculate average evidence coverage across multi-fact questions (Phase 4).
+
+    For each answerable query with N gold chunks, coverage is the fraction of those N gold chunks
+    recovered in top-k results. Multi-hop questions require all N facts for 100% coverage.
+    """
+    if len(retrieved_chunk_ids_per_query) != len(gold_chunk_ids_per_query):
+        raise ValueError("Lengths of retrieved and gold lists must match.")
+
+    eligible = 0
+    coverage_sum = 0.0
+
+    for retrieved, gold in zip(retrieved_chunk_ids_per_query, gold_chunk_ids_per_query):
+        gold_set = set(gold)
+        if not gold_set:
+            continue
+
+        eligible += 1
+        top_k = set(retrieved[:k])
+        recovered = len(gold_set.intersection(top_k))
+        coverage_sum += recovered / len(gold_set)
+
+    return (coverage_sum / eligible) if eligible > 0 else 0.0
+
+
+def compute_retrieval_failure_rate(
+    retrieved_chunk_ids_per_query: Sequence[Sequence[str]],
+    gold_chunk_ids_per_query: Sequence[Sequence[str]],
+    k: int = 5,
+) -> float:
+    """Calculate retrieval failure rate: fraction of answerable questions with 0 gold items retrieved in top-k."""
+    if len(retrieved_chunk_ids_per_query) != len(gold_chunk_ids_per_query):
+        raise ValueError("Lengths of retrieved and gold lists must match.")
+
+    eligible = 0
+    failures = 0
+
+    for retrieved, gold in zip(retrieved_chunk_ids_per_query, gold_chunk_ids_per_query):
+        gold_set = set(gold)
+        if not gold_set:
+            continue
+
+        eligible += 1
+        top_k = set(retrieved[:k])
+        if not gold_set.intersection(top_k):
+            failures += 1
+
+    return (failures / eligible) if eligible > 0 else 0.0
+
+
+def compute_citation_membership_rate(
+    membership_hits: int,
+    total_citations: int,
+) -> float:
+    """Calculate retrieved-evidence citation membership rate (Phase 6).
+
+    Proportion of citations that refer strictly to evidence retrieved for the current request.
+    """
+    if total_citations <= 0:
+        return 1.0
+    return membership_hits / total_citations
+
+
+def compute_claim_support_rate(
+    supported_claims: int,
+    total_claims: int,
+) -> float:
+    """Calculate claim support rate: fraction of material claims verified as supported by cited evidence."""
+    if total_claims <= 0:
+        return 1.0
+    return supported_claims / total_claims
+
+
+def compute_unsupported_factual_claim_rate(
+    unsupported_claims: int,
+    total_claims: int,
+) -> float:
+    """Calculate unsupported factual claim rate: fraction of material claims that lack evidence support."""
+    if total_claims <= 0:
+        return 0.0
+    return unsupported_claims / total_claims

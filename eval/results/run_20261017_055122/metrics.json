@@ -1,0 +1,188 @@
+{
+  "overall": {
+    "A": {
+      "total_evaluated": 5,
+      "accuracy": 1.0,
+      "correct_count": 5,
+      "wilson_ci_95": [
+        0.5655,
+        1.0
+      ],
+      "retrieval": {
+        "recall_at_5": 0.25,
+        "mrr": 0.25,
+        "evidence_coverage": 0.25,
+        "retrieval_failure_rate": 0.75
+      },
+      "citation_resolution_rate": 1.0,
+      "out_of_scope": {
+        "correct_abstention_rate": 1.0,
+        "unsupported_answer_rate": 0.0
+      },
+      "latency_ms": {
+        "p50": 10674,
+        "p95": 55839,
+        "min": 6559,
+        "max": 66668,
+        "mean": 21328
+      }
+    },
+    "B": {
+      "total_evaluated": 5,
+      "accuracy": 0.4,
+      "correct_count": 2,
+      "wilson_ci_95": [
+        0.1176,
+        0.7693
+      ],
+      "retrieval": {
+        "recall_at_5": 0.0,
+        "mrr": 0.0,
+        "evidence_coverage": 0.0,
+        "retrieval_failure_rate": 1.0
+      },
+      "citation_resolution_rate": 1.0,
+      "out_of_scope": {
+        "correct_abstention_rate": 1.0,
+        "unsupported_answer_rate": 0.0
+      },
+      "latency_ms": {
+        "p50": 6898,
+        "p95": 10501,
+        "min": 3141,
+        "max": 10660,
+        "mean": 6777
+      }
+    }
+  },
+  "paired_comparison": {
+    "hybrid_vs_baseline": {
+      "questions_evaluated": 5,
+      "accuracy_delta": -0.6,
+      "bootstrap_ci_95": [
+        -1.0,
+        -0.2
+      ],
+      "mcnemar": {
+        "n10_system_wins": 0,
+        "n01_baseline_wins": 3,
+        "n11_both_correct": 2,
+        "n00_both_incorrect": 0,
+        "discordant_total": 3,
+        "p_value": 0.25,
+        "system_win_ratio": "0 to 3",
+        "is_underpowered": true,
+        "statistically_significant_05": false,
+        "power_caveat": "Sample size (5) or discordant pairs (3) is below recommended threshold (discordant >= 10, N >= 15). Minimum 6 discordant wins with 0 losses required for p < 0.05."
+      }
+    }
+  },
+  "categories": {
+    "aggregation": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      }
+    },
+    "out_of_scope": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      }
+    },
+    "single_hop": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 0,
+        "total": 1,
+        "accuracy": 0.0
+      }
+    },
+    "three_hop": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 0,
+        "total": 1,
+        "accuracy": 0.0
+      }
+    },
+    "two_hop": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 0,
+        "total": 1,
+        "accuracy": 0.0
+      }
+    }
+  },
+  "hop_count": {
+    "1": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 0,
+        "total": 1,
+        "accuracy": 0.0
+      }
+    },
+    "2": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 0,
+        "total": 1,
+        "accuracy": 0.0
+      }
+    },
+    "3": {
+      "count": 1,
+      "A": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "B": {
+        "correct": 0,
+        "total": 1,
+        "accuracy": 0.0
+      }
+    }
+  }
+}
