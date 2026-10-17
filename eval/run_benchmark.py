@@ -63,11 +63,11 @@ REFUSAL_KEYWORDS = [
 
 
 def compute_file_sha256(filepath: Path) -> str:
-    """Compute cryptographic SHA-256 hash of a file."""
+    """Compute cryptographic SHA-256 hash of a file with newline normalization for cross-platform consistency."""
     hasher = hashlib.sha256()
     with open(filepath, "rb") as f:
-        for chunk in iter(lambda: f.read(65536), b""):
-            hasher.update(chunk)
+        data = f.read().replace(b"\r\n", b"\n")
+    hasher.update(data)
     return hasher.hexdigest()
 
 

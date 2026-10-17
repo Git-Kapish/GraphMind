@@ -5,7 +5,7 @@
   "record_count": 100,
   "total_questions": 100,
   "dataset_filename": "graphmind_eval_100q_v1.jsonl",
-  "sha256_checksum": "d19fa5f4d0cfc4e92c85b1c34ad90d9e92fe65bf38be946da45b9f90ac4cbba9",
+  "sha256_checksum": "a36172b661d1f0691e8f21aff5aca2d43264aa30f14265147b171ea1e1378d2e",
   "category_distribution": {
     "single_hop": 20,
     "two_hop": 20,

@@ -114,7 +114,7 @@ To resolve sample size underpowering and comprehensively test multi-hop reasonin
 - **Primary Path:** `eval/datasets/graphmind_eval_v1.jsonl`
 - **Secondary Mirror:** `benchmarks/questions/graphmind_eval_100q_v1.jsonl`
 - **Manifest:** `eval/datasets/dataset_manifest.json`
-- **Dataset SHA-256 Checksum:** `d19fa5f4d0cfc4e92c85b1c34ad90d9e92fe65bf38be946da45b9f90ac4cbba9`
+- **Dataset SHA-256 Checksum:** `a36172b661d1f0691e8f21aff5aca2d43264aa30f14265147b171ea1e1378d2e`
 - **Corpus Filers Covered:** 10 technology filers (NVDA, AMD, INTC, AAPL, AVGO, MSFT, GOOGL, AMZN, MU, QCOM).
 
 ### C. Extended Metric Formulations

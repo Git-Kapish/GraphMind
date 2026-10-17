@@ -47,7 +47,7 @@ GraphMind's retrieval and answering pipelines are evaluated across two standard 
 
 ### Standardized 100-Question Benchmark (GraphMind Eval v1.0)
 
-Evaluated on 100 hand-verified questions strictly grounded in SEC 10-K filings across 10 technology filers (NVDA, AMD, INTC, AAPL, AVGO, MSFT, GOOGL, AMZN, MU, QCOM). Dataset pinned with cryptographic SHA-256 (`d19fa5f4d0cfc4e92c85b1c34ad90d9e92fe65bf38be946da45b9f90ac4cbba9`) under [`eval/datasets/graphmind_eval_v1.jsonl`](eval/datasets/graphmind_eval_v1.jsonl).
+Evaluated on 100 hand-verified questions strictly grounded in SEC 10-K filings across 10 technology filers (NVDA, AMD, INTC, AAPL, AVGO, MSFT, GOOGL, AMZN, MU, QCOM). Dataset pinned with cryptographic SHA-256 (`a36172b661d1f0691e8f21aff5aca2d43264aa30f14265147b171ea1e1378d2e`) under [`eval/datasets/graphmind_eval_v1.jsonl`](eval/datasets/graphmind_eval_v1.jsonl).
 
 #### Category Architecture (N=100)
 - **Single-Hop (20 questions):** Direct factual retrieval from single passages (e.g. officers, founding years, HQ).

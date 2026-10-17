@@ -1,7 +1,7 @@
 # GraphMind 100-Question Benchmark Evaluation Report
 
 **Run ID:** `run_20261017_055122` | **Status:** `COMPLETE` | **Git SHA:** `ba6e2567`
-- **Dataset:** `graphmind_eval_v1.jsonl` (SHA-256: `d19fa5f4d0cfc4e9...`)
+- **Dataset:** `graphmind_eval_v1.jsonl` (SHA-256: `a36172b661d1f069...`)
 - **Evaluated Questions:** 5 (Balanced 20 per category across 10 SEC filers)
 - **Completed Evaluations:** 10 total system-question runs
 - **Total Benchmark Runtime:** 145.76s

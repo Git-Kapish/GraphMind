@@ -1,0 +1,14 @@
+# Set default behavior to automatically normalize line endings to LF on commit/checkout
+* text=auto eol=lf
+
+# Explicitly ensure evaluation datasets, manifests, code, and docs use LF
+*.jsonl text eol=lf
+*.json text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf

@@ -19,7 +19,6 @@ Covers:
    - Resume logic without record duplication.
 """
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -181,11 +180,10 @@ def test_manifest_cryptographic_checksum(manifest_path: Path):
     dataset_file = manifest_path.parent / manifest["dataset_filename"]
     assert dataset_file.exists(), f"Dataset file {dataset_file} not found"
 
-    # Compute actual SHA-256
-    hasher = hashlib.sha256()
-    with open(dataset_file, "rb") as f:
-        hasher.update(f.read())
-    actual_sha = hasher.hexdigest()
+    # Compute actual SHA-256 with newline normalization
+    from kgrag.benchmarks.run_benchmark import compute_file_sha256
+
+    actual_sha = compute_file_sha256(dataset_file)
 
     assert actual_sha == manifest["sha256_checksum"], (
         f"Checksum mismatch: manifest {manifest['sha256_checksum']} vs actual {actual_sha}"

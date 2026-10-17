@@ -2,7 +2,7 @@
   "run_id": "run_20261017_055122",
   "git_commit_sha": "ba6e25670924da812902bb8bbe663562dab40e39",
   "dataset_name": "graphmind_eval_v1.jsonl",
-  "dataset_sha256": "d19fa5f4d0cfc4e92c85b1c34ad90d9e92fe65bf38be946da45b9f90ac4cbba9",
+  "dataset_sha256": "a36172b661d1f0691e8f21aff5aca2d43264aa30f14265147b171ea1e1378d2e",
   "start_time_utc": "2026-10-17T05:51:22.371499+00:00",
   "end_time_utc": "2026-10-17T05:53:48.136115+00:00",
   "elapsed_seconds": 145.76,

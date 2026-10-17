@@ -2199,16 +2199,16 @@ def validate_and_generate_dataset():
 
     for p in out_paths:
         p.parent.mkdir(parents=True, exist_ok=True)
-        with open(p, "w", encoding="utf-8") as f:
+        with open(p, "w", encoding="utf-8", newline="\n") as f:
             for q in QUESTIONS:
                 f.write(json.dumps(q, ensure_ascii=False) + "\n")
         print(f"Saved 100 questions to {p}")
 
-    # Compute SHA-256 checksum of the dataset file
+    # Compute SHA-256 checksum of the dataset file with newline normalization
     sha256_hash = hashlib.sha256()
     with open(out_paths[0], "rb") as f:
-        for byte_block in iter(lambda: f.read(4096), b""):
-            sha256_hash.update(byte_block)
+        data = f.read().replace(b"\r\n", b"\n")
+        sha256_hash.update(data)
     checksum = sha256_hash.hexdigest()
 
     manifest_templates = [
