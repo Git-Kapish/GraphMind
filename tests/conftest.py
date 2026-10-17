@@ -27,13 +27,19 @@ def _is_reachable(host: str, port: int, timeout: float = 0.5) -> bool:
 @pytest.fixture(scope="session", autouse=True)
 def ensure_test_database_seeded():
     """Seed minimal test fixtures into PostgreSQL and Neo4j (idempotent for CI & local test runs)."""
+    import os
+
     from kgrag.config import get_settings
 
     settings = get_settings()
+    is_ci = os.getenv("CI") == "true"
+    check_timeout = 5.0 if is_ci else 0.5
 
     # 1. Ensure PostgreSQL test fixtures exist
     try:
-        if not _is_reachable(settings.database.postgres.host, settings.database.postgres.port):
+        if not _is_reachable(
+            settings.database.postgres.host, settings.database.postgres.port, timeout=check_timeout
+        ):
             logger.info("PostgreSQL is not reachable; skipping test database fixture seeding.")
         else:
             from kgrag.db.postgres import get_connection
@@ -304,6 +310,8 @@ def ensure_test_database_seeded():
                     )
     except Exception as e:
         logger.warning("PostgreSQL test fixture seeding skipped or failed: %s", e)
+        if is_ci:
+            raise e
 
     # 2. Ensure Neo4j test fixtures exist
     try:
@@ -312,54 +320,50 @@ def ensure_test_database_seeded():
         parsed = urllib.parse.urlparse(settings.database.neo4j.uri)
         neo4j_host = parsed.hostname or "127.0.0.1"
         neo4j_port = parsed.port or 7687
-        if not _is_reachable(neo4j_host, neo4j_port):
+        if not _is_reachable(neo4j_host, neo4j_port, timeout=check_timeout):
             logger.info("Neo4j is not reachable; skipping Neo4j test fixture seeding.")
         else:
             from kgrag.db.neo4j import get_session
 
+            statements = [
+                "MERGE (nvda:Entity {entity_id: 'ent_4e47c272d2b7'}) SET nvda.canonical_name = 'nvidia', nvda.type = 'Company', nvda.aliases = ['NVIDIA Corporation', 'NVDA']",
+                "MERGE (amd:Entity {entity_id: 'ent_99ee45010f6a'}) SET amd.canonical_name = 'amd', amd.type = 'Company', amd.aliases = ['Advanced Micro Devices', 'AMD']",
+                "MERGE (msft:Entity {entity_id: 'ent_bfd5f0618c63'}) SET msft.canonical_name = 'microsoft', msft.type = 'Company', msft.aliases = ['Microsoft Corporation', 'MSFT']",
+                "MERGE (avgo:Entity {entity_id: 'ent_1c45946c94de'}) SET avgo.canonical_name = 'broadcom', avgo.type = 'Company', avgo.aliases = ['Broadcom Inc.', 'AVGO']",
+                "MERGE (jensen:Entity {entity_id: 'ent_jensen_huang'}) SET jensen.canonical_name = 'jensen huang', jensen.type = 'Person', jensen.aliases = ['Jensen Huang']",
+                "MERGE (mellanox:Entity {entity_id: 'ent_mellanox'}) SET mellanox.canonical_name = 'mellanox', mellanox.type = 'Company', mellanox.aliases = ['Mellanox Technologies']",
+                "MERGE (vmware:Entity {entity_id: 'ent_vmware'}) SET vmware.canonical_name = 'vmware', vmware.type = 'Company', vmware.aliases = ['VMware']",
+                "MERGE (tsmc:Entity {entity_id: 'ent_tsmc'}) SET tsmc.canonical_name = 'taiwan semiconductor manufacturing company', tsmc.type = 'Company', tsmc.aliases = ['TSMC']",
+                "MATCH (a:Entity {entity_id: 'ent_4e47c272d2b7'}), (b:Entity {entity_id: 'ent_99ee45010f6a'}) MERGE (a)-[r:COMPETES_WITH]->(b) SET r.observation_ids = ['obs_nvda_competes_amd'], r.source_chunks = ['chk_test_nvda_001'], r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_99ee45010f6a'}), (b:Entity {entity_id: 'ent_4e47c272d2b7'}) MERGE (a)-[r:COMPETES_WITH]->(b) SET r.observation_ids = ['obs_nvda_competes_amd'], r.source_chunks = ['chk_test_nvda_001'], r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_4e47c272d2b7'}), (b:Entity {entity_id: 'ent_bfd5f0618c63'}) MERGE (a)-[r:PARTNERS_WITH]->(b) SET r.observation_ids = ['obs_nvda_msft'], r.source_chunks = ['chk_test_nvda_001'], r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_bfd5f0618c63'}), (b:Entity {entity_id: 'ent_tsmc'}) MERGE (a)-[r:PARTNERS_WITH]->(b) SET r.observation_ids = ['obs_msft_tsmc'], r.source_chunks = ['chk_test_nvda_001'], r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_4e47c272d2b7'}), (b:Entity {entity_id: 'ent_tsmc'}) MERGE (a)-[r:PARTNERS_WITH]->(b) SET r.observation_ids = ['obs_nvda_tsmc'], r.source_chunks = ['chk_test_nvda_001'], r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_jensen_huang'}), (b:Entity {entity_id: 'ent_4e47c272d2b7'}) MERGE (a)-[r:OFFICER_OF]->(b) SET r.observation_ids = ['obs_jensen_officer_nvda'], r.source_chunks = ['chk_test_nvda_001'], r.role = 'Chief Executive Officer', r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_mellanox'}), (b:Entity {entity_id: 'ent_4e47c272d2b7'}) MERGE (a)-[r:SUBSIDIARY_OF]->(b) SET r.observation_ids = ['obs_mellanox_subsidiary'], r.source_chunks = ['chk_test_nvda_001'], r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_1c45946c94de'}), (b:Entity {entity_id: 'ent_vmware'}) MERGE (a)-[r:SUBSIDIARY_OF]->(b) SET r.observation_ids = ['obs_broadcom_subsidiary'], r.source_chunks = ['chk_test_nvda_001'], r.weight = 1.0",
+                "MATCH (a:Entity {entity_id: 'ent_99ee45010f6a'}), (b:Entity {entity_id: 'ent_vmware'}) MERGE (a)-[r:SUBSIDIARY_OF]->(b) SET r.observation_ids = ['obs_amd_subsidiary'], r.source_chunks = ['chk_test_amd_001'], r.weight = 1.0",
+            ]
             with get_session() as session:
-                cypher = """
-                MERGE (nvda:Entity {entity_id: 'ent_4e47c272d2b7'})
-            SET nvda.canonical_name = 'nvidia', nvda.type = 'Company', nvda.aliases = ['NVIDIA Corporation', 'NVDA']
-
-            MERGE (amd:Entity {entity_id: 'ent_99ee45010f6a'})
-            SET amd.canonical_name = 'amd', amd.type = 'Company', amd.aliases = ['Advanced Micro Devices', 'AMD']
-
-            MERGE (msft:Entity {entity_id: 'ent_bfd5f0618c63'})
-            SET msft.canonical_name = 'microsoft', msft.type = 'Company', msft.aliases = ['Microsoft Corporation', 'MSFT']
-
-            MERGE (avgo:Entity {entity_id: 'ent_1c45946c94de'})
-            SET avgo.canonical_name = 'broadcom', avgo.type = 'Company', avgo.aliases = ['Broadcom Inc.', 'AVGO']
-
-            MERGE (jensen:Entity {entity_id: 'ent_jensen_huang'})
-            SET jensen.canonical_name = 'jensen huang', jensen.type = 'Person', jensen.aliases = ['Jensen Huang']
-
-            MERGE (mellanox:Entity {entity_id: 'ent_mellanox'})
-            SET mellanox.canonical_name = 'mellanox', mellanox.type = 'Company', mellanox.aliases = ['Mellanox Technologies']
-
-            MERGE (vmware:Entity {entity_id: 'ent_vmware'})
-            SET vmware.canonical_name = 'vmware', vmware.type = 'Company', vmware.aliases = ['VMware']
-
-            MERGE (tsmc:Entity {entity_id: 'ent_tsmc'})
-            SET tsmc.canonical_name = 'taiwan semiconductor manufacturing company', tsmc.type = 'Company', tsmc.aliases = ['TSMC']
-
-            MERGE (nvda)-[:COMPETES_WITH {observation_ids: ['obs_nvda_competes_amd'], source_chunks: ['chk_test_nvda_001'], weight: 1.0}]->(amd)
-            MERGE (amd)-[:COMPETES_WITH {observation_ids: ['obs_nvda_competes_amd'], source_chunks: ['chk_test_nvda_001'], weight: 1.0}]->(nvda)
-            MERGE (nvda)-[:PARTNERS_WITH {observation_ids: ['obs_nvda_msft'], source_chunks: ['chk_test_nvda_001'], weight: 1.0}]->(msft)
-            MERGE (msft)-[:PARTNERS_WITH {observation_ids: ['obs_msft_tsmc'], source_chunks: ['chk_test_nvda_001'], weight: 1.0}]->(tsmc)
-            MERGE (nvda)-[:PARTNERS_WITH {observation_ids: ['obs_nvda_tsmc'], source_chunks: ['chk_test_nvda_001'], weight: 1.0}]->(tsmc)
-            MERGE (jensen)-[:OFFICER_OF {observation_ids: ['obs_jensen_officer_nvda'], source_chunks: ['chk_test_nvda_001'], role: 'Chief Executive Officer', weight: 1.0}]->(nvda)
-            MERGE (mellanox)-[:SUBSIDIARY_OF {observation_ids: ['obs_mellanox_subsidiary'], source_chunks: ['chk_test_nvda_001'], weight: 1.0}]->(nvda)
-            MERGE (avgo)-[:SUBSIDIARY_OF {observation_ids: ['obs_broadcom_subsidiary'], source_chunks: ['chk_test_nvda_001'], weight: 1.0}]->(vmware)
-            MERGE (amd)-[:SUBSIDIARY_OF {observation_ids: ['obs_amd_subsidiary'], source_chunks: ['chk_test_amd_001'], weight: 1.0}]->(vmware)
-            """
-            session.run(cypher)
+                for stmt in statements:
+                    result = session.run(stmt)
+                    result.consume()
     except Exception as e:
         logger.warning("Neo4j test fixture seeding skipped or failed: %s", e)
+        if is_ci:
+            raise e
 
 
 def pytest_collection_modifyitems(config, items):
-    """Automatically skip database-dependent tests if PostgreSQL or Neo4j are not reachable locally."""
+    """Automatically skip database-dependent tests if PostgreSQL or Neo4j are not reachable locally.
+
+    In CI environments (CI=true), all services are running and no tests are skipped.
+    """
+    import os
+
+    if os.getenv("CI") == "true":
+        return
+
     import urllib.parse
 
     from kgrag.config import get_settings
@@ -390,6 +394,7 @@ def pytest_collection_modifyitems(config, items):
     }
     neo4j_files = {
         "test_graph_templates.py",
+        "test_retrieval_engine.py",
     }
 
     for item in items:
