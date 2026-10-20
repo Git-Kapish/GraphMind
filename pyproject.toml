@@ -22,7 +22,13 @@ dependencies = [
     "tenacity>=8.2.3",
     "tqdm>=4.66.2",
     "python-dotenv>=1.0.1",
+    "click>=8.0.0",
+    "rich>=13.0.0",
 ]
+
+[project.scripts]
+graphmind = "kgrag.cli:main"
+kgrag = "kgrag.cli:main"
 
 [project.optional-dependencies]
 dev = [

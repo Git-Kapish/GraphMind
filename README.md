@@ -8,6 +8,7 @@
   <img src="https://img.shields.io/badge/Neo4j-5.26-008CC1?logo=neo4j&logoColor=white" alt="Neo4j" />
   <img src="https://img.shields.io/badge/PostgreSQL-pgvector-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL + pgvector" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/CLI-Click%20%2B%20Rich-blueviolet?logo=gnometerminal&logoColor=white" alt="CLI" />
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT" />
 </p>
 
@@ -38,8 +39,8 @@ A router selects `vector`, `graph`, or `hybrid`; hybrid retrieval combines ranke
 | Resilience | Deterministic router fallback for low-confidence or rate-limited decision calls |
 | Input safety | Retrieved filing text treated as untrusted data |
 | Baseline | Vector-only comparison endpoint at `POST /query/baseline` |
-| Delivery | FastAPI, React, Docker Compose, GitHub Actions |
-| Automated checks | Repository currently documents 143 automated tests |
+| Delivery | Terminal CLI (Click + Rich), FastAPI, React, Docker Compose, GitHub Actions |
+| Automated checks | Repository currently documents 151 automated tests |
 
 ## Results & Benchmark Audit
 
@@ -150,8 +151,8 @@ The full run should create an immutable directory at `eval/results/<run_id>/`. I
 
 ```mermaid
 flowchart TD
-    U(["Question"]) --> UI["React dashboard"]
-    UI --> API["FastAPI"]
+    U(["Question"]) --> CLI["Terminal CLI / Web UI"]
+    CLI --> API["FastAPI / Local Engine"]
     API --> R["Router and guardrails"]
     R -->|graph or hybrid| G[("Neo4j knowledge graph")]
     R -->|vector or hybrid| V[("PostgreSQL + pgvector")]
@@ -161,7 +162,7 @@ flowchart TD
     E --> L["Grounded answer generation"]
     L --> C["Citation resolution validator"]
     C --> S["Answer with resolvable citations"]
-    S --> UI
+    S --> CLI
     R -. low confidence / 429 .-> RR["Deterministic fallback router"]
     RR --> G
     RR --> V
@@ -182,21 +183,53 @@ No hosted demo or video recording is linked here yet. You can run the applicatio
 
 ### Quickstart
 
-Requirements: Docker with Compose, Git, and an OpenRouter API key for model-backed requests.
+Requirements: Docker with Compose, Python 3.11+, and an OpenRouter API key for model-backed requests.
 
 ```bash
 git clone https://github.com/Git-Kapish/GraphMind.git
 cd GraphMind
 cp .env.example .env
 # Add OPENROUTER_API_KEY to .env
-docker compose up --build -d
+
+# 1. Start backend databases (PostgreSQL/pgvector + Neo4j)
+docker compose up -d postgres neo4j
+
+# 2. Query immediately with GraphMind Terminal CLI (Zero-setup / Local in-process)
+uv run graphmind interactive
 ```
 
-Services:
+### GraphMind Terminal CLI
 
-| Service | Local URL |
+GraphMind features an enterprise terminal interface (`graphmind` or `python -m kgrag.cli`) powered by Click and Rich:
+
+```bash
+# 1. Interactive terminal REPL shell (with dynamic mode switching, slash commands & live status)
+uv run graphmind interactive
+
+# 2. One-shot grounded query with formatted markdown, citation tables, and routing badge
+uv run graphmind query "What does Qualcomm say about customer concentration or Apple purchasing modem products?"
+
+# 3. Side-by-side A/B comparison: GraphMind Hybrid vs Plain Vector Baseline
+uv run graphmind compare "Who are the key executive officers of NVIDIA Corporation?"
+
+# 4. Canonical entity topology & graph connection inspector
+uv run graphmind entity "Apple Inc."
+
+# 5. Authoritative SEC chunk text and extraction observations
+uv run graphmind chunk "0000804328-25-000085:item1a:0003"
+
+# 6. Live database and model runtime health check
+uv run graphmind health
+
+# 7. Machine-readable JSON output for automated scripting / CI
+uv run graphmind query "What is Broadcom's principal business?" --json
+```
+
+Services & Endpoints:
+
+| Interface / Service | Access |
 |---|---|
-| React dashboard | http://localhost:3000 |
+| GraphMind Terminal CLI | `uv run graphmind` |
 | FastAPI Swagger UI | http://localhost:8000/docs |
 | API health check | http://localhost:8000/health |
 | Neo4j Browser | http://localhost:7474 |

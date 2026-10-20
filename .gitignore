@@ -51,6 +51,7 @@ neo4j_logs/
 htmlcov/
 .ruff_cache/
 .mypy_cache/
+.playwright-mcp/
 
 # Frontend
 frontend/node_modules/
